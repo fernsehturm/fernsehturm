@@ -88,6 +88,7 @@ const config: Config = {
           label: 'Tutorial',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/pricing', label: 'Pricing', position: 'left'},
         {
           href: 'https://github.com/fernsehturm/fernsehturm',
           label: 'GitHub',

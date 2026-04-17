@@ -5,23 +5,23 @@ import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  img: string;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
     title: 'Keep systems consistent as they grow',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    img: require('@site/static/img/agents.png').default,
     description: (
       <>
-        Fernsehturm stores requirements, decisions, and code together, so AI-generated systems don’t drift over time.
+        Fernsehturm stores requirements, decisions, and code together, so AI-generated systems don't drift over time.
       </>
     ),
   },
   {
     title: 'Make changes without breaking everything',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    img: require('@site/static/img/changing.png').default,
     description: (
       <>
         Structured feedback and traceability help agents update features without causing hidden regressions.
@@ -30,7 +30,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Give AI a system it can reason about',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    img: require('@site/static/img/reason.png').default,
     description: (
       <>
         A database-native source of truth lets agents understand intent instead of guessing from files.
@@ -39,11 +39,11 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, img, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img src={img} className={styles.featureImg} alt={title} />
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>

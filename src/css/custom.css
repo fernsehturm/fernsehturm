@@ -32,28 +32,44 @@
   font-style: italic;
 }
 
-/* You can override the default Infima variables here. */
+/* Basis color: #CDEFFD — hsl(197, 92%, 90%)
+   Scale derived from hue 197, stepping lightness down for light mode,
+   up for dark mode. #CDEFFD is the lightest endpoint in both scales. */
+
 :root {
   --ifm-font-family-base: 'Space Mono', monospace;
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* hsl(197, 80%, 42%) → #1591C1 */
+  --ifm-color-primary:         #1591c1;
+  /* hsl(197, 80%, 37%) → #127FA8 */
+  --ifm-color-primary-dark:    #127fa8;
+  /* hsl(197, 80%, 34%) → #10749A */
+  --ifm-color-primary-darker:  #10749a;
+  /* hsl(197, 80%, 27%) → #0D5C7A */
+  --ifm-color-primary-darkest: #0d5c7a;
+  /* hsl(197, 80%, 47%) → #17A3D7 */
+  --ifm-color-primary-light:   #17a3d7;
+  /* hsl(197, 82%, 58%) → #3DBDE8 */
+  --ifm-color-primary-lighter: #3dbde8;
+  /* hsl(197, 92%, 90%) → #CDEFFD (basis) */
+  --ifm-color-primary-lightest: #cdeffd;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  /* hsl(197, 85%, 65%) → #5DCBE8 */
+  --ifm-color-primary:         #5dcbe8;
+  /* hsl(197, 85%, 58%) → #3ABDE1 */
+  --ifm-color-primary-dark:    #3abde1;
+  /* hsl(197, 85%, 54%) → #25B3DA */
+  --ifm-color-primary-darker:  #25b3da;
+  /* hsl(197, 85%, 44%) → #0D95BB */
+  --ifm-color-primary-darkest: #0d95bb;
+  /* hsl(197, 85%, 72%) → #82D7EE */
+  --ifm-color-primary-light:   #82d7ee;
+  /* hsl(197, 88%, 81%) → #A8E4F6 */
+  --ifm-color-primary-lighter: #a8e4f6;
+  /* hsl(197, 92%, 90%) → #CDEFFD (basis) */
+  --ifm-color-primary-lightest: #cdeffd;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }

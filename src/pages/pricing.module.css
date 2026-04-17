@@ -1,0 +1,150 @@
+.hero {
+  padding: 3rem 0 2rem;
+}
+
+.heroSub {
+  margin: 0.75rem 0 0;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 600px;
+}
+
+.tiers {
+  padding: 2rem 0 4rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media screen and (max-width: 1200px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  padding: 1.5rem;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.cardHighlighted {
+  border-color: var(--ifm-color-emphasis-900);
+  border-width: 2px;
+}
+
+.cardHeader {
+  margin-bottom: 1.25rem;
+}
+
+.tierName {
+  font-size: 1rem !important;
+  margin-bottom: 0.4rem !important;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem;
+}
+
+.description {
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  flex: 1;
+}
+
+.featureList li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+}
+
+.bullet {
+  flex-shrink: 0;
+  color: var(--ifm-color-emphasis-500);
+}
+
+.cardFooter {
+  margin-top: auto;
+}
+
+.bestFor {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0 0 1rem;
+}
+
+.bestForLabel {
+  font-weight: 700;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-900);
+  color: var(--ifm-color-emphasis-900);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.cta:hover {
+  background-color: var(--ifm-color-emphasis-900);
+  color: var(--ifm-color-emphasis-0);
+  text-decoration: none;
+}
+
+.ctaHighlighted {
+  background-color: var(--ifm-color-emphasis-900);
+  color: var(--ifm-color-emphasis-0) !important;
+}
+
+.ctaHighlighted:hover {
+  background-color: var(--ifm-color-emphasis-700);
+}
+
+.ctaSection {
+  padding: 0 0 4rem;
+}
+
+.ctaText {
+  margin: 0 0 1.25rem;
+  max-width: 600px;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--ifm-color-emphasis-900);
+  color: var(--ifm-color-emphasis-0);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ctaButton:hover {
+  color: var(--ifm-color-emphasis-0);
+  text-decoration: none;
+}
