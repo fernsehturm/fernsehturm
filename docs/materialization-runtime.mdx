@@ -1,0 +1,64 @@
+---
+sidebar_position: 12
+---
+
+# Materialization & Runtime
+
+Materialization converts the database state into a runnable workspace. The runtime executes it and captures the results.
+
+## Materialization
+
+```bash
+fst materialize
+```
+
+This command:
+
+1. Reads all accepted, active code artifacts
+2. Maps each artifact's logical path to a physical workspace path
+3. Writes the artifact body to the corresponding file
+4. Generates any derived scaffolding (package files, configs) from decision artifacts
+5. Reports what was created, updated, or deleted
+
+### Idempotency
+
+Materialization is idempotent. Running it multiple times with the same database state produces the same workspace.
+
+### Dry run
+
+```bash
+fst materialize --dry-run
+```
+
+Preview what would be written without actually writing. Useful for reviewing before a large materialization.
+
+## Execution
+
+```bash
+fst run
+fst run --entrypoint "node src/server.js"
+fst run --capture    # store output as a runtime artifact
+```
+
+The runtime executes the workspace entrypoint and captures stdout, stderr, exit code, and timing.
+
+## Runtime feedback
+
+Captured runs are stored as runtime artifacts. They can be inspected:
+
+```bash
+fst runtime list
+fst runtime logs --id <id>
+```
+
+Runtime failures (non-zero exit, crashes, timeouts) can be converted to feedback artifacts:
+
+```bash
+fst feedback create --from-runtime <runtime-id>
+```
+
+This feeds the failure back into the revision loop.
+
+## Verification runs
+
+`fst verify run` is a specialized runtime operation that executes requirement-linked checks rather than the main entrypoint. See [Verification](./verification) for details.

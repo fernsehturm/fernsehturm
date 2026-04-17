@@ -1,0 +1,57 @@
+---
+sidebar_position: 5
+---
+
+# Policies
+
+Policy artifacts encode reusable constraints that apply across multiple artifacts. They are enforced during code generation and consistency checks.
+
+## Characteristics
+
+- Reusable (unlike decisions, which are one-time)
+- Can be scoped to artifact types or tags
+- Evaluated by the consistency engine
+- Can be enabled or disabled
+
+## Examples
+
+```
+All exported functions must have a JSDoc comment describing their parameters and return value.
+```
+
+```
+HTTP handlers must not contain business logic. Business logic belongs in service modules.
+```
+
+```
+Database queries must go through the repository layer. Direct SQL in handlers is not permitted.
+```
+
+## Creating a policy
+
+```bash
+fst artifact put \
+  --type policy \
+  --body "HTTP handlers must not contain business logic"
+```
+
+```bash
+fst policy enable --id <id>
+```
+
+## Scope
+
+Policies can be scoped using tags:
+
+```bash
+fst artifact put \
+  --type policy \
+  --body "Use snake_case for column names" \
+  --tags "database,schema"
+```
+
+When scoped, the policy only applies to artifacts that share the same tags.
+
+## Policy vs. decision
+
+A decision is a one-time architectural choice. A policy is an ongoing rule. Example: "use PostgreSQL" is a decision; "table names must be snake_case" is a policy.

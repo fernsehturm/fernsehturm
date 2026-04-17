@@ -2,46 +2,31 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Fernsehturm in less than 5 minutes**.
+## What is Fernsehturm?
 
-## Getting Started
+Fernsehturm is a **database-native software system designed for AI agents**.
 
-Get started by **creating a new site**.
+Unlike traditional development environments where code lives in files, Fernsehturm stores code, requirements, and decisions as structured artifacts in a SQLite database. Files are generated projections—disposable outputs derived from the database, not the source of truth.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## Why it exists
 
-### What you'll need
+Software built by AI agents suffers from a fundamental problem: **codebases don't scale in consistency**. As features accumulate, agents lose track of prior decisions, requirements drift from implementations, and the system becomes incoherent.
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+Fernsehturm addresses this by:
 
-## Generate a new site
+- Giving agents a **structured interface** instead of a text-based file system
+- Maintaining **traceability** from goals through requirements to running code
+- Enforcing **consistency checks** that catch gaps before they compound
+- Providing **structured feedback** that drives iteration rather than patch-work fixes
 
-Generate a new Docusaurus site using the **classic template**.
+## Core idea
 
-The classic template will automatically be added to your project after you run the command:
+> Software is a system of **intent, decisions, and artifacts**—not files.
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+Agents don't need to manage files. They need to express intent, receive critique, and refine proposals until the system is coherent and working.
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+---
 
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+**Next:** [Core Concepts →](./core-concepts/artifacts)

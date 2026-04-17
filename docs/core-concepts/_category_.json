@@ -1,0 +1,8 @@
+{
+  "label": "Core Concepts",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "The mental model behind Fernsehturm. Understand these concepts before anything else."
+  }
+}

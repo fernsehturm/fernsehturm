@@ -1,0 +1,42 @@
+---
+sidebar_position: 5
+---
+
+# System Role
+
+The Fernsehturm system enforces structure, stores state, runs checks, and provides structured feedback.
+
+## Enforce consistency
+
+The consistency engine continuously evaluates the artifact set for:
+
+- Requirements without implementations
+- Code without linked requirements
+- Conflicting decisions
+- Policy violations
+- Architectural violations
+
+This happens on demand (`fst consistency run`) and can be integrated into automated loops.
+
+## Store structure
+
+The database stores every artifact, revision, and link. Nothing is lost. The system's full history is always available.
+
+This storage model enables:
+- Rollback to any prior state
+- Impact analysis before a change
+- Full audit trail of how the system evolved
+
+## Run checks
+
+`fst verify run` executes requirement-linked verification checks against the running system. The system captures pass/fail results and stores them as feedback artifacts.
+
+## Provide feedback
+
+Every issue the system detects—consistency gaps, verification failures, policy violations—is stored as a structured feedback artifact. Feedback is not ephemeral; it persists until resolved and can be queried by agents.
+
+## What the system does NOT do
+
+- Make decisions (that's the human's job)
+- Generate code autonomously (that's the agent's job)
+- Guess at intent (it works only with what is explicitly in the database)

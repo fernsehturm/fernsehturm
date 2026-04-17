@@ -1,0 +1,61 @@
+---
+sidebar_position: 4
+---
+
+# Best Practices
+
+Guidelines for working effectively with agents in Fernsehturm.
+
+## Take small steps
+
+Large, multi-artifact proposals are hard to critique and hard to revise. Break work into small increments:
+
+- Propose one requirement at a time
+- Implement one requirement before moving to the next
+- Run consistency after each change
+
+Small steps make feedback specific and actionable.
+
+## Use structured outputs
+
+Always use `--json` in automated loops. Human-readable output is not stable across versions and is harder to parse reliably.
+
+## Use system feedback
+
+Don't ignore consistency issues or feedback artifacts. Agents that push through warnings accumulate technical debt that becomes harder to resolve with each iteration.
+
+The feedback loop is:
+
+```
+propose → check → revise if needed → proceed
+```
+
+Not:
+
+```
+propose → proceed → fix later
+```
+
+## Link everything
+
+Every code artifact should link to the requirement it implements. Every requirement should link to the goal it derives from. Unlinked artifacts are invisible to the consistency engine.
+
+## Don't edit files
+
+Agents should never write to workspace files directly. Always propose through `fst artifact put`. Direct file edits are overwritten on next materialization and leave no trace in the artifact history.
+
+## Treat pending proposals as drafts
+
+Pending proposals are not active. Don't build on top of pending proposals—wait for acceptance before implementing dependencies.
+
+## Terminate cleanly
+
+An agent loop should end with:
+
+```bash
+fst consistency run --json    # no issues
+fst verify run --json         # all pass
+fst feedback list --unresolved --json  # empty
+```
+
+If any of these have results, the loop is not done.

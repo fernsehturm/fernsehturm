@@ -1,0 +1,56 @@
+---
+sidebar_position: 8
+---
+
+# Consistency & Critique System
+
+The consistency engine is the automated quality gate in Fernsehturm. It evaluates the active artifact set and produces structured issues when it finds problems.
+
+## What is checked
+
+| Check | Description |
+|-------|-------------|
+| Missing implementations | Requirements with no linked code artifact |
+| Conflicting decisions | Two decisions that cannot both be true |
+| Unlinked code | Code artifacts with no requirement link |
+| Policy violations | Active policies broken by code or structure |
+| Architecture violations | Code that crosses defined layer boundaries |
+| Dead artifacts | Artifacts with no links to anything |
+
+## Running consistency
+
+```bash
+fst consistency run
+fst consistency run --json     # structured output
+fst consistency run --strict   # warnings become errors
+```
+
+## Output format
+
+Each issue has:
+
+```json
+{
+  "severity": "error" | "warning" | "suggestion",
+  "code": "MISSING_IMPLEMENTATION",
+  "message": "Requirement REQ-42 has no linked code artifact.",
+  "target": "requirement:<id>",
+  "related": []
+}
+```
+
+## Severity levels
+
+| Severity | Meaning |
+|----------|---------|
+| `error` | Blocks acceptance of new proposals; must be resolved |
+| `warning` | Should be resolved but does not block |
+| `suggestion` | Optional improvement |
+
+## How it works
+
+The current implementation is rule-based: a fixed set of checks runs against the artifact graph. Future versions will incorporate learned patterns from usage history.
+
+## Integration into agent loops
+
+Agents should run `fst consistency run --json` after every proposal batch and before declaring a loop iteration complete. Issues found at this stage are cheaper to fix than issues found after materialization and execution.

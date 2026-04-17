@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+---
+
+# Runtime & Inspection Commands
+
+## `fst runtime`
+
+Inspect runtime state and captured execution results.
+
+```bash
+fst runtime list                      # list recorded runs
+fst runtime get --id <id>             # get details of a specific run
+fst runtime logs --id <id>            # get logs from a run
+```
+
+---
+
+## `fst event`
+
+Query system events (artifact created, accepted, rejected, consistency run, etc.).
+
+```bash
+fst event list
+fst event list --type artifact.accepted
+fst event list --since <timestamp>
+```
+
+---
+
+## `fst agent-call`
+
+Record and inspect agent interactions with the system.
+
+```bash
+fst agent-call list                   # list all agent interactions
+fst agent-call get --id <id>          # get a specific interaction
+```
+
+This is useful for debugging agent loops—you can see exactly what commands were issued and what outputs were returned.
+
+---
+
+## `fst summary`
+
+Generate a human-readable summary of the current system state.
+
+```bash
+fst summary                           # overview of artifacts, issues, and runs
+fst summary --focus requirements      # summary scoped to requirements
+fst summary --json                    # structured summary for agent context injection
+```
+
+The summary command is particularly useful at the start of an agent loop to give the agent a compact view of the system without reading every artifact individually.

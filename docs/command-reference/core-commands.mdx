@@ -1,0 +1,78 @@
+---
+sidebar_position: 1
+---
+
+# Core Commands
+
+## `fst request`
+
+Create and manage requests (goal-level work items).
+
+```bash
+fst request create "<description>"     # create a new request
+fst request list                        # list all requests
+fst request get --id <id>              # get a specific request
+```
+
+**JSON output**: `fst request list --json`
+
+---
+
+## `fst artifact`
+
+The primary command for reading and writing artifacts of all types.
+
+```bash
+fst artifact put --type <type> --body <content> [options]
+fst artifact get --id <id>
+fst artifact list [--type <type>] [--status <status>]
+fst artifact accept --id <id>
+fst artifact reject --id <id>
+```
+
+**Key options for `put`**:
+
+| Option | Description |
+|--------|-------------|
+| `--type` | Artifact type: `goal`, `requirement`, `decision`, `code`, `policy`, `feedback` |
+| `--path` | Logical path (required for `code` artifacts) |
+| `--links` | Comma-separated list of `type:id` link pairs |
+| `--revises` | ID of the artifact this revision supersedes |
+| `--status` | Initial status: `pending` (default) or `accepted` |
+
+---
+
+## `fst decision`
+
+Shorthand for working with decision artifacts.
+
+```bash
+fst decision create --body "<choice>"
+fst decision list
+fst decision accept --id <id>
+```
+
+---
+
+## `fst policy`
+
+Manage policy artifacts.
+
+```bash
+fst policy create --body "<rule>"
+fst policy list
+fst policy enable --id <id>
+fst policy disable --id <id>
+```
+
+---
+
+## `fst trace`
+
+Query the artifact link graph.
+
+```bash
+fst trace <artifact-id>               # show all links
+fst trace --impact <artifact-id>      # what depends on this?
+fst trace --path requirement:<id>     # trace from requirement to code
+```

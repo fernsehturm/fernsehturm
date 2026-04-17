@@ -1,0 +1,49 @@
+---
+sidebar_position: 4
+---
+
+# Code Artifacts
+
+Code artifacts store source code. They are referenced by a **logical path**—a path within the project's logical structure, independent of the physical workspace layout.
+
+## Characteristics
+
+- Have a `path` field (logical path, e.g., `src/api/tasks.js`)
+- Body contains source code
+- Linked to the requirements they implement
+- Materialized into workspace files
+
+## Creating a code artifact
+
+```bash
+fst artifact put \
+  --type code \
+  --path "src/api/tasks.js" \
+  --body "$(cat src/api/tasks.js)" \
+  --links requirement:<req-id>
+```
+
+## Logical path
+
+The logical path is how Fernsehturm refers to the file. The materializer maps logical paths to physical workspace paths. This indirection allows the workspace layout to change without affecting artifact references.
+
+## Revising code
+
+To update a code artifact, create a new revision that supersedes the old one:
+
+```bash
+fst artifact put \
+  --type code \
+  --path "src/api/tasks.js" \
+  --revises <previous-id> \
+  --body "$(cat updated-tasks.js)" \
+  --links requirement:<req-id>
+```
+
+## Coverage requirement
+
+Every accepted requirement must have at least one code artifact linked to it. The consistency engine flags uncovered requirements as issues.
+
+## Never edit workspace files
+
+Workspace files are generated from code artifacts. Editing them directly has no effect on the database and the changes will be overwritten on next materialization. Always update the artifact.

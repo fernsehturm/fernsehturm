@@ -1,0 +1,63 @@
+---
+sidebar_position: 10
+---
+
+# Traceability
+
+Traceability is the ability to follow the chain from intent to implementation—and back. It is a first-class feature of Fernsehturm, not an afterthought.
+
+## Link types
+
+| Type | Direction | Meaning |
+|------|-----------|---------|
+| `implements` | code → requirement | This code implements this requirement |
+| `depends_on` | any → any | This artifact depends on another |
+| `refines` | revision → artifact | This revision refines or specializes the target |
+| `conflicts_with` | any → any | Detected conflict (usually by consistency engine) |
+| `derives_from` | requirement → goal | This requirement was derived from this goal |
+
+## Querying
+
+```bash
+fst trace <id>                     # all links from/to this artifact
+fst trace --impact <id>            # what is affected if this changes?
+fst trace --path requirement:<id>  # trace from requirement to all related artifacts
+```
+
+## Use cases
+
+### Impact analysis
+
+Before changing a decision, see what code it affects:
+
+```bash
+fst trace --impact decision:<id>
+```
+
+### Debugging
+
+Trace a failing verification back to its requirement, then to the code that was supposed to implement it:
+
+```bash
+fst trace requirement:<id>
+```
+
+### Coverage reporting
+
+See which requirements have no code implementation:
+
+```bash
+fst consistency run --json | jq '.issues[] | select(.code == "MISSING_IMPLEMENTATION")'
+```
+
+## Best practice
+
+Always add links when creating artifacts. Missing links are not just a consistency warning—they represent a genuine gap in the system's knowledge of itself.
+
+```bash
+# Always do this:
+fst artifact put --type code --path "..." --body "..." --links requirement:<id>
+
+# Not this:
+fst artifact put --type code --path "..." --body "..."
+```

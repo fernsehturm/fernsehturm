@@ -1,0 +1,44 @@
+---
+sidebar_position: 4
+---
+
+# Agent Role
+
+Agents are the primary builders in Fernsehturm. They derive, propose, implement, and revise.
+
+## Derive requirements
+
+Given a goal artifact, an agent derives the concrete behaviors the system must exhibit. This is typically done with:
+
+```bash
+fst semantic run derive-requirements --goal <goal-id>
+```
+
+The agent reads the goal content and proposes requirement artifacts that decompose the goal into verifiable behaviors.
+
+## Propose implementations
+
+Given accepted requirements and decisions, an agent generates code artifacts:
+
+```bash
+fst artifact put --type code --path <logical-path> --body <source>
+```
+
+Proposals are critiqued before they become active. The agent should expect to iterate.
+
+## Revise based on feedback
+
+After verification or consistency checks, feedback artifacts accumulate. The agent reads them and proposes revised artifacts that address the issues:
+
+```bash
+fst feedback list --json
+fst artifact put --type code --path <path> --revises <prev-id> --body <revised-source>
+```
+
+## What agents do NOT do
+
+- Edit files directly
+- Make architectural decisions (those are human-approved)
+- Ignore consistency issues and push ahead
+
+Agents work within the structure the system provides. The structure is there to make their work more reliable, not to limit it.

@@ -1,0 +1,39 @@
+---
+sidebar_position: 14
+---
+
+# Design Principles
+
+These principles anchor every design decision in Fernsehturm. When in doubt, come back to these.
+
+## The database is the source of truth
+
+Code lives in the database as artifacts. The workspace is a derived output. Nothing important lives in files.
+
+## Code is derived
+
+Source files are generated, not authored. Agents and humans express intent through artifacts; the materializer produces files. You never edit files—you edit artifacts.
+
+## Proposals are not truth
+
+An artifact is not active until it is accepted. Pending proposals exist and are visible but do not affect the running system or consistency checks on the active state. Agents should not build on pending proposals.
+
+## Feedback drives iteration
+
+Issues are not errors to be suppressed—they are inputs to the next iteration. The system's feedback loop (propose → critique → revise) is the mechanism by which quality improves over time.
+
+## Structure is maintained continuously
+
+Consistency checks are not a one-time gate. They run throughout the development loop. Every proposal is critiqued; every implementation is checked. Structure is not a property of the initial design—it is maintained continuously.
+
+## Humans review decisions, not code
+
+Human attention is focused where it has the most leverage: approving decisions that shape the system, resolving conflicts, and refining intent. Humans do not review every line of generated code; the consistency engine does that.
+
+## Append-only history
+
+Nothing is deleted. Revisions accumulate. The full history of every artifact is always available. This makes the system auditable, rollback-safe, and debuggable.
+
+## Agents are first-class consumers
+
+The CLI and its JSON output mode are designed for agent consumption. Every command produces deterministic, structured output. There are no hidden states, no side effects outside the database.

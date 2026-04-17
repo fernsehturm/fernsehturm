@@ -1,0 +1,89 @@
+---
+sidebar_position: 2
+---
+
+# Step-by-Step Example
+
+A complete walkthrough of the Fernsehturm workflow using a simple "hello world" service.
+
+## 1. Create a request
+
+```bash
+fst request create "Build a simple HTTP server that returns Hello World"
+```
+
+This creates a goal artifact and adds a work item to the queue.
+
+## 2. Derive requirements
+
+An agent reads the goal and proposes requirement artifacts:
+
+```bash
+fst semantic run derive-requirements --goal <goal-id>
+```
+
+Example requirements produced:
+- "The server must listen on port 8080"
+- "GET / must return status 200 with body 'Hello World'"
+- "The server must start within 2 seconds"
+
+## 3. Run consistency
+
+Before implementing, check that requirements are coherent:
+
+```bash
+fst consistency run
+```
+
+Resolve any issues the engine reports (missing links, conflicting requirements, etc.).
+
+## 4. Create decisions
+
+Record implementation choices:
+
+```bash
+fst artifact put --type decision --body "Use Node.js with the built-in http module"
+```
+
+## 5. Generate code
+
+An agent proposes code artifacts based on accepted requirements and decisions:
+
+```bash
+fst artifact put --type code --path "src/server.js" --body "..."
+```
+
+## 6. Materialize
+
+Generate the workspace from the database:
+
+```bash
+fst materialize
+```
+
+## 7. Run
+
+Execute the materialized code:
+
+```bash
+fst run
+```
+
+## 8. Verify
+
+Run checks against requirements:
+
+```bash
+fst verify run
+```
+
+## 9. Refine
+
+If verification fails, read the feedback artifacts and revise:
+
+```bash
+fst feedback list
+fst artifact put --type code --path "src/server.js" --revises <prev-id> --body "..."
+```
+
+Then re-materialize, run, and verify.

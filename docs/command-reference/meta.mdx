@@ -1,0 +1,45 @@
+---
+sidebar_position: 4
+---
+
+# Meta Commands
+
+## `fst self`
+
+Inspect and manage the Fernsehturm system itself—database location, version, configuration.
+
+```bash
+fst self info                         # show system info
+fst self init                         # initialize a new Fernsehturm project
+fst self migrate                      # run database migrations
+fst self doctor                       # check for configuration issues
+```
+
+---
+
+## `fst export`
+
+Export artifacts from the database in various formats.
+
+```bash
+fst export --format json > snapshot.json   # full export
+fst export --type code --format files      # export code artifacts as files
+fst export --id <id>                        # export a single artifact
+```
+
+Exports can be used for backup, migration, or sharing artifact sets between projects.
+
+---
+
+## `fst queue`
+
+Manage the work queue—pending items derived from requests.
+
+```bash
+fst queue list                        # list pending work items
+fst queue next                        # get the highest-priority next item
+fst queue complete --id <id>          # mark a work item as done
+fst queue skip --id <id>              # skip a work item
+```
+
+The queue is the agent's entry point: an agent reads the queue, picks the next item, and works through the workflow loop for that item.

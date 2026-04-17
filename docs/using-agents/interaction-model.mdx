@@ -1,0 +1,36 @@
+---
+sidebar_position: 1
+---
+
+# Supported Interaction Model
+
+Agents interact with Fernsehturm through the `fst` CLI in JSON output mode.
+
+## CLI as the agent interface
+
+There is no special agent API or SDK. Agents use the same `fst` commands that humans use, with two differences:
+
+1. **JSON mode**: pass `--json` to get structured output instead of human-readable text
+2. **Automated loops**: agents call commands in sequence, parsing JSON output to drive the next step
+
+This design means the agent interface is stable, testable, and auditable—the same commands work in both interactive and automated contexts.
+
+## JSON output mode
+
+Every `fst` command supports `--json`:
+
+```bash
+fst artifact list --json
+fst consistency run --json
+fst feedback list --json
+```
+
+JSON output is deterministic and versioned. Agents can rely on field names and types remaining stable across patch versions.
+
+## Deterministic operations
+
+All `fst` commands are deterministic given the same database state. There is no randomness, no side effects outside the database, and no hidden state. This makes agent loops reproducible and debuggable.
+
+## Authentication and authorization
+
+In the local version, the agent runs with the same permissions as the user. In cloud and enterprise configurations, agents authenticate with tokens and are scoped to specific projects.

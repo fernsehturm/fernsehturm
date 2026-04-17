@@ -1,0 +1,33 @@
+---
+sidebar_position: 3
+---
+
+# Human Role
+
+Humans are not the primary implementers in Fernsehturm—agents are. The human role is focused on **intent, approval, and conflict resolution**.
+
+## Approve decisions
+
+Decisions shape the system in ways that are hard to reverse: technology choices, architectural patterns, API contracts. Humans review and approve (or reject) proposed decisions before they become active.
+
+This is intentional. Agents are good at deriving and implementing. Humans are better at judging whether a decision is right for the broader context.
+
+## Resolve conflicts
+
+When the consistency engine finds conflicting artifacts—two requirements that cannot both be satisfied, two decisions that contradict each other—a human resolves the conflict by:
+
+- Revising one of the conflicting artifacts
+- Superseding an outdated artifact
+- Creating a new decision that resolves the ambiguity
+
+## Refine intent
+
+Initial goals are often underspecified. As requirements are derived, gaps and ambiguities surface. Humans refine the goal or add clarifying requirements to steer the agent in the right direction.
+
+## What humans do NOT do
+
+- Edit files directly (the workspace is disposable)
+- Review every line of generated code (the consistency engine does that)
+- Write boilerplate (agents handle implementation)
+
+The human role is strategic, not tactical.

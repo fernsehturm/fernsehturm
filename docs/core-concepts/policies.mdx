@@ -1,0 +1,40 @@
+---
+sidebar_position: 6
+---
+
+# Policies
+
+Policies are reusable constraints that guide code generation and validation.
+
+## What a policy is
+
+A policy artifact encodes a rule the system should enforce. Examples:
+
+- "All API endpoints must return JSON"
+- "Module names must follow snake_case"
+- "No direct database access from the presentation layer"
+
+Policies are stored as artifacts, which means they have identity, revisions, and traceability—just like code or requirements.
+
+## How policies are applied
+
+Policies are evaluated at two points:
+
+1. **During generation**: when an agent generates code, active policies constrain what is valid output
+2. **During consistency checks**: `fst consistency` evaluates all active artifacts against all active policies
+
+A policy violation produces a structured issue in the consistency report.
+
+## Scope
+
+Policies can be scoped:
+
+- **Global**: applies to all artifacts
+- **Type-scoped**: applies only to artifacts of a given type (e.g., all `code` artifacts)
+- **Tag-scoped**: applies to artifacts with specific tags
+
+## Relationship to decisions
+
+Decisions and policies overlap in intent—both express constraints. The difference is that decisions are one-time choices (e.g., "we will use PostgreSQL"), while policies are reusable rules that apply repeatedly across many artifacts.
+
+See [Policies & Defaults](../policies-defaults) for full detail.

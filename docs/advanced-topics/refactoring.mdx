@@ -1,0 +1,52 @@
+---
+sidebar_position: 2
+---
+
+# Refactoring
+
+System-wide refactoring in Fernsehturm is driven by decisions and policies, not ad-hoc code changes.
+
+## Refactoring via new decisions
+
+A refactoring typically starts with a new or revised decision artifact:
+
+```bash
+fst artifact put \
+  --type decision \
+  --body "Migrate all data access to use the repository pattern. Direct DB queries in service modules are no longer permitted." \
+  --revises <old-decision-id>
+```
+
+Once accepted, this decision creates a gap: existing code artifacts that violate it will surface as consistency issues.
+
+## Systematic resolution
+
+Run consistency to surface all violations:
+
+```bash
+fst consistency run --json | jq '.issues[] | select(.code == "POLICY_VIOLATION")'
+```
+
+For each violation, an agent proposes a revised code artifact that addresses it. The refactoring is complete when consistency is clean.
+
+## Traceability through refactoring
+
+Because revisions are append-only, the full refactoring history is preserved. You can see:
+
+- What the decision said before and after
+- Which code artifacts were revised as a result
+- When each revision was accepted
+
+## Large-scale refactoring
+
+For refactors spanning many artifacts, use the export/import cycle:
+
+1. Export current code artifacts
+2. Apply transformations
+3. Import as new revisions
+
+```bash
+fst export --type code --format json > before.json
+# transform...
+fst import --file after.json --revises-matching-path
+```

@@ -1,0 +1,52 @@
+---
+sidebar_position: 9
+---
+
+# Verification
+
+Verification checks that the running system actually behaves as its requirements specify.
+
+## Requirement-linked checks
+
+Every requirement should have at least one verification check. A check is a specification that can be executed against the running system and returns pass or fail.
+
+Checks are linked to their requirement:
+
+```bash
+fst verify add \
+  --requirement <req-id> \
+  --check "http GET /tasks/:id returns 404 for unknown IDs"
+```
+
+## Execution model
+
+Running verification:
+
+1. Calls `fst materialize` to ensure the workspace is current
+2. Starts the runtime via `fst run`
+3. Executes each check against the running system
+4. Captures pass/fail results
+5. Stores failures as feedback artifacts linked to their requirement
+
+```bash
+fst verify run
+fst verify run --json
+```
+
+## Failure handling
+
+Verification failures create feedback artifacts. These are queryable by agents:
+
+```bash
+fst feedback list --source verification --unresolved --json
+```
+
+Agents read these feedback artifacts, propose revised code artifacts, and re-run verification. The loop continues until all checks pass.
+
+## Coverage
+
+The consistency engine checks that every accepted requirement has at least one registered verification check. Missing coverage surfaces as a consistency warning.
+
+## Best practice
+
+Write verification checks before writing code. This is the Fernsehturm equivalent of test-driven development: requirements define the expected behavior, checks encode it, code is written to satisfy them.

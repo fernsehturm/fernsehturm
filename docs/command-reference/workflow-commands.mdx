@@ -1,0 +1,81 @@
+---
+sidebar_position: 2
+---
+
+# Workflow Commands
+
+## `fst semantic`
+
+Run semantic operations—higher-level actions that operate on artifact content.
+
+```bash
+fst semantic run derive-requirements --goal <id>
+fst semantic run suggest-decisions --requirements <id,...>
+fst semantic run generate-code --requirement <id>
+```
+
+These commands invoke an LLM internally and return proposed artifacts. Review and accept them before proceeding.
+
+---
+
+## `fst consistency`
+
+Run the consistency engine against the current active artifact set.
+
+```bash
+fst consistency run
+fst consistency run --json           # structured output for agents
+fst consistency run --strict         # treat warnings as errors
+```
+
+**Output**: a list of issues, each with severity, target artifact ID, and description.
+
+---
+
+## `fst verify`
+
+Manage and run requirement-linked verification checks.
+
+```bash
+fst verify run                        # run all active checks
+fst verify run --requirement <id>     # run checks for one requirement
+fst verify list                       # list registered checks
+fst verify add --requirement <id> --check <spec>
+```
+
+---
+
+## `fst run`
+
+Execute the materialized workspace.
+
+```bash
+fst run                               # run the default entrypoint
+fst run --entrypoint <command>        # run a specific command
+fst run --capture                     # store output as a runtime artifact
+```
+
+---
+
+## `fst materialize`
+
+Generate the workspace from the current database state.
+
+```bash
+fst materialize                       # full workspace regeneration
+fst materialize --path <logical-path> # regenerate a single file
+fst materialize --dry-run             # preview changes without writing
+```
+
+---
+
+## `fst feedback`
+
+Read and manage feedback artifacts.
+
+```bash
+fst feedback list
+fst feedback list --unresolved
+fst feedback resolve --id <id>
+fst feedback get --id <id>
+```

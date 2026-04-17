@@ -1,0 +1,44 @@
+---
+sidebar_position: 1
+---
+
+# Goals
+
+Goals are the highest-level artifacts in Fernsehturm. They capture **what the system should accomplish**, not how.
+
+## Characteristics
+
+- Written in natural language
+- Scoped to a meaningful outcome (not a task)
+- Linked to requirements that derive from them
+- Approved by a human before work begins
+
+## Example
+
+```
+Build a REST API that allows users to manage their task lists,
+including creating, updating, deleting, and querying tasks.
+```
+
+## Creating a goal
+
+```bash
+fst artifact put --type goal --body "Build a REST API for task management"
+fst artifact accept --id <id>
+```
+
+Or use the request shorthand:
+
+```bash
+fst request create "Build a REST API for task management"
+```
+
+## Relationship to requirements
+
+Goals are decomposed into requirements by agents (or humans). Requirements are the concrete, verifiable behaviors that satisfy the goal.
+
+A well-written goal is specific enough to derive meaningful requirements, but abstract enough not to dictate implementation decisions.
+
+## Refinement
+
+Goals can be revised. If the initial goal is underspecified, a new revision can clarify scope, add constraints, or split into sub-goals.

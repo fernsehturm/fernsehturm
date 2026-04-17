@@ -1,0 +1,35 @@
+---
+sidebar_position: 1
+---
+
+# Components
+
+Fernsehturm is composed of several cooperating components.
+
+## CLI (`fst`)
+
+The primary interface for humans and agents. Every operation—creating artifacts, running consistency, materializing, executing—is done through `fst` subcommands.
+
+The CLI operates in two modes:
+- **Interactive**: human-readable output for terminal use
+- **JSON mode** (`--json`): structured output for agent consumption
+
+## Database
+
+SQLite database storing all artifacts, revisions, links, and metadata. It is the single source of truth. Located in the project root by default.
+
+## Materializer
+
+Reads the active revision of every artifact and generates the workspace—the runnable file tree. The materializer is deterministic: the same database state always produces the same workspace.
+
+## Runtime / execution layer
+
+Executes materialized code and captures output, errors, and performance signals. Invoked via `fst run` and `fst verify run`.
+
+## Critique / consistency engine
+
+Evaluates the active artifact set for internal consistency: missing links, conflicting decisions, policy violations, unmet requirements. Produces structured feedback artifacts when issues are found.
+
+## Agent interface
+
+The combination of CLI JSON mode + structured artifact operations. Agents interact with Fernsehturm exactly like humans do—through `fst` commands—but consume JSON output and operate in automated loops.

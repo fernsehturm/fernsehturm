@@ -1,0 +1,49 @@
+---
+sidebar_position: 3
+---
+
+# Workspace Model
+
+The workspace is the generated, runnable representation of the current database state.
+
+## What the workspace is
+
+The workspace is a directory on disk containing:
+
+- Source files generated from `code` artifacts
+- Configuration files generated from `decision` artifacts (where applicable)
+- Any static assets or scaffolding defined in the system
+
+It looks like a normal project directory. You can run it, test it, inspect it.
+
+## What the workspace is not
+
+The workspace is **not** the source of truth. It is a derived artifact, like a compiled binary—useful to run, but not the thing you edit.
+
+Changes to workspace files are **overwritten** the next time `fst materialize` runs.
+
+## Generating the workspace
+
+```bash
+fst materialize
+```
+
+This is idempotent. Running it multiple times with the same database state produces the same workspace.
+
+## When to regenerate
+
+Regenerate the workspace:
+
+- After accepting new or revised code artifacts
+- After changing decisions that affect generated structure
+- Before running or testing
+
+## Disposability is a feature
+
+Because the workspace is disposable, you can:
+
+- Delete it and start fresh without losing anything
+- Maintain multiple workspaces for different database snapshots
+- Trust that what you run exactly matches what the database says
+
+This is the core guarantee Fernsehturm provides: **the running system is always a faithful projection of the artifact database**.

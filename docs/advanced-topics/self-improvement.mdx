@@ -1,0 +1,35 @@
+---
+sidebar_position: 4
+---
+
+# Self-Improvement
+
+Fernsehturm is designed to be developed using itself. This is the most advanced use case: the tool evolving itself.
+
+## What this means
+
+The Fernsehturm codebase is stored as artifacts in a Fernsehturm database. Changes to the tool—new commands, bug fixes, new consistency rules—go through the same workflow as any other software project:
+
+1. Create a goal artifact for the change
+2. Derive requirements
+3. Make decisions
+4. Implement as code artifacts
+5. Materialize and test
+6. Verify
+7. Refine
+
+## Why this is valuable
+
+It provides a live demonstration that the system works for non-trivial software. It also means the team eats their own cooking: any friction in the agent workflow is felt immediately.
+
+## Constraints
+
+Self-modification has one additional constraint: the materializer must continue to work after each iteration. If a change breaks the materializer, the system cannot recover without external tooling.
+
+The mitigation is `fst materialize --dry-run` before accepting code artifacts that touch the materializer itself.
+
+## Agent-assisted self-improvement
+
+Agents can propose improvements to the consistency rules, new command implementations, or refinements to existing commands—using the same workflow they would use for any other project.
+
+This is the long-term vision: a system that continuously improves its own consistency guarantees through the same structured loop it provides to all users.

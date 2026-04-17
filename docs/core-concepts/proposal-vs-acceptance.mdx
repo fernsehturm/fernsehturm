@@ -1,0 +1,32 @@
+---
+sidebar_position: 5
+---
+
+# Proposal vs. Acceptance
+
+Fernsehturm separates the act of proposing a change from the act of accepting it. Proposals are not truth. Only accepted artifacts become active.
+
+## How it works
+
+1. An agent (or human) proposes a new revision of an artifact using `fst artifact put`
+2. The system critiques the proposal: consistency checks, policy validation, completeness checks
+3. If the critique passes (or issues are resolved), the revision is accepted and becomes active
+4. If critique fails, the proposal remains pending and the agent can revise it
+
+## Why this gate matters
+
+Without a critique step, every proposal immediately changes the system. This means:
+
+- Bad proposals corrupt the active state
+- Agents cannot safely experiment
+- Consistency degrades with every iteration
+
+With the critique gate, the active state only changes when the proposal is sound.
+
+## Pending proposals
+
+A pending proposal is visible in the system but does not affect the materialized workspace or consistency checks on the active state. Agents can accumulate several pending proposals and resolve them together.
+
+## Human role in acceptance
+
+For high-stakes artifacts (goals, decisions), a human may need to explicitly approve the revision before it becomes active. See [Human Role](../workflow/human-role).

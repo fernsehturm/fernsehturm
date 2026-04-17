@@ -1,0 +1,42 @@
+---
+sidebar_position: 3
+---
+
+# Prompting Patterns
+
+Common patterns for prompting agents to work effectively with Fernsehturm.
+
+## Derive requirements from a goal
+
+```
+Read the goal artifact with id <id> using fst artifact get --id <id> --json.
+Derive a complete set of requirements that, if implemented, would satisfy this goal.
+For each requirement, create a requirement artifact linked to the goal using fst artifact put.
+After creating all requirements, run fst consistency run --json and resolve any issues.
+```
+
+## Refine based on critique
+
+```
+Read all unresolved feedback artifacts using fst feedback list --unresolved --json.
+For each feedback item targeting a code artifact, read the current artifact content and 
+propose a revised artifact that addresses the issue. Use fst artifact put --revises <id>.
+After revising, re-run fst consistency run --json to confirm issues are resolved.
+```
+
+## Implement from accepted artifacts
+
+```
+Read all accepted requirement artifacts using fst artifact list --type requirement --status accepted --json.
+Read all accepted decision artifacts using fst artifact list --type decision --status accepted --json.
+For each unimplemented requirement, create a code artifact that implements it.
+Link each code artifact to its requirement using --links requirement:<id>.
+After creating all code artifacts, run fst consistency run --json to check coverage.
+```
+
+## Key principles for effective prompts
+
+- **Always check consistency after proposing**: don't let agents batch-propose without validation
+- **Reference artifact IDs explicitly**: vague references lead to wrong links
+- **Scope to accepted artifacts**: implementing pending proposals creates cascading issues
+- **End with a termination condition**: tell the agent when to stop

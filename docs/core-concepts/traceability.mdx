@@ -1,0 +1,41 @@
+---
+sidebar_position: 4
+---
+
+# Traceability
+
+Traceability is the ability to follow a chain from a high-level goal all the way to running code—and back.
+
+## Links between artifacts
+
+Every artifact can link to other artifacts. These links express semantic relationships:
+
+| Link type | Meaning |
+|-----------|---------|
+| `implements` | This code artifact implements this requirement |
+| `depends_on` | This artifact depends on another |
+| `refines` | This revision refines or specializes a prior artifact |
+| `conflicts_with` | This artifact conflicts with another (detected by consistency engine) |
+
+## Why traceability matters
+
+Without traceability, you can't answer questions like:
+
+- "Which requirements does this code satisfy?"
+- "If I change this decision, what code is affected?"
+- "Is every requirement covered by an implementation?"
+
+Fernsehturm's consistency engine uses link data to detect gaps—requirements without implementations, code without linked requirements, decisions that conflict.
+
+## Querying the trace graph
+
+The `fst trace` command lets you walk the link graph:
+
+```bash
+fst trace <artifact-id>          # show all links from this artifact
+fst trace --impact <artifact-id> # what would change if this artifact changed?
+```
+
+## Best practice
+
+Always link code artifacts to the requirement they implement. Unlinked code is invisible to the consistency engine and will trigger warnings.

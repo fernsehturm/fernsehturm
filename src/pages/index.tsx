@@ -105,7 +105,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Fernsehturm Tutorial - 5min ⏱️
+            Read the Docs →
           </Link>
         </div>
       </div>

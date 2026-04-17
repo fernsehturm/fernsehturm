@@ -1,0 +1,48 @@
+---
+sidebar_position: 1
+---
+
+# Multi-Agent Workflows
+
+Multiple agents can work on the same Fernsehturm project concurrently. The artifact model provides natural coordination primitives.
+
+## Coordination via artifacts
+
+Agents coordinate through the shared database. Each agent:
+
+- Reads the current active artifact set
+- Proposes its own revisions
+- Runs consistency before declaring work done
+
+Because proposals are isolated until accepted, agents don't step on each other's work.
+
+## Conflict handling
+
+Conflicts arise when two agents propose revisions to the same artifact. The system detects this and surfaces a conflict in the consistency output.
+
+Resolution strategies:
+
+1. **Last write wins**: one agent's revision supersedes the other (explicit decision required)
+2. **Merge**: a human or coordinating agent creates a merged revision that incorporates both changes
+3. **Split**: the conflicting requirement is split into two non-overlapping requirements
+
+## Work partitioning
+
+The cleanest multi-agent setup partitions work by requirement:
+
+- Agent A owns requirements R1–R5
+- Agent B owns requirements R6–R10
+- Both work in parallel, proposing artifacts linked to their assigned requirements
+
+The consistency engine detects if their implementations conflict (e.g., incompatible API contracts) without any agent-specific coordination logic.
+
+## Queue-based assignment
+
+Use `fst queue next` to assign work to agents dynamically:
+
+```bash
+# Each agent runs:
+item=$(fst queue next --json)
+# process item...
+fst queue complete --id $(echo $item | jq -r '.id')
+```

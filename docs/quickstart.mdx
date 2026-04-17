@@ -1,0 +1,77 @@
+---
+sidebar_position: 16
+---
+
+# Quickstart
+
+For impatient users. This gets you from zero to a running system in minutes.
+
+## 1. Initialize a project
+
+```bash
+fst self init
+```
+
+## 2. Create a request
+
+```bash
+fst request create "Build a hello world HTTP server"
+```
+
+## 3. Derive requirements
+
+```bash
+fst semantic run derive-requirements --goal <goal-id>
+```
+
+Review and accept the proposed requirements:
+
+```bash
+fst artifact list --type requirement --json
+fst artifact accept --id <req-id>
+```
+
+## 4. Create a decision
+
+```bash
+fst artifact put \
+  --type decision \
+  --body "Use Node.js with the built-in http module" \
+  --status accepted
+```
+
+## 5. Generate code
+
+```bash
+fst semantic run generate-code --requirement <req-id>
+fst artifact accept --id <code-id>
+```
+
+## 6. Materialize
+
+```bash
+fst materialize
+```
+
+## 7. Run
+
+```bash
+fst run
+```
+
+## 8. Verify
+
+```bash
+fst verify run
+```
+
+## 9. Refine if needed
+
+```bash
+fst feedback list --unresolved --json
+# revise based on feedback, then loop from step 5
+```
+
+---
+
+**That's the loop.** For a complete understanding of why each step works this way, start with [Core Concepts](./core-concepts/artifacts).

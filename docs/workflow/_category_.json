@@ -1,0 +1,8 @@
+{
+  "label": "Workflow",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "The agent-first development loop: propose, critique, revise, implement, verify."
+  }
+}

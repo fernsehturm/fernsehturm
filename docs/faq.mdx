@@ -1,0 +1,54 @@
+---
+sidebar_position: 15
+---
+
+# FAQ / Common Pitfalls
+
+## Why not edit files directly?
+
+The workspace is a generated projection of the database. If you edit a file, your change exists only on disk—it is not recorded as an artifact, has no revision history, and will be overwritten the next time `fst materialize` runs.
+
+All changes must go through `fst artifact put`. This is what gives the system its traceability and consistency guarantees.
+
+## Why is my code overwritten?
+
+Because you edited a file directly instead of updating the artifact. Run `fst artifact put --type code --path <path> --revises <old-id> --body "..."` with your intended changes, accept the revision, then re-materialize.
+
+## Why does the system reject my change?
+
+Consistency checks failed. Run `fst consistency run --json` to see the specific issues. Common causes:
+
+- The new artifact has no links (missing `--links` flag)
+- A policy is violated
+- The revision supersedes an artifact that doesn't exist
+- Two conflicting artifacts are both active
+
+## How strict should policies be?
+
+Start permissive and add policies as conventions emerge. Strict policies applied too early create friction before the team knows what rules are actually useful.
+
+A good policy is one that, when violated, causes a real problem—not just a style preference.
+
+## Can I use Fernsehturm with an existing codebase?
+
+Yes. Import existing files as code artifacts:
+
+```bash
+fst artifact put --type code --path "src/existing.js" --body "$(cat src/existing.js)"
+```
+
+You don't need complete traceability on day one. Start by capturing the code, then add requirements and links incrementally.
+
+## Why are pending proposals not active?
+
+Pending proposals allow agents to stage changes before committing. This mirrors how version control lets you stage changes before committing—you can review and adjust before the change takes effect.
+
+Building on pending proposals creates a dependency chain that may need to be unwound if the proposal is rejected. Wait for acceptance.
+
+## What happens to rejected artifacts?
+
+They remain in the database, excluded from active consistency checks and materialization. They are visible in history and can be reinstated by creating a new revision based on them.
+
+## Do agents need special credentials?
+
+No. In the local version, agents run with the same permissions as the user. In cloud and enterprise configurations, agents use project-scoped tokens.

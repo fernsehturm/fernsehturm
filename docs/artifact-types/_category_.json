@@ -1,0 +1,8 @@
+{
+  "label": "Artifact Types",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Deep dive into each artifact type: goals, requirements, decisions, code, policies, and feedback."
+  }
+}

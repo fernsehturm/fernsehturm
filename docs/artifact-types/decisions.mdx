@@ -1,0 +1,53 @@
+---
+sidebar_position: 3
+---
+
+# Decisions
+
+Decisions record **constraints and choices** that shape implementation. They are the "why" behind architecture choices.
+
+## Characteristics
+
+- One-time choices (vs. policies, which are reusable rules)
+- Human-approved
+- Linked to the requirements or goals they apply to
+- Immutable once accepted (superseded by new revision if changed)
+
+## Examples
+
+```
+Use PostgreSQL as the primary database. (Reasoning: team familiarity, JSONB support needed for flexible task metadata.)
+```
+
+```
+All API responses must use the JSON:API specification for consistency with the existing frontend.
+```
+
+## Creating decisions
+
+```bash
+fst artifact put \
+  --type decision \
+  --body "Use PostgreSQL as the primary database" \
+  --links goal:<id>
+```
+
+Decisions typically require human acceptance:
+
+```bash
+fst artifact accept --id <decision-id>
+```
+
+## Decisions vs. policies
+
+| | Decision | Policy |
+|--|----------|--------|
+| Scope | One-time, project-specific | Reusable, repeatable |
+| Author | Human | Human or agent |
+| Application | Informs code generation | Enforced during consistency |
+
+A decision like "use PostgreSQL" constrains all data storage code. A policy like "use snake_case for column names" enforces a naming rule consistently.
+
+## Impact analysis
+
+Use `fst trace --impact <decision-id>` to see what code artifacts are constrained by a decision before revising it.

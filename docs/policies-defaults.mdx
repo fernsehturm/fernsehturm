@@ -1,0 +1,62 @@
+---
+sidebar_position: 11
+---
+
+# Policies & Defaults
+
+Policies are reusable constraints that guide generation and validation throughout the system.
+
+## What policies are
+
+A policy is a rule that applies to artifacts, not just once (like a decision) but every time a matching artifact is created or evaluated.
+
+Examples:
+
+- `All API responses must include a Content-Type header`
+- `Service modules must not import from handler modules`
+- `Column names must use snake_case`
+
+## Creating policies
+
+```bash
+fst artifact put \
+  --type policy \
+  --body "All API responses must include a Content-Type header"
+
+fst policy enable --id <id>
+```
+
+## Scope
+
+Policies can be scoped with tags to limit which artifacts they apply to:
+
+```bash
+fst artifact put \
+  --type policy \
+  --tags "api,response" \
+  --body "All API responses must include Content-Type"
+```
+
+Only artifacts with matching tags will be checked against this policy.
+
+## How policies are applied
+
+### During generation
+
+When `fst semantic run generate-code` produces code, active policies are included in the generation context. The generator is expected to produce code that satisfies them.
+
+### During consistency checks
+
+`fst consistency run` evaluates all accepted code artifacts against all enabled policies. Violations produce `error` or `warning` issues.
+
+## Default policies
+
+Fernsehturm ships with no default policies. The system starts permissive; you add policies as conventions emerge.
+
+## Policy lifecycle
+
+1. Create policy artifact
+2. Enable it
+3. Existing code that violates it will surface in the next consistency run
+4. Fix violations or revise the policy
+5. Disable if it no longer applies

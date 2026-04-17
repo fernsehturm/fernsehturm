@@ -1,0 +1,37 @@
+---
+sidebar_position: 1
+---
+
+# High-Level Loop
+
+The Fernsehturm workflow is a structured iteration loop:
+
+```
+goal → derive → critique → implement → verify → refine
+```
+
+Each phase has a clear input and output:
+
+| Phase | Input | Output |
+|-------|-------|--------|
+| **Goal** | Human intent | Goal artifact |
+| **Derive** | Goal artifact | Requirement artifacts |
+| **Critique** | All active artifacts | Feedback artifacts, consistency issues |
+| **Implement** | Accepted requirements + decisions | Code artifacts |
+| **Verify** | Materialized workspace | Pass/fail + feedback artifacts |
+| **Refine** | Feedback artifacts | Revised artifacts |
+
+## The loop never ends
+
+In practice, software is never "done." The loop continues as:
+
+- New goals are added
+- Requirements are refined
+- Decisions are revisited
+- Implementations are improved
+
+Fernsehturm is designed for this continuous evolution. Its append-only revision model and traceability links ensure the system remains coherent as it grows.
+
+## Loop vs. one-shot
+
+Traditional AI coding is one-shot: give the agent a task, get code back. Fernsehturm replaces this with a structured loop where each iteration builds on the previous one, with consistency maintained throughout.

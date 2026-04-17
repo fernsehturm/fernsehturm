@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+---
+
+# Alternative Implementations
+
+Fernsehturm supports maintaining multiple parallel implementations of the same requirement—useful for experimentation, A/B comparisons, and gradual migrations.
+
+## How it works
+
+Multiple code artifacts can link to the same requirement without conflicting. The consistency engine treats them as alternatives, not duplicates.
+
+```bash
+# Implementation A
+fst artifact put \
+  --type code \
+  --path "src/api/tasks-v1.js" \
+  --body "..." \
+  --links requirement:<id> \
+  --tags "variant:A"
+
+# Implementation B
+fst artifact put \
+  --type code \
+  --path "src/api/tasks-v2.js" \
+  --body "..." \
+  --links requirement:<id> \
+  --tags "variant:B"
+```
+
+## Materializing a specific variant
+
+```bash
+fst materialize --tag-filter variant:A
+```
+
+Only code artifacts with the matching tag are included in the workspace.
+
+## Running verification on alternatives
+
+```bash
+fst verify run --tag-filter variant:A  # does variant A pass?
+fst verify run --tag-filter variant:B  # does variant B pass?
+```
+
+## Selecting an implementation
+
+Once a variant is chosen, mark the other as superseded:
+
+```bash
+fst artifact reject --id <variant-b-id>
+```
+
+The rejected artifact is preserved in history but excluded from active consistency checks.

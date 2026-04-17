@@ -1,0 +1,32 @@
+---
+sidebar_position: 1
+---
+
+# Artifacts
+
+Artifacts are the core unit of storage in Fernsehturm. Everything the system knows—goals, requirements, decisions, code, policies, feedback—is stored as an artifact.
+
+## Identity and revisions
+
+Each artifact has a stable **identity** (a UUID) and a series of **revisions**. A revision is a snapshot of the artifact at a point in time. Only one revision is active at any moment; new revisions supersede old ones.
+
+This means the artifact's history is preserved, but the system always operates on the current active revision.
+
+## Artifact types
+
+| Type | Purpose |
+|------|---------|
+| `goal` | High-level intent—what the system should accomplish |
+| `requirement` | Derived behavior—what the system must do to meet a goal |
+| `decision` | Constraints and choices that shape implementation |
+| `code` | Stored source code, referenced by logical path |
+| `policy` | Reusable constraints applied during generation and consistency checks |
+| `feedback` | Structured critique that drives iteration |
+
+Each type has its own schema and role in the workflow. See [Artifact Types](../artifact-types/goals) for a deep dive.
+
+## Why artifacts instead of files?
+
+Files are opaque. An agent reading a file sees text; it doesn't see why the code was written, what requirement it satisfies, or what decisions constrained its shape.
+
+Artifacts are structured. Every artifact carries its type, its links to other artifacts, and its revision history. This gives agents—and the consistency engine—enough context to reason about the system as a whole.

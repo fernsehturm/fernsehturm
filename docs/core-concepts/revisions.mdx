@@ -1,0 +1,35 @@
+---
+sidebar_position: 2
+---
+
+# Revisions
+
+Revisions are the append-only history of an artifact.
+
+## Append-only model
+
+Fernsehturm never edits an artifact in place. Every change creates a new revision. The previous revision remains in the database, providing a full audit trail.
+
+This means:
+
+- You can always see what the system looked like at any prior point
+- Rollback is possible without special tooling—just reactivate an earlier revision
+- Agents can propose changes without destroying existing state
+
+## One active revision
+
+At any moment, an artifact has exactly **one active revision**. This is the revision the system treats as current when materializing workspaces, running consistency checks, or generating code.
+
+## Superseding model
+
+When an agent proposes a change to an artifact, it creates a new revision. That revision goes through critique and, if accepted, becomes the active revision—superseding the previous one.
+
+The superseded revision is not deleted. It remains available for inspection, comparison, and rollback.
+
+## Implications for agents
+
+Agents should:
+
+- Always propose changes as new revisions, never mutate existing ones
+- Check which revision is active before reading artifact content
+- Use revision history to understand how the system evolved

@@ -1,0 +1,41 @@
+---
+sidebar_position: 2
+---
+
+# Data Flow
+
+The high-level data flow through Fernsehturm follows a consistent path:
+
+```
+request → artifacts → materialize → run → feedback → revise
+```
+
+## Step by step
+
+### 1. Request
+
+A goal or requirement enters the system via `fst request create`. This creates a goal artifact and seeds the work queue.
+
+### 2. Artifacts
+
+An agent (or human) derives requirements, makes decisions, and creates code artifacts. All of these are stored in the database and linked to each other.
+
+### 3. Materialize
+
+`fst materialize` reads all active artifacts and generates the workspace. Code artifacts become real files; the structure reflects the current system state.
+
+### 4. Run
+
+`fst run` executes the materialized code. Output, errors, and logs are captured and stored.
+
+### 5. Feedback
+
+`fst verify run` checks the running system against its requirements. Failures and inconsistencies are stored as feedback artifacts.
+
+### 6. Revise
+
+Agents read feedback artifacts and propose revised code, requirement, or decision artifacts. The loop repeats.
+
+## What never changes
+
+The database always grows. Revisions accumulate. The workspace is always regeneratable. This means the system's full history is preserved even as it evolves.

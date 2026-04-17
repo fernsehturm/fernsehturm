@@ -1,0 +1,31 @@
+---
+sidebar_position: 3
+---
+
+# Source of Truth
+
+The SQLite database is the single source of truth in Fernsehturm. The workspace—the directory of files you can run—is a derived projection.
+
+## Database is canonical
+
+All artifact content, revision history, links, and metadata live in the database. Nothing important lives in the filesystem.
+
+This has a critical implication: **if you edit a file directly, your change will be overwritten the next time the workspace is materialized.**
+
+## Workspace is derived
+
+The workspace is generated from the current state of the database. It is:
+
+- **Disposable**: delete it and regenerate at any time
+- **Never edited directly**: all changes go through the artifact system
+- **Always consistent with the DB**: what you run is what the DB says
+
+## Why this matters for agents
+
+Traditional agents read and write files. In Fernsehturm, agents read and write artifacts. The filesystem is only relevant at runtime—when code actually executes.
+
+This separation allows the system to maintain structure, traceability, and consistency that pure file-based approaches cannot.
+
+## Practical consequence
+
+If you see unexpected content in a generated file, look in the database—not the file—to understand why it was generated that way.

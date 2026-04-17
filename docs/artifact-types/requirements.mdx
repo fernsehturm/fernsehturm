@@ -1,0 +1,43 @@
+---
+sidebar_position: 2
+---
+
+# Requirements
+
+Requirements capture **derived behavior**—what the system must do to satisfy a goal. They are concrete, verifiable, and linked to the goal they derive from.
+
+## Characteristics
+
+- Derived from goals (linked via `implements` or `derives_from`)
+- Verifiable: can be tested or checked
+- Atomic: one behavior per requirement
+- Not prescriptive about implementation
+
+## Example
+
+Given a goal to build a task management API:
+
+```
+The API must accept POST /tasks with a JSON body and return the created task with status 201.
+```
+
+```
+The API must return 404 when GET /tasks/:id is called with a non-existent ID.
+```
+
+## Creating requirements
+
+```bash
+fst artifact put \
+  --type requirement \
+  --body "The API must accept POST /tasks with a JSON body" \
+  --links goal:<goal-id>
+```
+
+## Acceptance
+
+Requirements should be accepted before code is written against them. Implementing pending requirements creates proposals that may need to be thrown away if the requirement changes.
+
+## Coverage
+
+The consistency engine checks that every accepted requirement has at least one code artifact linked to it. Uncovered requirements surface as consistency issues.

@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Typical Agent Loop
+
+A well-structured agent loop for Fernsehturm follows this pattern:
+
+## 1. Read context
+
+```bash
+fst artifact list --json          # what exists?
+fst feedback list --unresolved --json   # what needs attention?
+fst consistency run --json        # any active issues?
+```
+
+## 2. Propose artifacts
+
+Based on the current state, propose new or revised artifacts:
+
+```bash
+fst artifact put --type requirement --body "..." --links goal:<id>
+fst artifact put --type code --path "src/..." --body "..." --links requirement:<id>
+```
+
+## 3. Run consistency
+
+After proposing, check that the new proposals are consistent with the existing system:
+
+```bash
+fst consistency run --json
+```
+
+Parse the output for issues. If issues exist, revise the proposals before proceeding.
+
+## 4. Revise
+
+Address any consistency issues or feedback:
+
+```bash
+fst artifact put --type code --path "src/..." --revises <prev-id> --body "..."
+```
+
+## 5. Implement and materialize
+
+Once proposals are accepted:
+
+```bash
+fst materialize
+```
+
+## 6. Verify
+
+```bash
+fst verify run --json
+```
+
+Parse results. If failures exist, create revised code artifacts and repeat from step 3.
+
+## Loop termination
+
+The loop terminates when:
+- All requirements have passing verifications
+- No unresolved consistency issues exist
+- No open feedback artifacts remain
+
+The agent should not declare success until all three conditions hold.
