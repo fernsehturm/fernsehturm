@@ -1,0 +1,11 @@
+services:
+  docs:
+    build:
+      context: .
+    ports:
+      - "5010:5010"
+    volumes:
+      - /home/frank/projects/fernsehturm/docs:/app/docs
+      - /home/frank/projects/fernsehturm/blog:/app/blog
+      - /home/frank/projects/fernsehturm/src:/app/src
+      - /home/frank/projects/fernsehturm/static:/app/static
