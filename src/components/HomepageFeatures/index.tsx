@@ -11,32 +11,29 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Keep systems consistent as they grow',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Fernsehturm stores requirements, decisions, and code together, so AI-generated systems don’t drift over time.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Make changes without breaking everything',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Structured feedback and traceability help agents update features without causing hidden regressions.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Give AI a system it can reason about',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        A database-native source of truth lets agents understand intent instead of guessing from files.
       </>
     ),
   },

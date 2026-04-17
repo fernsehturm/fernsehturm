@@ -6,8 +6,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Fernsehturm',
-  tagline: 'Make your software stay consistent as it grows!',
-  favicon: 'img/favicon.ico',
+  tagline: 'Fernsehturm helps AI agents build software that stays consistent as it grows.',
+  favicon: 'img/fst-icon-32',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -15,7 +15,7 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://www.fernsehturm.dev',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -78,7 +78,7 @@ const config: Config = {
       title: 'Fernsehturm',
       logo: {
         alt: 'Fernsehturm Logo',
-        src: 'img/logo.svg',
+        src: 'img/fst-icon-32.png',
       },
       items: [
         {
@@ -121,7 +121,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Fernsehturm.dev`,
     },
     prism: {
       theme: prismThemes.github,
