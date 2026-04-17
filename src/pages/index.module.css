@@ -42,6 +42,7 @@
   align-items: baseline;
   gap: 0.6rem;
   padding: 0.6rem 0;
+  flex-wrap: wrap;
 }
 
 .bullet {
@@ -51,11 +52,23 @@
 
 .featureTitle {
   font-weight: 700;
-  flex-shrink: 0;
 }
 
 .featureDesc {
   color: var(--ifm-color-emphasis-700);
+  flex-basis: 100%;
+  padding-left: 1.6rem;
+}
+
+@media screen and (min-width: 640px) {
+  .featureList li {
+    flex-wrap: nowrap;
+  }
+
+  .featureDesc {
+    flex-basis: auto;
+    padding-left: 0;
+  }
 }
 
 .readDocs {
