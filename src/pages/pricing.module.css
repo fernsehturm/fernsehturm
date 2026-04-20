@@ -8,8 +8,58 @@
   max-width: 600px;
 }
 
+/* ── Billing toggle ─────────────────────────────────────── */
+
+.toggleSection {
+  padding: 0 0 2rem;
+}
+
+.toggleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: fit-content;
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-600);
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggleBtn:hover {
+  color: var(--ifm-color-emphasis-900);
+}
+
+.toggleActive {
+  background-color: var(--ifm-color-emphasis-900);
+  color: var(--ifm-color-emphasis-0) !important;
+}
+
+.savingsBadge {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  background-color: var(--ifm-color-success-dark, #1e7e34);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+}
+
+/* ── Tier grid ──────────────────────────────────────────── */
+
 .tiers {
-  padding: 2rem 0 4rem;
+  padding: 0 0 4rem;
 }
 
 .grid {
@@ -31,12 +81,14 @@
   }
 }
 
+/* ── Card ───────────────────────────────────────────────── */
+
 .card {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--ifm-color-emphasis-200);
-  padding: 1.5rem;
   background-color: var(--ifm-background-surface-color);
+  position: relative;
 }
 
 .cardHighlighted {
@@ -44,31 +96,104 @@
   border-width: 2px;
 }
 
+.badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background-color: var(--ifm-color-emphasis-900);
+  color: var(--ifm-color-emphasis-0);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+}
+
+/* ── Card header ────────────────────────────────────────── */
+
 .cardHeader {
-  margin-bottom: 1.25rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-100);
 }
 
 .tierName {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-500);
+  margin-bottom: 0.4rem;
+}
+
+.headline {
   font-size: 1rem !important;
-  margin-bottom: 0.4rem !important;
+  font-weight: 700 !important;
+  margin: 0 0 1rem !important;
+  line-height: 1.4 !important;
+}
+
+/* ── Price ──────────────────────────────────────────────── */
+
+.priceBlock {
+  margin-bottom: 0.75rem;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
 }
 
 .price {
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.description {
-  color: var(--ifm-color-emphasis-700);
-  margin: 0;
-  font-size: 0.9rem;
+.priceLabel {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
 }
+
+.yearlyBilled {
+  font-size: 0.78rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0.2rem 0 0;
+}
+
+.priceNote {
+  font-size: 0.78rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0.15rem 0 0;
+}
+
+/* ── Trial badge ────────────────────────────────────────── */
+
+.trialBadge {
+  display: inline-block;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* ── Problem line ───────────────────────────────────────── */
+
+.problem {
+  padding: 0.75rem 1.5rem;
+  margin: 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ifm-color-emphasis-700);
+  border-bottom: 1px solid var(--ifm-color-emphasis-100);
+}
+
+/* ── Feature bullets ────────────────────────────────────── */
 
 .featureList {
   list-style: none;
-  padding: 0;
-  margin: 0 0 1.5rem;
+  padding: 1rem 1.5rem;
+  margin: 0;
   flex: 1;
 }
 
@@ -76,27 +201,21 @@
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-  padding: 0.4rem 0;
-  font-size: 0.9rem;
+  padding: 0.35rem 0;
+  font-size: 0.875rem;
 }
 
-.bullet {
+.check {
   flex-shrink: 0;
-  color: var(--ifm-color-emphasis-500);
+  color: var(--ifm-color-emphasis-700);
+  font-weight: 700;
 }
+
+/* ── Card footer ────────────────────────────────────────── */
 
 .cardFooter {
+  padding: 0 1.5rem 1.25rem;
   margin-top: auto;
-}
-
-.bestFor {
-  font-size: 0.85rem;
-  color: var(--ifm-color-emphasis-600);
-  margin: 0 0 1rem;
-}
-
-.bestForLabel {
-  font-weight: 700;
 }
 
 .cta {
@@ -107,7 +226,9 @@
   color: var(--ifm-color-emphasis-900);
   font-weight: 700;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  width: 100%;
+  justify-content: center;
 }
 
 .cta:hover {
@@ -125,6 +246,81 @@
   background-color: var(--ifm-color-emphasis-700);
 }
 
+.trialNote {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-500);
+  margin: 0.5rem 0 0;
+  text-align: center;
+}
+
+/* ── Feature details (expandable) ──────────────────────── */
+
+.details {
+  border-top: 1px solid var(--ifm-color-emphasis-100);
+}
+
+.detailsSummary {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ifm-color-emphasis-600);
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.detailsSummary:hover {
+  color: var(--ifm-color-emphasis-900);
+}
+
+.detailsBody {
+  padding: 0 1.5rem 1.25rem;
+}
+
+.forWhom {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0 0 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-100);
+}
+
+.featureGroup {
+  margin-bottom: 0.9rem;
+}
+
+.featureGroupTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.featureGroupList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featureGroupList li {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-700);
+  padding: 0.15rem 0;
+  padding-left: 0.75rem;
+  position: relative;
+}
+
+.featureGroupList li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--ifm-color-emphasis-400);
+}
+
+/* ── Bottom CTA ─────────────────────────────────────────── */
+
 .ctaSection {
   padding: 0 0 4rem;
 }
@@ -132,6 +328,7 @@
 .ctaText {
   margin: 0 0 1.25rem;
   max-width: 600px;
+  color: var(--ifm-color-emphasis-700);
 }
 
 .ctaButton {

@@ -1,0 +1,129 @@
+---
+sidebar_position: 2
+---
+
+# Explore, Apply, and Default
+
+Every `/fst` task starts in one of three modes. The behavior underneath is always the same—the system controls the workflow, the agent executes supervised steps. What differs is **how much the system explores before it starts making changes**.
+
+---
+
+## The three modes
+
+| Mode | Command | What it does |
+|------|---------|-------------|
+| **Default** | `/fst <goal>` | explores first, then applies — recommended for most tasks |
+| **Explore** | `/fst explore <goal>` | reads and analyzes only, makes no changes |
+| **Apply** | `/fst apply <goal>` | implements immediately, no exploration phase |
+
+---
+
+## Explore
+
+```text
+/fst explore authentication system
+```
+
+The system reads your project, builds context, and proposes requirements and decisions. It does not generate code, apply decisions, or change anything.
+
+Use explore when you want to understand the current system, prepare a change before committing to it, or safely evaluate options.
+
+**What you get:**
+* summary of the relevant system state
+* identified gaps
+* proposed requirements and decisions
+
+---
+
+## Apply
+
+```text
+/fst apply Add login endpoint
+```
+
+The system starts implementing immediately—deriving requirements, generating code, running checks, and refining until complete.
+
+Use apply when the change is clear and well-scoped and you want to move fast.
+
+---
+
+## Default (recommended)
+
+```text
+/fst Add login
+```
+
+The system starts in exploration mode, builds context, proposes structure, and decides when it is ready to move to implementation. For most tasks, this is the right choice.
+
+Typical flow:
+
+```text
+→ analyzing current system
+→ proposing requirements
+→ identifying missing pieces
+→ [ready] moving to implementation
+→ generating code
+→ verifying
+→ done
+```
+
+If the system is uncertain before switching to apply, it will ask:
+
+```text
+Requirements look complete. Should I proceed with implementation?
+```
+
+---
+
+## How transitions work
+
+In default mode, the system switches from explore to apply automatically when:
+
+* the goal is unambiguous
+* requirements are complete
+* no conflicts exist
+
+It stops and asks you when:
+
+* a major decision is unclear
+* there is a scope conflict
+* the change is risky
+
+---
+
+## Resuming a task
+
+```text
+/fst resume <request_id>
+```
+
+Restores the current state, mode, and remaining work. The system continues from where it stopped.
+
+---
+
+## Choosing a mode
+
+**Use `/fst explore`** when you are planning, not yet ready to implement, or want to understand the system before changing it.
+
+**Use `/fst apply`** when the change is clear and you trust the system to proceed directly.
+
+**Use `/fst`** (default) for everything else—new features, unclear requirements, anything non-trivial.
+
+---
+
+## Common workflows
+
+```text
+# Explore first, then apply separately
+/fst explore payment system
+→ review proposals
+/fst apply Add retry logic to payments
+
+# Let the system stage it
+/fst Add authentication
+→ system explores, then implements
+
+# Direct change
+/fst apply Fix login error
+→ immediate implementation
+```

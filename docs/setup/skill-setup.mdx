@@ -1,0 +1,122 @@
+---
+sidebar_position: 2
+---
+
+# Skill Setup & AGENTS.md
+
+## Install the `/fst` skill
+
+```bash
+fst skill add
+```
+
+This registers the `/fst` command in your AI agent, binds it to the `fst` CLI, and activates the supervised execution loop. After this, you can start tasks with:
+
+```text
+/fst <goal>
+```
+
+See [Worker & `/fst` Skill](../worker-skill/overview) for how the execution loop works.
+
+---
+
+## Add AGENTS.md to your project
+
+`AGENTS.md` tells the AI agent how to behave in this project. Place it in the root of your repository.
+
+```bash
+fst agents init
+```
+
+Or create it manually with the following content:
+
+```markdown
+# AGENTS.md
+
+## Purpose
+
+This project is managed using **Fernsehturm (`fst`)**.
+
+All system state, code, and structure are defined through `fst`, not by editing files directly.
+
+---
+
+## Core Rules
+
+* The **database is the source of truth**.
+* The **workspace is generated** and may be overwritten.
+* Do not treat files as canonical.
+* Do not edit generated files to define system behavior.
+
+---
+
+## Using `/fst`
+
+All work should be done through:
+
+/fst <goal>
+
+Examples:
+
+/fst Add login
+/fst explore current system
+/fst apply Fix auth bug
+
+---
+
+## Execution model
+
+The agent operates as a **worker under supervision**:
+
+* it asks `fst` what to do
+* executes that step
+* reports results
+* repeats
+
+Do not invent your own workflow.
+
+---
+
+## Modes
+
+### Explore
+* read-only
+* understand and propose
+* no changes applied
+
+### Apply
+* implement changes
+* generate code
+* run and verify
+
+### Default
+* starts in explore
+* moves to apply when ready
+
+---
+
+## What NOT to do
+
+* Do not edit files directly to implement features
+* Do not bypass `fst`
+* Do not mix multiple tasks in one `/fst` request
+* Do not assume the workspace is permanent
+
+---
+
+## Safe usage
+
+If unsure, always use:
+
+/fst <goal>
+
+The system will guide the process.
+```
+
+---
+
+## Why AGENTS.md matters
+
+Without `AGENTS.md`, an AI agent working in your repository has no way to know that files are generated, that the database is the source of truth, or that it should be operating as a supervised worker rather than making free edits. `AGENTS.md` establishes the contract between the agent and the system.
+
+Commit it to version control so it applies to all agents working in the repository.

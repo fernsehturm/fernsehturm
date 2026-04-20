@@ -1,0 +1,101 @@
+---
+sidebar_position: 1
+---
+
+# What the Delegate Is
+
+> A **configurable, synthetic product partner** that guides the agent—asking questions, pointing out gaps, and critiquing results—without ever becoming the system's authority.
+
+Think of it as a stand-in for the human product loop. When there is no product owner in the room, the delegate fills that role.
+
+---
+
+## Responsibilities
+
+The delegate acts like a product owner, reviewer, and user voice. It helps by asking clarifying questions, identifying missing requirements, critiquing implementations, and suggesting improvements.
+
+It does **not** enforce rules, make changes directly, override decisions, or control workflow.
+
+> capability ≠ authority
+
+The delegate may know what to do, but only acts within its allowed authority. It may suggest "use JWT"—it cannot enforce it unless the profile allows.
+
+---
+
+## How It Fits into the Workflow
+
+```text
+1. Agent proposes requirements or code
+2. System runs validation
+3. Delegate reviews → asks questions, flags gaps, critiques design
+4. Controller decides next step
+5. Agent revises
+6. Repeat
+```
+
+Without the delegate, steps 3–4 are mostly skipped.
+
+---
+
+## What the Delegate Produces
+
+The delegate does not talk—it produces **structured feedback artifacts**.
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| **Question** | clarify missing or ambiguous information | *Should login support password reset?* |
+| **Gap** | identify missing parts | *No logout flow defined* |
+| **Critique** | highlight problems | *Implementation is more complex than needed* |
+| **Suggestion** | offer improvements | *Consider a simpler API structure* |
+| **Reaction** | simulate user or stakeholder response | *This flow feels confusing for first-time users* |
+| **Comment** | minor notes | *Naming could be more consistent* |
+
+---
+
+## Lenses
+
+The delegate looks at your system from different angles. Profiles configure which lenses are active.
+
+| Lens | Focus |
+|------|-------|
+| **Clarifier** | finds ambiguity |
+| **Completeness** | finds missing parts |
+| **Goal-fit** | checks alignment with intent |
+| **UX** | simulates user reaction |
+| **Consistency** | checks alignment with project patterns |
+| **Risk** | flags potential issues |
+| **Scope** | prevents overbuilding |
+| **Finisher** | checks readiness |
+
+---
+
+## Escalation
+
+The delegate blocks progress and asks you when:
+
+* a critical decision is needed
+* ambiguity has high impact
+* a risky change is proposed
+* a policy conflict occurs
+
+Example: *Should this API break backward compatibility?*
+
+---
+
+## Project-Specific Behavior
+
+The delegate adapts to your project over time—learning naming conventions, architectural patterns, common mistakes, and preferred styles. This improves guidance without affecting other projects.
+
+Example: *This project usually needs audit logging for billing features.*
+
+---
+
+## Interaction with the Agent
+
+The delegate does not talk directly to the agent. It produces feedback artifacts → the controller interprets them → the agent acts accordingly.
+
+Inspect what the delegate said at any time:
+
+```bash
+fst feedback list --type trainer_critique
+```

@@ -1,0 +1,8 @@
+{
+  "label": "Worker & /fst Skill",
+  "position": 9,
+  "link": {
+    "type": "generated-index",
+    "description": "How the Fernsehturm worker operates under supervision, and how the /fst skill creates a controlled execution loop."
+  }
+}

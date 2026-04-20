@@ -1,0 +1,75 @@
+---
+sidebar_position: 4
+---
+
+# Reference
+
+## Allowed Actions
+
+The worker may only perform these predefined actions. No others are permitted.
+
+| Action | Purpose |
+|--------|---------|
+| `derive_requirements` | generate requirements from goal |
+| `run_consistency` | check artifact consistency |
+| `derive_decisions` | propose technical decisions |
+| `generate_code` | produce code artifacts |
+| `materialize` | write files from the database |
+| `run` | execute the system |
+| `verify` | run verification checks |
+| `refine` | revise based on feedback |
+| `ask_user` | block and prompt the user |
+| `finish` | complete the loop |
+| `abort` | stop on unrecoverable error |
+
+---
+
+## Prohibited Behavior
+
+The worker must never:
+
+* invent steps or skip `fst next`
+* edit files directly
+* ignore constraints from the `fst next` response
+* perform multiple actions in one step
+
+---
+
+## Where State Lives
+
+All state lives in the database. The worker interacts with it through:
+
+```bash
+fst artifact ...
+fst decision ...
+fst policy ...
+```
+
+Files are derived projections created by `fst materialize`. They are not edited directly—if the worker needs to change something, it changes the artifact in the database and rematerializes.
+
+---
+
+## Feedback
+
+Feedback comes from consistency checks, verification failures, and runtime errors. The worker reads it, revises the relevant artifacts, resubmits, and continues the loop. Feedback is required input, not optional commentary.
+
+---
+
+## Inspect & Debug
+
+```bash
+fst summary          # current state overview
+fst trace            # execution trace
+fst event list       # event log
+fst agent-call list  # agent call history
+```
+
+---
+
+## Design Principles
+
+* The system decides — the agent executes
+* The database is the source of truth
+* Code is derived, not authored
+* Feedback drives iteration
+* Determinism over flexibility
