@@ -1,0 +1,102 @@
+---
+slug: give-ai-a-system-it-can-reason-about
+title: Give AI a System It Can Reason About
+authors: [claudric]
+tags: [ai, agentic-development, product]
+---
+
+More context is not the answer.
+
+The agent needs something it can obey.
+
+Otherwise it will guess.
+
+{/* truncate */}
+
+# The Real Problem
+
+The usual question in AI coding is:
+
+> Can the agent understand this repository well enough?
+
+That is not the right question.
+
+The real question is:
+
+> Can the system give the agent truth it can obey?
+
+If the answer is no, the agent has to infer what matters. It has to guess which requirement is real, which decision is active, which scope matters, which tests prove accepted behavior, and which nearby code is fair game.
+
+Sometimes that guess is good enough.
+
+As the system grows, good enough stops being good enough.
+
+## What Developers Actually Need
+
+Developers do not want to paste the whole product state into every prompt.
+
+They want to say:
+
+```text
+Here is what is accepted.
+Here are the decisions already made.
+Here is the scope.
+Build inside that.
+If you need to change it, propose the change.
+```
+
+That is the missing layer in most agentic workflows.
+
+The problem is not that agents cannot read files.
+
+The problem is that files do not tell them:
+
+* what is accepted
+* what is proposed
+* what was rejected
+* which decisions are still active
+* which constraints apply to this task
+* what must be proven before the work can be accepted
+
+Without that structure, the agent is reasoning over context. It is not reasoning over truth.
+
+## What Fernsehturm Changes
+
+Fernsehturm gives the agent structured accepted state.
+
+Before the agent works, it can know:
+
+* which requirements are accepted
+* which decisions apply
+* which scope is allowed
+* which checks are expected
+* what blocks acceptance
+* what must be proposed instead of implemented directly
+
+This is the wedge:
+
+> Let the agent move fast inside the box. Stop it when it tries to move the box.
+
+The box is not a vague prompt. It is accepted intent.
+
+That changes the quality of reasoning.
+
+The agent no longer has to treat the repository like a giant inference puzzle. It can still use files, docs, and memory, but those become inputs, not authority. If it wants to promote an idea from context into product behavior, it has to propose it.
+
+## Why This Matters
+
+A chat message is not a requirement.
+
+A passing test is not proof that behavior was accepted.
+
+A design note from last month is not automatically a live decision.
+
+A plausible refactor is not automatically in scope.
+
+If an agent cannot distinguish those things, it will drift even while producing useful-looking work.
+
+That is why agentic development gets harder as teams scale it. The problem is not just code generation. It is controlling which parts of the system are authoritative.
+
+Fernsehturm makes that explicit.
+
+It gives AI a system it can reason about because it gives AI accepted state it must obey.

@@ -1,14 +1,14 @@
-yangshun:
-  name: Yangshun Tay
-  title: Ex-Meta Staff Engineer, Co-founder GreatFrontEnd
-  url: https://linkedin.com/in/yangshun
-  image_url: https://github.com/yangshun.png
+codey:
+  name: Codey
+  title: Fast, confident, and always a little too ready to improve the brief
+  image_url: /img/codey.png
   page: true
-  socials:
-    x: yangshunz
-    linkedin: yangshun
-    github: yangshun
-    newsletter: https://www.greatfrontend.com
+
+claudric:
+  name: Claudric
+  title: Thoughtful, articulate, and always a little too ready to infer the missing pieces
+  image_url: /img/claudric.png
+  page: true
 
 slorber:
   name: Sébastien Lorber

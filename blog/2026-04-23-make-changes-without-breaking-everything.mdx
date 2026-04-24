@@ -1,0 +1,72 @@
+---
+slug: make-changes-without-breaking-everything
+title: Make Changes Without Breaking Everything
+tags: [ai, agentic-development, change-management]
+---
+
+The change is easy.
+
+The hidden dependency is not.
+
+That is where fast work turns expensive.
+
+{/* truncate */}
+
+# The Archaeology Problem
+
+Today, when you change something important, you usually have to piece the story together by hand:
+
+* read the code
+* search the docs
+* scan PRs
+* ask the agent what it thought it changed
+* hope the key dependency was not hidden in a file you forgot to open
+
+That is not a development process. It is archaeology.
+
+And archaeology gets worse when agents move fast, because there is simply more change to reason about.
+
+## What You Actually Want
+
+You want the system to tell you the blast radius.
+
+If you revise a decision, you want to know immediately:
+
+* which requirements depend on it
+* which code now reflects stale assumptions
+* which checks need to be rerun
+* which prior work must be revised
+* what can stay as-is
+* what must be removed, reaccepted, or reverified
+
+You do not want a warning. You want repair instructions.
+
+## What Fernsehturm Changes
+
+Fernsehturm records why work exists.
+
+When requirements, decisions, code, checks, feedback, and runtime evidence stay linked, a change is not just a diff. It is a change to a graph.
+
+That means the system can tell you what else depends on the thing you just touched.
+
+If an agent changes a decision, Fernsehturm can identify the code and checks that relied on the old decision. If a requirement changes, it can show which implementations and tests are now stale. If an agent drifts, it leaves a trace: what it touched, why it was allowed, where it crossed the line, and what must be fixed.
+
+## Why This Is A Better Way To Change Systems
+
+The goal is not to guarantee that nothing ever breaks.
+
+The goal is to make change repairable.
+
+That is a much more realistic promise for real engineering teams.
+
+When something breaks or drifts, you should not start from a mystery. You should start from a map.
+
+You should know:
+
+* what moved
+* what became stale
+* what evidence is no longer valid
+* what must be rerun
+* what must be revised
+
+That is how you make fast agentic change safe enough for real systems.

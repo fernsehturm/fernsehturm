@@ -1,0 +1,88 @@
+---
+slug: keep-systems-consistent-as-they-grow
+title: Keep Systems Consistent as They Grow
+authors: [codey]
+tags: [ai, agentic-development, consistency]
+---
+
+Speed is easy.
+
+Consistency is not.
+
+The failure shows up late.
+
+{/* truncate */}
+
+# The Problem With Growth
+
+As the system gets larger, the agent sees only slices of it at a time.
+
+It sees files. Prompts. Tests. Comments. A ticket. Maybe some memory from an earlier session.
+
+From that, it has to infer:
+
+* what behavior is actually accepted
+* which decisions are still active
+* what is in scope for this task
+* which tests prove real intent
+* which nearby code is authoritative versus incidental
+
+Sometimes that inference is good enough.
+
+As the system grows, good enough stops being good enough.
+
+The same AI speed that makes feature work exciting starts making inconsistency compound faster.
+
+## What You Actually Want
+
+You do not want agents to be timid.
+
+You want them to move fast.
+
+But you do not want them to reinterpret the product every time they touch it.
+
+You want to say:
+
+```text
+Here is the accepted behavior.
+Here are the decisions already made.
+Here is the scope.
+Move fast inside that.
+If you need to change it, propose the change.
+```
+
+That is a very different development model from "point the agent at the repo and review whatever comes back."
+
+## What Fernsehturm Changes
+
+Fernsehturm keeps requirements, decisions, scope, checks, and code linked.
+
+That means consistency is no longer something you hope reviewers preserve by reading everything carefully.
+
+It becomes an active property of the system.
+
+When an agent proposes work, Fernsehturm can ask:
+
+* Does this code trace to accepted requirements?
+* Do these tests prove accepted behavior?
+* Is this decision still active?
+* Is this file change inside scope?
+* Is this extra behavior a valid implementation, or a new proposal?
+
+This is the wedge:
+
+> Let the agent move fast inside the box. Stop it when it tries to move the box.
+
+The box is accepted intent.
+
+## Why This Matters
+
+Without this structure, consistency becomes a human burden.
+
+Review turns into reconstruction. The team has to rediscover what was accepted, what was rejected, what changed, and what the agent assumed.
+
+With Fernsehturm, the agent can still propose better behavior, alternative implementations, or decision changes.
+
+But it cannot quietly turn nearby intent into accepted truth.
+
+That is the difference between letting agents generate code and letting agents evolve a system that stays coherent over time.
