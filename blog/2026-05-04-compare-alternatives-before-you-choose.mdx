@@ -1,0 +1,208 @@
+---
+slug: compare-alternatives-before-you-choose
+title: Compare Alternatives Before You Choose
+authors: [claudric]
+---
+
+You know the feature you want, but not yet which direction should become the product.
+
+That is the moment where AI is most tempting and most dangerous: it can build a plausible version fast, but a plausible version can quietly become the direction before you have compared the alternatives.
+
+{/* truncate */}
+
+# Compare Alternatives Before You Choose
+
+Imagine you are changing account recovery.
+
+There are several reasonable directions:
+
+- keep password reset email-only
+- add SMS as a second recovery path
+- build a separate admin-assisted recovery flow
+- try an experimental reset-token storage model
+
+Each option sounds small in a prompt. Each option changes something real for the user: security expectations, support workload, privacy exposure, implementation complexity, verification needs, and what failure modes the product must handle.
+
+This is why comparison matters.
+
+The question is not:
+
+```text
+Can the agent build one of these?
+```
+
+The better question is:
+
+```text
+Which direction should we choose, and what does each direction really imply?
+```
+
+## What Usually Goes Wrong
+
+In ordinary AI-assisted development, the comparison often collapses too early.
+
+You ask for SMS recovery. The agent finds email recovery. It edits nearby code. It invents a reasonable policy. It updates tests. The result may even run.
+
+But now several things are mixed together:
+
+- existing product behavior
+- the new alternative
+- implementation guesses
+- security assumptions
+- test changes
+- the agent's interpretation of your intent
+
+At review time, you are no longer comparing clean options. You are trying to reverse-engineer what the agent changed and which parts of the change were product decisions.
+
+That is expensive for the developer and risky for the user.
+
+## What Changes For The Developer
+
+With FST, comparing alternatives becomes a first-class workflow instead of a prompt trick.
+
+The developer can say:
+
+```text
+Compare email-only reset, email plus SMS reset, and admin-assisted reset.
+Do not merge them yet.
+Show what each option changes and what decisions are required.
+```
+
+That changes the work in three useful ways.
+
+First, alternatives stay separate while they are being understood. The agent does not have to pretend one option is already the product direction.
+
+Second, the comparison produces decision material, not just code. You can see what each path implies before choosing.
+
+Third, the chosen direction becomes explicit. The developer does not have to infer from the final diff which product choice was made.
+
+The result is a cleaner development loop:
+
+```text
+explore alternatives -> compare consequences -> choose direction -> build inside that direction
+```
+
+## What The User Gets
+
+The user gets a better decision surface.
+
+Instead of reviewing a large mixed patch, they can ask:
+
+- What changes for users in each option?
+- Which policies or risks are different?
+- Which implementation areas are touched?
+- Which checks would be needed?
+- Which option is blocked by missing decisions?
+- Which option is ready to build?
+
+This is the core benefit: the user chooses between understandable directions, not between piles of code.
+
+## How FST Makes This Work
+
+FST starts by creating an Accepted Work Context for the comparison.
+
+For a normal task, that context may contain one starting world. For comparison, it can deliberately include multiple possible worlds or variants:
+
+```text
+email-only recovery
+email plus SMS recovery
+admin-assisted recovery
+```
+
+FST does not merge those worlds during context selection. It keeps their origins visible.
+
+That matters because the agent may need to inspect all of them, but Build should not be allowed to blur them into one accidental system.
+
+## Search Without Blending
+
+After the Accepted Work Context is selected, FST derives the search view the agent may inspect.
+
+In comparison mode, search results preserve where they came from:
+
+```text
+this behavior came from email-only recovery
+this policy came from SMS recovery
+this implementation came from admin-assisted recovery
+```
+
+The agent can now explore across options without treating everything it finds as compatible.
+
+If two alternatives answer the same decision differently, FST records that as comparison evidence instead of letting one answer silently overwrite the other.
+
+## Separate Scope For Separate Options
+
+Exploration then identifies what each alternative touches.
+
+For SMS recovery, scope might include phone-number verification, rate limiting, message delivery, and abuse handling.
+
+For admin-assisted recovery, scope might include admin permissions, audit logging, support workflows, and account ownership checks.
+
+Those are not the same change. FST keeps the differences visible.
+
+This gives the developer a practical map:
+
+```text
+Option A touches these behaviors and checks.
+Option B touches these policies and risks.
+Option C needs these user decisions before Build.
+```
+
+## Candidates Stay Comparable
+
+If the agent builds draft work for multiple options, FST records them as separate work packages.
+
+That means the comparison can include concrete implementation evidence without forcing an early merge.
+
+One option may pass its checks. Another may reveal a policy conflict. A third may need user input before it can move forward.
+
+The important part is that those outcomes stay attached to the option that produced them.
+
+## Compose Checks The Possible Worlds
+
+When an option is ready to evaluate, FST composes the exact revisions for that option into a possible world and checks whether it holds together.
+
+This is where FST can answer:
+
+```text
+Does this alternative fit with the selected system?
+Are required decisions unique?
+Do policies still hold?
+Are the right checks present?
+Is user evidence sufficient?
+```
+
+The output is not "this is globally accepted." The output is more precise:
+
+```text
+this option is coherent
+this option is blocked
+this option needs a decision
+this option conflicts with policy
+```
+
+That is the confidence layer the user needs before choosing.
+
+## Choosing Becomes A Recorded Decision
+
+Once the user chooses a direction, FST records that choice.
+
+The selected option can then become the context for focused Build work. The alternatives do not disappear. They remain useful evidence:
+
+- why one path was chosen
+- what was rejected or deferred
+- which risks were known
+- what would need to change if the decision is revisited
+
+This is what improves the developer's work over time. Product direction stops living only in memory, chat history, or PR comments.
+
+## The Practical Result
+
+Comparing alternatives with FST gives the developer a way to move fast without turning exploration into accidental commitment.
+
+The user gets a clearer choice.
+
+The agent gets a bounded task.
+
+The system keeps a record of what was compared, what changed, what was checked, and why one direction moved forward.
+
+That is how AI can help with product exploration without quietly deciding the product for you.

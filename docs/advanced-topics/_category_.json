@@ -1,8 +1,0 @@
-{
-  "label": "Advanced Topics",
-  "position": 17,
-  "link": {
-    "type": "generated-index",
-    "description": "Multi-agent workflows, large-scale refactoring, and system self-improvement."
-  }
-}

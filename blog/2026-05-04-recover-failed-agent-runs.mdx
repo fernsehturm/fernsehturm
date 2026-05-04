@@ -1,0 +1,271 @@
+---
+slug: recover-failed-agent-runs
+title: Recover Failed Agent Runs
+authors: [codey]
+---
+
+An AI run that fails is not automatically wasted work.
+
+It becomes wasted work when nobody can tell why it failed, what was learned, and what the next attempt is allowed to do differently.
+
+{/* truncate */}
+
+# Recover Failed Agent Runs
+
+Imagine you ask an agent to add passwordless login.
+
+The first run looks promising. It finds the auth code, drafts a magic-link flow, adds a token table, changes a few tests, and tries to run verification.
+
+Then it fails.
+
+Maybe the tests fail. Maybe the token storage conflicts with an existing security policy. Maybe the agent changed a login surface that was not supposed to move. Maybe the workspace patch no longer applies cleanly.
+
+Now the user and developer face the uncomfortable part:
+
+```text
+Was this a bad implementation?
+Was the task underspecified?
+Was the scope too narrow?
+Was a product decision missing?
+Was the existing system different from what the agent assumed?
+```
+
+Those are different failures. They need different repairs.
+
+## Why This Matters For The User
+
+The user should not have to decide whether a failed run is salvageable by reading a long chat and a broken diff.
+
+They need a clear answer:
+
+- what failed
+- why it failed
+- whether the failure is about code, scope, policy, verification, or missing judgment
+- what decision or approval is needed
+- whether the agent should retry, return to exploration, revise the work, or stop
+
+Without that clarity, the next prompt often becomes:
+
+```text
+Try again, but fix the tests.
+```
+
+That may be wrong. If the real failure was a missing product decision or a scope breach, retrying the implementation just compounds the problem.
+
+For the user, recovery means failed work becomes understandable instead of mysterious.
+
+## What Usually Goes Wrong
+
+In ordinary AI-assisted development, failure often collapses into one bucket:
+
+```text
+The agent failed.
+```
+
+That hides the useful information.
+
+A failed test might reveal a real behavior conflict. A patch failure might reveal that the agent built against stale source. A scope violation might reveal that the original task was too narrow. A policy conflict might reveal that the requested feature needs explicit approval.
+
+If those are treated as generic failure, the developer has to reconstruct the cause manually.
+
+That creates three bad outcomes:
+
+- the next run starts over and loses useful discovery
+- the next run patches around a real blocker
+- the user is asked vague questions because the system cannot name the problem
+
+Failure should not erase context. It should sharpen the next step.
+
+## What Changes For The Developer
+
+With FST, a failed run can produce a repair path.
+
+The developer can ask:
+
+```text
+Why did this run block?
+Was it outside scope, missing evidence, policy conflict, verification failure, or materialization failure?
+What is the smallest valid next step?
+```
+
+That changes the work in a practical way.
+
+First, the developer does not have to infer the failure class from a transcript. FST records blockers in the control flow.
+
+Second, the repair goes to the right place. Scope problems return to Exploration. Incomplete work returns to Build. Compatibility failures return to Compose or Build depending on the cause. Missing user judgment becomes a user question.
+
+Third, useful work does not have to be thrown away. Discovery, decisions, checks, and partial implementation evidence can remain available if they were recorded correctly.
+
+The developer loop becomes:
+
+```text
+failed run -> named blocker -> correct return point -> targeted repair
+```
+
+That is much better than:
+
+```text
+failed run -> bigger prompt -> another mixed attempt
+```
+
+## What The User Gets
+
+The user gets fewer vague escalations.
+
+Instead of:
+
+```text
+The implementation failed. Should I try another approach?
+```
+
+FST can support a sharper question:
+
+```text
+The agent needs to modify token storage, but token storage was not inside retained scope.
+Should Exploration expand the scope to include token storage?
+```
+
+Or:
+
+```text
+The proposed flow sends login links by email, but the current policy forbids account-access links without rate limiting.
+Approve a policy exception, add rate limiting, or reject this direction?
+```
+
+Those are useful questions because they expose the real decision.
+
+The user is no longer asked to debug the agent. They are asked to provide judgment where judgment belongs.
+
+## How FST Makes This Work
+
+FST starts by separating stage interiors from stage exits.
+
+Inside a stage, the agent can inspect, draft, test, and revise. Failure inside that work is normal.
+
+FST becomes strict when the agent tries to move work forward.
+
+At that point, FST asks controlled questions:
+
+```text
+Did Exploration produce a usable scope?
+Did Build stay inside that scope?
+Is the work package complete enough to evaluate?
+Do the selected revisions hold together?
+Is required user evidence present?
+Can the coherent result be materialized into the target sink?
+```
+
+When one of those answers is no, FST records a blocker instead of letting the failure dissolve into chat.
+
+## Scope Failures Return To Exploration
+
+Suppose the agent discovers that passwordless login requires a new token storage path, but Exploration only retained the existing session middleware.
+
+That is not just an implementation detail.
+
+It means the allowed box is too small.
+
+FST can block the work and send it back to Exploration:
+
+```text
+scope expansion required:
+token storage must be inspected and possibly modified
+```
+
+The next action is not "try harder." The next action is to expand or revise the accepted scope with user or policy approval where needed.
+
+## Build Failures Stay In Build
+
+Some failures mean the scope is right, but the work package is incomplete.
+
+Examples:
+
+- observable behavior changed but no verification was added
+- the agent changed a target but did not record the actual touch point
+- checks were run but the results were not recorded
+- implementation material is too vague to project later
+
+Those failures should return to Build.
+
+The agent can revise the work without reopening the whole context.
+
+That keeps recovery focused.
+
+## Compose Failures Expose Real Conflicts
+
+Some failures only appear when the proposed work is checked against the selected system world.
+
+Examples:
+
+- two decisions answer the same question differently
+- a policy is violated
+- a verification targets an older behavior
+- the implementation conflicts with another change
+- a judged compatibility check is missing
+
+This is where FST helps most.
+
+The failure is not hidden inside a merge conflict or a vague test failure. It becomes a named reason the proposed world does not hold together.
+
+The repair can then be specific:
+
+- revise the implementation
+- add the missing verification
+- ask the user to choose between decisions
+- record reviewer judgment
+- split the work into separate alternatives
+
+## Materialization Failures Stay Sink-Specific
+
+Sometimes the work is coherent, but projecting it into a concrete target fails.
+
+Examples:
+
+- the patch does not apply to the current workspace
+- the target path is not writable
+- a generator is unavailable
+- the sink base has drifted
+- a migration write mode needs approval
+
+FST should record that as a materialization failure.
+
+That does not automatically mean the proposed work is wrong. It means this checked result was not successfully written into this sink.
+
+That distinction matters because the repair may be to fix the sink, choose patch output, or rebase the materialization target rather than redesign the feature.
+
+## Evidence Prevents False Recovery
+
+A failed run can be dangerous if the next agent treats weak claims as facts.
+
+For example:
+
+```text
+The user approved the security exception.
+The tests passed before.
+The previous agent said token storage was in scope.
+```
+
+FST requires stronger records for gate-relevant claims.
+
+If the approval, check result, or scope record is missing, the next run should not pretend it exists.
+
+That is how recovery avoids building on imaginary progress.
+
+## The Practical Result
+
+Recovering failed runs with FST means a failure can leave behind usable structure:
+
+- the context that was used
+- the scope that was allowed
+- the work that was attempted
+- the checks that passed or failed
+- the blocker that stopped progress
+- the exact place the work should return
+
+The developer gets a repair path instead of a forensic exercise.
+
+The user gets precise questions instead of vague apologies.
+
+The agent gets a bounded next task instead of a broad instruction to try again.
+
+That is how failed AI runs become progress instead of lost time.

@@ -1,16 +1,18 @@
-## Hi there 👋
+# Fernsehturm
 
-<!--
-**fernsehturm/fernsehturm** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Build Software with AI without Losing Control.
 
-Here are some ideas to get you started:
+Fernsehturm is a documentation site for FST, a control system for AI-assisted software work. The public docs focus on what the user has to do: describe the work, confirm the Accepted Work Context when needed, answer real decisions, approve risky materialization, and review the evidence-backed result.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Local Development
+
+```bash
+npm install
+npm run start
+```
+
+## Build
+
+```bash
+npm run build
+```

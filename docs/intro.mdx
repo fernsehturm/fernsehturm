@@ -4,41 +4,62 @@ sidebar_position: 1
 
 # Introduction
 
-## What is Fernsehturm?
+Fernsehturm (FST) is a control system for AI-assisted software development.
 
-Fernsehturm is a **database-native software system designed for AI agents**.
+You keep the product direction. Your agent does the nitty-gritty work. FST keeps the work bounded, traceable, and checked before the agent moves forward.
 
-Unlike traditional development environments where code lives in files, Fernsehturm stores code, requirements, and decisions as structured artifacts in a SQLite database. Files are generated projections—disposable outputs derived from the database, not the source of truth.
+The headline promise is simple:
 
-## Why it exists
+> Build Software with AI without Losing Control.
 
-Software built by AI agents suffers from a fundamental problem: **codebases don't scale in consistency**. As features accumulate, agents lose track of prior decisions, requirements drift from implementations, and the system becomes incoherent.
+FST delivers that promise by making every meaningful change pass through a controlled path:
 
-Fernsehturm addresses this by:
+```text
+Accepted Work Context -> Exploration -> Build -> Compose
+```
 
-- Giving agents a **structured interface** instead of a text-based file system
-- Maintaining **traceability** from goals through requirements to running code
-- Enforcing **consistency checks** that catch gaps before they compound
-- Providing **structured feedback** that drives iteration rather than patch-work fixes
+The agent is free to inspect, experiment, draft, run tests, and revise inside a stage. FST controls the transition between stages.
 
-## Core idea
+## What You Do
 
-> Software is a system of **intent, decisions, and artifacts**—not files.
+Most of the time, you only do five things:
 
-Agents don't need to manage files. They need to express intent, receive critique, and refine proposals until the system is coherent and working.
+1. Say what you want.
+2. Confirm the Accepted Work Context when there is more than one sensible starting point.
+3. Answer decisions the system cannot safely infer.
+4. Approve risky scope changes, policy exceptions, or materialization choices.
+5. Review the final result.
 
-## The Delegate
+You do not manually maintain a requirements database. You do not guide every implementation step. You do not review every line of generated code just to keep the agent from drifting.
 
-On its own, Fernsehturm gives agents structure. The **delegate** gives them guidance.
+## What FST Does For You
 
-The delegate is an optional subsystem that acts like a configurable product partner—asking clarifying questions, identifying missing requirements, critiquing implementations, and suggesting improvements. It fills the gap left when there is no human product owner in the loop.
+FST keeps the agent from turning a loose prompt into uncontrolled changes.
 
-> The delegate is a **configurable, synthetic product partner** that guides the agent—asking questions, pointing out gaps, and critiquing results—without ever becoming the system's authority.
+It makes sure the agent starts from the right part of your system, stays inside the agreed scope, stops for decisions that need your judgment, and leaves behind a trace of what was changed and why.
 
-You control how much it does. At full strength it acts like an autonomous product owner. At minimum it stays quiet and only flags critical gaps. In between, it helps you move faster without losing control.
+The practical benefit is that you can ask direct questions:
 
-The delegate never enforces rules, makes changes directly, or overrides decisions. It produces structured feedback that the controller interprets—the agent then acts accordingly.
+- What did the agent change?
+- Why was it allowed to change that?
+- Which decisions did I make?
+- What was checked?
+- What is still unresolved?
 
----
+FST's job is to make those answers concrete instead of depending on the agent's memory.
 
-**Next:** [Quickstart →](./quickstart)
+## Why This Is Different
+
+Ordinary AI coding merges by files. FST composes by meaning.
+
+That matters because large changes often fail outside the edited file. A session timeout change may touch product behavior, security policy, existing tests, user-visible wording, and old architectural decisions. FST forces those connections into the record before the change is treated as coherent.
+
+The user experience becomes very focused:
+
+```text
+You give direction.
+FST asks only when the answer changes the safe path.
+The agent works inside the recorded path.
+```
+
+**Next:** [The Four FST Phases](./four-phases)

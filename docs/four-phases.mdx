@@ -1,0 +1,147 @@
+---
+sidebar_position: 2
+---
+
+# The Four FST Phases
+
+FST controls AI software work through four phases:
+
+```text
+Accepted Work Context -> Exploration -> Build -> Compose
+```
+
+Each phase answers a different question. That separation is what keeps the agent useful without letting it drift.
+
+## 1. Accepted Work Context
+
+**Purpose:** decide where the agent may look.
+
+Before the agent starts exploring, FST identifies the part of the system that is relevant to the request. This may be one current product direction, several alternatives, or a deliberately empty context for new work.
+
+For the user, this phase prevents a common failure:
+
+```text
+The agent found something nearby and treated it as authority.
+```
+
+What matters:
+
+- the starting context is explicit
+- alternatives are not accidentally merged
+- old experiments do not become product truth
+- broad search is not the default
+- the user chooses when the context is ambiguous
+
+Example:
+
+```text
+Use the current login/session system.
+Do not use the old invite-token experiment.
+```
+
+## 2. Exploration
+
+**Purpose:** decide what the work touches.
+
+Exploration is where the agent inspects the selected context and finds the real impact of the request. It discovers relevant behavior, code areas, decisions, policies, risks, unknowns, and possible scope problems.
+
+The most important output is retained scope:
+
+```text
+what the subseuqent Build phase may depend on, modify, create, or verify
+```
+
+For the user, this phase prevents hidden scope expansion.
+
+What matters:
+
+- likely touch points are recorded
+- decisions and policy questions are surfaced early
+- Build does not receive unlimited permission
+- missing scope must be requested explicitly
+- stale or incomplete exploration becomes a blocker
+
+Example:
+
+```text
+Passwordless login may modify login handlers, session tests,
+and the passwordless email template.
+It may not add SMS or social login.
+```
+
+## 3. Build
+
+**Purpose:** create the proposed work inside the retained scope.
+
+Build is where the agent does the concrete work: implementation, tests, revisions, and checks. The agent can move quickly here, but it is still bounded by what Exploration retained.
+
+For the user, this phase prevents the agent from turning implementation convenience into product change.
+
+What matters:
+
+- work stays inside retained scope
+- product decisions are recorded, not inferred
+- changed behavior gets verification
+- actual touch points are compared with expected touch points
+- missing scope sends the work back to Exploration
+
+Example blocker:
+
+```text
+The agent needs to change transactional email templates.
+That area was not retained for modification.
+Approve scope expansion?
+```
+
+## 4. Compose
+
+**Purpose:** check whether the proposed work holds together with the selected system.
+
+Compose is where FST evaluates the proposed result as a possible system world. It checks whether the selected work, decisions, policies, relations, verification evidence, and user evidence fit together.
+
+For the user, this phase turns "the agent says it is done" into a more useful question:
+
+```text
+Does this result actually hold together?
+```
+
+What matters:
+
+- conflicting decisions are blocked
+- policy conflicts are surfaced
+- checks must target the right behavior
+- required evidence must be present
+- unresolved blockers remain visible
+- the result is not treated as global truth
+
+Example:
+
+```text
+Passwordless login is coherent with the current session system.
+Existing password login still works.
+Magic links expire after 15 minutes.
+No SMS or social login was added.
+```
+
+## What About Materialization?
+
+Materialization happens after the four phases.
+
+It projects a checked result into a concrete target: a workspace, patch, generated directory, migration folder, or deployment artifact.
+
+Materialization is important, but it is not a fifth control phase. It answers a different question:
+
+```text
+Where should this checked result be written?
+```
+
+## The Short Version
+
+| Phase | Question | User benefit |
+|---|---|---|
+| Accepted Work Context | Where may the agent look? | The agent starts from the right system area. |
+| Exploration | What does the work touch? | Scope and risks are visible before implementation. |
+| Build | What did the agent create? | Work stays inside the recorded path. |
+| Compose | Does it hold together? | The result is checked before it is projected into files. |
+
+**Next:** [First Controlled Change](./first-controlled-change)

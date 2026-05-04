@@ -15,15 +15,15 @@ const heroDialogue = {
   ],
   developerAccept: [
     'That matches the product.',
-    'Run it inside the accepted box.',
+    'Use this Accepted Work Context.',
   ],
   fst: [
     'I inspected the codebase first.',
-    'Here is the likely box and the one decision that matters.',
+    'Here is the likely context and the one decision that matters.',
   ],
   agent: [
     'Point me at the work.',
-    'I will stay inside the accepted box and stop for real decisions.',
+    'I will stay inside the retained scope and stop for real decisions.',
   ],
 };
 
@@ -43,7 +43,7 @@ const consoleGroups = [
     icon: '/img/fst-icon.png',
     lines: [
       'Investigated the codebase: existing session middleware found',
-      'Suggested scope: auth/session/*, session middleware',
+      'Accepted Work Context: current auth session Composition',
       'Need your decision: should authenticated API activity reset the timer?',
     ],
   },
@@ -52,8 +52,8 @@ const consoleGroups = [
     tone: 'agent',
     icon: '/img/codey-icon.png',
     lines: [
-      'Suggested box: reset the timer on authenticated API activity',
-      'Implement timeout logic and verification only in approved modules',
+      'Retained scope: session middleware and verification',
+      'Build only inside the recorded scope',
     ],
   },
   {
@@ -61,20 +61,47 @@ const consoleGroups = [
     tone: 'developer',
     icon: '/img/bob.png',
     lines: [
-      'Accept suggested box',
+      'Confirm Accepted Work Context',
       'Start guarded run',
     ],
   },
 ];
 
 const features = [
-  { title: 'Database-native source of truth', description: 'Code, requirements, and decisions live in a structured database, not scattered across files' },
-  { title: 'Agent steering', description: 'Agents propose changes, Fernsehturm provides feedback, detects gaps, and keeps the system aligned' },
-  { title: 'Materialized workspaces', description: 'Generate runnable code from the current system state at any time' },
-  { title: 'Traceable evolution', description: 'Every change is linked back to goals, requirements, and decisions' },
-  { title: 'Consistency over time', description: 'Prevent drift as features accumulate and systems grow' },
-  { title: 'Refinement loop', description: 'Build, critique, revise—iterate with structured feedback instead of patchwork fixes' },
-  { title: 'CLI + agent interface', description: 'Use directly in the terminal or through coding agents like Codex or Claude' },
+  { title: 'Accepted Work Context', description: 'FST records which exact system world and source revisions Exploration may inspect', link: '/docs/how-fst-keeps-control#accepted-work-context' },
+  { title: 'Bounded agent work', description: 'The agent can only move forward with changes that stay inside the recorded scope', link: '/docs/how-fst-keeps-control#exploration' },
+  { title: 'Traceable results', description: 'FST records what changed, why it was allowed, and what evidence supports it', link: '/docs/why-trust-fst#what-a-good-final-report-should-show' },
+  { title: 'Conflict checks', description: 'FST checks whether the proposed work holds together with the selected system world', link: '/docs/why-trust-fst#confidence-comes-from-checks-not-narration' },
+  { title: 'Evidence-bound decisions', description: 'Important user answers are tied to the exact question they satisfy', link: '/docs/what-you-have-to-do#what-counts-as-evidence' },
+  { title: 'Materialized output', description: 'A coherent Composition can be projected into a workspace, patch, or other target sink', link: '/docs/materialization' },
+  { title: 'Short user loop', description: 'You provide direction, answer real decisions, approve risky writes, and review the trace', link: '/docs/what-you-have-to-do#your-five-responsibilities' },
+];
+
+const useCases = [
+  {
+    title: 'Compare alternatives',
+    image: '/img/fst-icon.png',
+    link: '/blog/compare-alternatives-before-you-choose',
+    teaser: 'Explore two product directions side by side before choosing which one should move forward.',
+  },
+  {
+    title: 'Resume long work',
+    image: '/img/claudric-icon.png',
+    link: '/blog/resume-long-running-ai-work',
+    teaser: 'Pick up a task days later with the open decisions, checked scope, and remaining blockers still visible.',
+  },
+  {
+    title: 'Recover failed runs',
+    image: '/img/codey-icon.png',
+    link: '/blog/recover-failed-agent-runs',
+    teaser: 'Turn a broken agent attempt into a repair path instead of starting over from a vague chat transcript.',
+  },
+  {
+    title: 'Hand off work',
+    image: '/img/bob-icon.png',
+    link: '/blog/hand-off-ai-work-without-losing-context',
+    teaser: 'Let another agent or teammate continue from recorded context, not from memory or guesswork.',
+  },
 ];
 
 function WhatIsSection() {
@@ -83,14 +110,16 @@ function WhatIsSection() {
       <div className="container">
         <Heading as="h2">What is Fernsehturm?</Heading>
         <p className={styles.whatIsIntro}>
-          Fernsehturm is an agent-focused development system that stores requirements, decisions, and code as structured artifacts, so AI can build and evolve software without losing consistency.
+          Fernsehturm is an agent-focused control system. Agents do the software work; FST keeps the work bounded, traceable, evidence-backed, and composable before it moves forward.
         </p>
         <ul className={styles.featureList}>
-          {features.map(({title, description}) => (
+          {features.map(({title, description, link}) => (
             <li key={title}>
-              <span className={styles.bullet}>[*]</span>
-              <span className={styles.featureTitle}>{title}</span>
-              <span className={styles.featureDesc}>{description}</span>
+              <Link className={styles.featureItemLink} to={link}>
+                <span className={styles.bullet}>[*]</span>
+                <span className={styles.featureTitle}>{title}</span>
+                <span className={styles.featureDesc}>{description}</span>
+              </Link>
             </li>
           ))}
         </ul>
@@ -102,10 +131,35 @@ function WhatIsSection() {
   );
 }
 
+function UseCasesSection() {
+  return (
+    <section className={styles.useCases}>
+      <div className="container">
+        <div className={styles.useCasesIntro}>
+          <Heading as="h2">Where It Helps</Heading>
+          <p>
+            FST is most useful when the work is larger than one prompt and the cost of losing context is high.
+          </p>
+        </div>
+        <div className={styles.useCaseGrid}>
+          {useCases.map(({title, image, teaser, link}) => (
+            <Link key={title} className={styles.useCaseCard} to={link}>
+              <img src={image} alt="" className={styles.useCaseImage} aria-hidden="true" />
+              <Heading as="h3">{title}</Heading>
+              <p>{teaser}</p>
+              <span className={styles.useCaseReadMore}>Read more →</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const faqs = [
   {
     question: 'How do I use Fernsehturm?',
-    answer: 'Install the CLI, create a request, and let your coding agent interact with fst to derive, refine, and run your system.',
+    answer: 'Describe the work, confirm the Accepted Work Context when asked, answer real decisions, approve risky materialization, and review the evidence-backed result.',
   },
   {
     question: 'Can I use my existing AI subscriptions with Fernsehturm?',
@@ -158,7 +212,7 @@ function HomepageHeader() {
           <Heading as="h1" className={styles.heroTitle}>
             Build Software with AI
             <br />
-            without Losing Control
+            without Losing Control.
           </Heading>
           <p className={styles.heroSubtitle}>
             Make AI useful for real software work without leaving you to clean up hidden drift later.
@@ -183,8 +237,8 @@ function HowItWorksSection() {
         <div className={styles.howItWorksIntro}>
           <Heading as="h2">How It Works</Heading>
           <p>
-            Start from the work you already have. Fernsehturm investigates the codebase,
-            proposes the box, and pulls you back in only when judgment is required.
+            Start from the work you already have. FST records the Accepted Work Context,
+            bounds the agent with retained scope, and pulls you back in only when judgment is required.
           </p>
         </div>
 
@@ -329,13 +383,14 @@ function HowItWorksSection() {
 export default function Home(): ReactNode {
   return (
     <Layout
-      title={`The AI-agentic Workspace`}
-      description="Build Software with AI without losing control. Make AI useful for real software work without leaving you to clean up hidden drift later.">
+      title={`Build Software with AI without Losing Control`}
+      description="Build Software with AI without Losing Control. FST keeps agent work bounded by an Accepted Work Context, retained scope, gate evidence, and coherent Compositions.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
         <HowItWorksSection />
         <WhatIsSection />
+        <UseCasesSection />
         <FaqSection />
       </main>
     </Layout>

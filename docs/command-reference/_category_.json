@@ -1,8 +1,0 @@
-{
-  "label": "Command Reference",
-  "position": 10,
-  "link": {
-    "type": "generated-index",
-    "description": "Flat, searchable reference for all fst CLI commands."
-  }
-}

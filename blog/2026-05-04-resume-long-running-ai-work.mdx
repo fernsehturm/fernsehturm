@@ -1,0 +1,249 @@
+---
+slug: resume-long-running-ai-work
+title: Resume Long-Running AI Work
+authors: [claudric]
+---
+
+Some software work does not fit into one AI session.
+
+That is normal. The problem is what happens when the next session has to continue from memory, a long chat, or a half-understood diff.
+
+{/* truncate */}
+
+# Resume Long-Running AI Work
+
+Imagine you are adding a new billing flow.
+
+The work spans several areas:
+
+- pricing rules
+- subscription state
+- payment-provider callbacks
+- customer-facing emails
+- admin visibility
+- tests and migration behavior
+
+The first AI session makes progress. It explores the current billing code, finds a policy issue, asks you a product decision, writes part of the implementation, and discovers that webhook handling needs a wider scope than expected.
+
+Then the session ends.
+
+Now the next day begins with a risky question:
+
+```text
+Where exactly did we leave off?
+```
+
+## Why This Matters For The User
+
+Long-running work fails when the user has to reconstruct the state of the task.
+
+The user should not have to remember:
+
+- which product decision they already made
+- which files were safe to touch
+- which behavior was still undecided
+- which check failed
+- whether the agent was blocked by scope, policy, or implementation
+- which parts were only explored and which parts were ready to continue
+
+If the user has to recover all of that from chat history, the system has already lost control.
+
+For the user, resumable work means they can come back later and ask:
+
+```text
+What is still open?
+What decision do you need from me?
+What did the last run prove?
+What can the next agent safely continue?
+```
+
+That is the benefit: continuity without replaying the whole conversation.
+
+## What Usually Goes Wrong
+
+In ordinary AI-assisted development, resuming work often starts with a weak summary:
+
+```text
+We were almost done.
+The scope was mostly billing.
+The user chose the stricter behavior.
+Tests were partly passing.
+Continue from the last changes.
+```
+
+This is not a stable handoff.
+
+The next agent has to infer too much. It may treat an unresolved question as settled. It may continue from a temporary implementation. It may edit outside the original scope. It may rely on tests that passed against an older version of the work.
+
+The developer then has to review not only the new work, but the continuity of the work.
+
+That is slow and fragile.
+
+## What Changes For The Developer
+
+With FST, the developer does not resume from a narrative. They resume from recorded work state.
+
+Instead of asking the next agent to read a long chat, the developer can ask:
+
+```text
+Continue the billing-flow work from the recorded context.
+Show the retained scope, open blockers, recorded decisions, and last checks before building.
+```
+
+That changes the developer workflow in a useful way.
+
+First, the next session starts with the same boundaries. The agent can inspect what was selected as context and what Build was allowed to touch.
+
+Second, unresolved decisions remain unresolved. They are not converted into assumptions just because the previous session ended.
+
+Third, failed or partial checks remain visible. The next agent knows whether it is continuing from verified work, blocked work, or temporary exploration.
+
+The developer gets a cleaner loop:
+
+```text
+pause -> inspect recorded state -> resolve next blocker -> continue safely
+```
+
+## What The User Gets
+
+The user gets fewer repeated questions and fewer hidden assumptions.
+
+A good resumed session can say:
+
+- you asked for this billing behavior
+- this was the Accepted Work Context
+- this was the scope retained for Build
+- you already answered this decision
+- this decision is still missing
+- this check passed
+- this check failed
+- this scope expansion is required before work can continue
+
+That gives the user a small set of meaningful actions instead of a large reconstruction task.
+
+## How FST Makes This Work
+
+FST records the request as evidence, then records the Accepted Work Context.
+
+That context matters when work resumes because it tells the next session where Exploration was allowed to look.
+
+For the billing example, the context might include:
+
+```text
+current subscription system
+payment-provider integration
+customer notification flow
+```
+
+It might deliberately exclude unrelated checkout experiments or old pricing variants.
+
+When the next session starts, FST can show the context instead of asking the agent to rediscover it from the repository.
+
+## Retained Scope Survives The Pause
+
+Exploration produces retained scope: the parts of the system Build may use or change.
+
+That retained scope is what keeps resumption controlled.
+
+If the previous session retained subscription state and customer emails, the next agent should not silently modify invoice exports just because the file looks nearby.
+
+If it needs invoice exports, that is not a continuation detail. It is a scope change.
+
+FST can block and ask for scope expansion instead of letting the resumed session drift.
+
+## Decisions Stay Attached To The Questions
+
+Long work often contains decisions:
+
+```text
+Should failed payments immediately suspend access?
+Should the customer receive an email before suspension?
+Should existing customers be migrated automatically?
+```
+
+FST records answers as evidence bound to the exact question.
+
+That matters on resume because a later agent should not rely on:
+
+```text
+The user wanted the stricter option.
+```
+
+It should rely on:
+
+```text
+The user chose automatic suspension after 7 days for failed payments.
+This answer satisfies the billing-suspension decision requirement.
+```
+
+The difference is control.
+
+## Blockers Become The Next Work Item
+
+When a session ends blocked, the blocker should be useful.
+
+Examples:
+
+- retained scope is too small
+- policy exception needs approval
+- verification is missing
+- user decision is unresolved
+- materialization target needs approval
+- the attempted implementation conflicts with an existing behavior
+
+FST records blockers so the next session can start from the actual reason work stopped.
+
+The next agent does not need to guess whether the previous run failed because of code, tests, scope, or product ambiguity.
+
+## Checks Make Progress Visible
+
+Resuming long work is easier when partial progress is visible.
+
+FST records checks and observations against the work they speak about.
+
+That lets a resumed session distinguish:
+
+```text
+this behavior was checked and passed
+this behavior was changed after the check
+this check failed and still needs repair
+this check has not been run yet
+```
+
+Without that distinction, "tests passed earlier" can become misleading.
+
+## Materialization Does Not Confuse The State
+
+A long-running task may temporarily write files to test an idea.
+
+FST treats that differently from a recorded projection of a checked world.
+
+That matters on resume. The next agent should know whether the workspace contains:
+
+- temporary experimental output
+- a patch from a coherent result
+- a failed materialization attempt
+- output that still needs verification
+
+Workspace state alone is not enough. FST records what the output represents.
+
+## The Practical Result
+
+Resuming long-running AI work with FST is not about preserving every token of conversation.
+
+It is about preserving the parts that matter:
+
+- context
+- scope
+- decisions
+- checks
+- blockers
+- materialization state
+
+That changes the developer's work for the better. They spend less time reconstructing what happened and more time making the next real decision.
+
+The user gets continuity.
+
+The agent gets a bounded place to continue.
+
+The system keeps control even when the work spans multiple sessions.

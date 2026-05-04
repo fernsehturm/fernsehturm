@@ -1,0 +1,101 @@
+---
+sidebar_position: 5
+---
+
+# Why You Can Trust The Result
+
+FST raises confidence by making important claims checkable.
+
+It does not ask you to trust the agent's memory, summary, or confidence. It asks the graph and the recorded evidence.
+
+## Confidence Comes From Checks, Not Narration
+
+An agent can say:
+
+```text
+I stayed in scope.
+The tests passed.
+The user approved it.
+This does not conflict with existing behavior.
+```
+
+FST turns those claims into checkable records:
+
+| Claim | FST asks |
+|---|---|
+| "I stayed in scope." | Does the Candidate modify only retained scope from the pinned ExplorationNote? |
+| "The tests passed." | Which Verification revision was run, and which Observation records the result? |
+| "The user approved it." | Which UserInteraction is hash-bound and meaning-bound to the required question? |
+| "It does not conflict." | Does the Composition pass automated and judged checks for the pinned revisions? |
+
+## What FST Can Check Automatically
+
+FST can compute deterministic checks from the graph:
+
+- every effective reference is revision-pinned
+- relations are allowed by the relation rules
+- same-type dependencies go through Contracts
+- a Composition does not include conflicting revisions of the same entity
+- Decisions are unique inside the Composition
+- Policies are satisfied where the rule is computable
+- Verifications target the effective revisions they claim to cover
+- required coverage exists or is explicitly deferred
+- user input evidence exists when a gate needs it
+- Exploration evidence is fresh enough for Compose
+
+Automated checks are the first confidence layer.
+
+## What FST Requires Judgment For
+
+Some things cannot be honestly computed:
+
+- whether two behaviors conflict semantically
+- whether a policy interpretation is acceptable
+- whether a product tradeoff is worth it
+- whether a risky materialization choice is acceptable
+
+FST does not fake those judgments. It records them, ties them to evidence, and blocks the gate if required judgment evidence is missing.
+
+## Why Revision Pinning Matters
+
+Every stored relation points to an exact revision.
+
+```text
+Composition C@rev4 includes Behaviour B@rev2.
+Behaviour B@rev3 does not silently change C@rev4.
+```
+
+This is what makes reports reproducible. When FST says a Composition was coherent, that statement is about the exact revisions that were checked.
+
+## Why Composition-Scoped Truth Matters
+
+FST has no global accepted system.
+
+That sounds unusual, but it is the point. Several possible worlds can exist at once:
+
+```text
+Composition A: email-only reset
+Composition B: email + SMS reset
+Composition C: experimental token storage
+```
+
+Each world can be checked on its own terms. A change becomes effective only inside a coherent Composition that includes it.
+
+This is what makes safe experimentation and parallel agent work possible.
+
+## What A Good Final Report Should Show
+
+A trustworthy FST result should be able to answer:
+
+- Which Accepted Work Context did this start from?
+- What retained scope bounded Build?
+- Which Candidate was built?
+- Which Composition includes it?
+- Which checks passed?
+- Which user decisions or approvals were recorded?
+- Which materialization sink received the result?
+- What remains blocked, deferred, or risky?
+
+If a final report cannot answer those questions, it is not giving you the confidence FST is designed to provide.
+
+**Next:** [Example: Session Expiry](./examples/session-expiry)

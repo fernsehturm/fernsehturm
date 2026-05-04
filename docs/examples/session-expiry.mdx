@@ -1,0 +1,150 @@
+---
+sidebar_position: 1
+---
+
+# Example: Session Expiry
+
+This example shows what FST should make visible during a real change.
+
+## Request
+
+```text
+/fst Add session expiry after 30 minutes.
+Constraint: do not introduce a JWT refresh flow.
+```
+
+FST records the request as evidence.
+
+## Accepted Work Context
+
+FST finds one coherent Composition that contains the current session system:
+
+```text
+COMP-auth-session@rev7
+```
+
+Because there is only one sensible starting point, FST records it as the Accepted Work Context:
+
+```text
+WorkContext WC-session-expiry@rev1
+Selected Composition: COMP-auth-session@rev7
+Discovery policy: selected Composition only, bounded code search
+```
+
+If there were multiple session systems or an experimental auth branch, FST would ask you to choose.
+
+## Exploration
+
+The agent inspects only the selected context and records the likely impact:
+
+```text
+Retained scope:
+- read: auth/session middleware
+- modify: session timeout calculation
+- modify: session tests
+- depend_on: existing auth policy
+- create: verification for 30-minute expiry
+```
+
+FST asks for one product decision:
+
+```text
+Should authenticated API activity reset the 30-minute timer?
+```
+
+You answer:
+
+```text
+Yes. Reset it on authenticated API requests, not on background refresh checks.
+```
+
+FST records that answer as evidence for the decision requirement.
+
+## Build
+
+The agent creates a Candidate:
+
+```text
+Candidate CAND-session-expiry@rev1
+```
+
+The Candidate includes:
+
+- an Intent for session expiry
+- Behaviour for timeout and activity reset rules
+- a Decision for API activity reset behavior
+- Implementation material for the session middleware and tests
+- Verification for the timeout behavior
+- Observations from checks the agent ran during Build
+
+FST checks that the Candidate stayed inside retained scope.
+
+If the agent tries to change token storage, FST blocks the Candidate because token storage was not retained for modification.
+
+## Compose
+
+FST creates a possible world:
+
+```text
+Composition COMP-session-expiry@rev1
+includes:
+- COMP-auth-session@rev7
+- CAND-session-expiry@rev1
+```
+
+The Compose gate checks:
+
+- all references are pinned
+- the Decision is unique inside the Composition
+- the auth policy still applies
+- the verification targets the new Behaviour revision
+- observations exist for required checks
+- the user decision evidence is bound to the right question
+- no implementation conflict exists on the session middleware target
+
+If those checks pass, the result is:
+
+```text
+COMP-session-expiry@rev1 is coherent.
+```
+
+That does not mean "globally accepted." It means this exact possible world holds together.
+
+## Materialization
+
+FST asks how to project the coherent Composition:
+
+```text
+Write COMP-session-expiry@rev1 to the current workspace?
+```
+
+You can choose:
+
+```text
+Patch output only.
+```
+
+FST records the materialization result:
+
+```text
+Composition: COMP-session-expiry@rev1
+Sink: patch file
+Result: success
+```
+
+Any post-materialization test run becomes an Observation.
+
+## What This Proves
+
+The final report can show:
+
+- what you asked for
+- which context FST used
+- what the agent was allowed to touch
+- which decision you made
+- what the Candidate changed
+- which Composition included the Candidate
+- which checks made that Composition coherent
+- where the coherent world was materialized
+
+That is the confidence FST is meant to provide.

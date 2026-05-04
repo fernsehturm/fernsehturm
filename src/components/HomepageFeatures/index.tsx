@@ -17,7 +17,7 @@ const FeatureList: FeatureItem[] = [
     img: require('@site/static/img/agents.png').default,
     description: (
       <>
-        Let agents move fast without quietly changing the product. Fernsehturm keeps requirements, decisions, scope, checks, and code linked, so unapproved behavior is blocked or turned into an explicit proposal before it becomes accepted work.
+        Let agents move fast without quietly changing the product. Fernsehturm keeps context, scope, decisions, checks, and implementation material linked, so drift becomes a blocker instead of hidden behavior.
       </>
     ),
     link: '/blog/keep-systems-consistent-as-they-grow',
@@ -27,7 +27,7 @@ const FeatureList: FeatureItem[] = [
     img: require('@site/static/img/changing.png').default,
     description: (
       <>
-        Change one part of the system and know what else must move. Fernsehturm shows which requirements, decisions, checks, and prior work are affected, and leaves a repairable trace when something drifts, breaks, or needs to be reverified.
+        Change one part of the system and know what else must move. Fernsehturm shows which decisions, policies, checks, and prior work are affected, and leaves a repairable trace when something drifts, breaks, or needs to be reverified.
       </>
     ),
     link: '/blog/make-changes-without-breaking-everything',
@@ -37,7 +37,7 @@ const FeatureList: FeatureItem[] = [
     img: require('@site/static/img/reason.png').default,
     description: (
       <>
-        Stop making agents guess from scattered files, tickets, chats, and PRs. Fernsehturm gives them structured accepted intent: what is true, what is proposed, what was rejected, and what must be proven before work can be accepted.
+        Stop making agents guess from scattered files, tickets, chats, and PRs. Fernsehturm gives them a pinned context, retained scope, and explicit evidence requirements before work can become part of a coherent Composition.
       </>
     ),
     link: '/blog/give-ai-a-system-it-can-reason-about',

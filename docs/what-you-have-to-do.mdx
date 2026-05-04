@@ -1,0 +1,85 @@
+---
+sidebar_position: 3
+---
+
+# What You Have To Do
+
+FST is designed so the user does not become a manual process operator.
+
+Your job is to provide judgment where judgment matters. FST and the agent handle the rest.
+
+## Your Five Responsibilities
+
+| Responsibility | When it happens | What a good answer looks like |
+|---|---|---|
+| State the goal | At the start | "Add 30-minute session expiry without JWT refresh tokens." |
+| Choose context | When multiple starting worlds make sense | "Use the current email-only reset Composition, not the SMS experiment." |
+| Resolve decisions | When behavior, policy, or tradeoffs are ambiguous | "Reset on authenticated API activity, not on background refresh checks." |
+| Authorize risk | When scope, policy, coverage, or materialization needs approval | "Allow this migration as patch output only." |
+| Review the result | At the end | "Show the Composition, checks, decisions, and remaining blockers." |
+
+## What You Should Not Need To Do
+
+You should not need to:
+
+- maintain a requirements spreadsheet
+- manually list every file the agent may touch
+- review every generated line just to find scope drift
+- remember what you approved earlier
+- resolve file-level merge conflicts without knowing the semantic conflict
+- trust an agent summary as proof that you agreed to something
+
+If FST needs one of those things, the system should make it explicit and ask for evidence.
+
+## How FST Decides To Interrupt
+
+FST interrupts when continuing without you would make the work less trustworthy.
+
+Typical interruptions:
+
+- Several possible Compositions could be used as the Accepted Work Context.
+- Build needs to touch something outside retained scope.
+- A policy exception or destructive materialization needs approval.
+- A DecisionRequirement has no recorded answer.
+- A judged check needs reviewer evidence.
+- A stale ExplorationNote needs a waiver or rediscovery.
+
+FST should not interrupt for ordinary implementation mechanics that remain inside the accepted scope.
+
+## What Counts As Evidence
+
+For gate-relevant input, a vague "yes" is not enough by itself.
+
+FST should bind your answer to the specific question being asked:
+
+```text
+Question:
+Should API activity reset the session timer?
+
+Answer:
+Yes, for authenticated API requests only.
+
+Evidence binding:
+This answer satisfies DecisionRequirement DR-session-activity-reset.
+```
+
+That binding is what prevents later drift. The agent cannot replace it with "the user approved the timeout plan."
+
+## A Good FST Session Feels Like This
+
+```text
+You: Add the feature, with this constraint.
+FST: I found the likely context. Confirm or choose another.
+You: Use that one.
+Agent: Works inside the recorded context.
+FST: This decision changes behavior. Choose.
+You: Choose.
+Agent: Builds and verifies the Candidate.
+FST: The Composition is coherent. Choose materialization target.
+You: Patch output.
+FST: Records the materialization result and check observations.
+```
+
+The important part is that every step that matters becomes inspectable evidence.
+
+**Next:** [How FST Keeps Control](./how-fst-keeps-control)

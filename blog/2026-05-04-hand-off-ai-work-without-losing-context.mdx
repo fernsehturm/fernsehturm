@@ -1,0 +1,282 @@
+---
+slug: hand-off-ai-work-without-losing-context
+title: Hand Off AI Work Without Losing Context
+authors: [codey]
+---
+
+AI work often moves between agents, models, machines, or people.
+
+The handoff fails when the next worker inherits a summary instead of the actual state of the work.
+
+{/* truncate */}
+
+# Hand Off AI Work Without Losing Context
+
+Imagine one agent spends an afternoon refactoring a reporting module.
+
+It explores the existing code, finds that two reports share a hidden data contract, asks the user whether old exports must remain byte-compatible, updates part of the implementation, runs some checks, and then stops because a policy question is still open.
+
+The next morning, a different agent or developer needs to continue.
+
+The weak handoff sounds like this:
+
+```text
+Continue from the previous chat.
+It was refactoring reports.
+The user wanted compatibility.
+Some tests passed.
+Check the last diff.
+```
+
+That is not enough.
+
+The next worker has to infer what was actually decided, what was only suggested, what was safe to touch, and why the previous run stopped.
+
+## Why This Matters For The User
+
+The user should not have to become the memory layer between workers.
+
+They should not have to explain:
+
+- what the first agent was allowed to change
+- which product decisions were already answered
+- which risks were discovered
+- which tests were meaningful
+- which parts were temporary experiments
+- what still needs approval
+
+When the handoff depends on the user remembering all of that, the system is brittle.
+
+The user should be able to say:
+
+```text
+Continue the reporting refactor from the recorded state.
+Show what is open before changing anything else.
+```
+
+That is the benefit: another worker can continue without making the user replay the project history.
+
+## What Usually Goes Wrong
+
+In ordinary AI-assisted development, handoffs are mostly narrative.
+
+The first agent leaves a chat summary, a diff, maybe a test result, and a few comments.
+
+The second agent reads those and guesses:
+
+- this decision was probably accepted
+- this file is probably in scope
+- this failing test is probably unrelated
+- this generated output is probably final
+- this TODO probably means continue here
+
+Some of those guesses may be right. Some may be wrong.
+
+The dangerous part is that they look like normal continuation work.
+
+A bad handoff does not always fail loudly. It often drifts quietly.
+
+## What Changes For The Developer
+
+With FST, handoff becomes state transfer instead of summary transfer.
+
+The developer can ask the next worker to inspect the recorded work state before continuing:
+
+```text
+Read the Accepted Work Context, retained scope, recorded decisions,
+checks, materialization result, and open blockers.
+Then continue only inside the valid next step.
+```
+
+That changes the developer workflow in four useful ways.
+
+First, the next worker starts from bounded context instead of a broad repository scan.
+
+Second, user decisions stay attached to the questions they answered.
+
+Third, unfinished work has a named status. It is not just "almost done" or "needs cleanup."
+
+Fourth, the handoff can cross boundaries: one agent to another agent, agent to human, local machine to shared environment, or prototype to implementation pass.
+
+The developer loop becomes:
+
+```text
+worker stops -> FST records state -> next worker inspects state -> work continues from the correct point
+```
+
+## What The User Gets
+
+The user gets continuity without being pulled into every detail.
+
+A useful handoff report can answer:
+
+- What was the task?
+- Which system context was selected?
+- What was the allowed scope?
+- Which decisions did I already make?
+- Which checks passed or failed?
+- What output was materialized?
+- What is still blocked?
+- What is the next safe action?
+
+That turns a handoff from a trust exercise into an inspection step.
+
+## How FST Makes This Work
+
+FST makes handoff possible by recording the work in layers.
+
+The important parts are not stored as one prose summary. They are stored as separate records that answer different questions.
+
+```text
+Accepted Work Context -> where the work started
+retained scope -> what the agent was allowed to touch
+recorded decisions -> what the user actually answered
+checks and observations -> what was verified
+blockers -> why work could not move forward
+materialization result -> what concrete output was produced
+```
+
+That structure gives the next worker a map.
+
+## The Accepted Work Context Tells The Next Worker Where To Look
+
+A handoff should not begin with:
+
+```text
+Search the whole repository and figure out what matters.
+```
+
+The Accepted Work Context tells the next worker which selected system world and source context the previous work used.
+
+For the reporting example, it might say:
+
+```text
+Use the current analytics reporting context.
+Exclude the experimental dashboard rewrite.
+Include the legacy CSV export behavior for compatibility review.
+```
+
+That keeps the next worker from importing unrelated work just because it appears nearby.
+
+## Retained Scope Tells The Next Worker What May Change
+
+Context is not permission.
+
+The next worker needs to know which parts were retained for Build.
+
+For example:
+
+```text
+may modify: report query builder
+may modify: reporting tests
+may depend on: legacy CSV export contract
+may not modify: dashboard rendering layer
+```
+
+That makes the handoff actionable.
+
+If the next worker needs to change dashboard rendering, it should not quietly do it. It should request scope expansion.
+
+## Recorded Decisions Prevent Re-Interpretation
+
+Handoffs are especially fragile around user decisions.
+
+The phrase:
+
+```text
+The user wanted compatibility.
+```
+
+is too weak.
+
+FST should preserve the actual decision:
+
+```text
+CSV export column names must remain byte-compatible for existing customers.
+New fields may be added only behind an explicit version option.
+```
+
+Now the next worker can obey the decision instead of guessing what "compatibility" meant.
+
+## Checks Tell The Next Worker What Is Real
+
+A handoff should distinguish checked work from hopeful work.
+
+FST records what was verified and what the result was:
+
+```text
+unit tests passed for query builder
+CSV compatibility check failed for invoice report
+admin report verification not run yet
+```
+
+That prevents the next worker from treating "tests passed" as a general claim.
+
+The checks remain tied to the specific work they speak about.
+
+## Blockers Tell The Next Worker Why Work Stopped
+
+A blocker is one of the most important handoff artifacts.
+
+It explains why work did not move forward:
+
+- user decision missing
+- scope expansion required
+- policy conflict
+- verification missing
+- implementation conflict
+- materialization approval required
+
+The next worker can start with the blocker instead of rediscovering it.
+
+That is what makes handoff efficient.
+
+## Materialization Records Prevent Workspace Confusion
+
+Concrete files are not enough for handoff.
+
+The next worker needs to know what the files represent:
+
+- temporary experiment
+- patch output
+- successfully materialized coherent result
+- failed materialization attempt
+- generated output that still needs checking
+
+FST records the materialization result so the next worker does not mistake workspace state for product truth.
+
+## Handoff Across Agents And People
+
+This model works whether the next worker is:
+
+- the same agent in a later session
+- a different AI model
+- a human developer
+- a reviewer
+- a teammate on another machine
+
+The handoff is not "trust this previous worker." The handoff is "inspect these records and continue from the valid next step."
+
+That is a better contract for collaboration.
+
+## The Practical Result
+
+Handing off AI work with FST means the next worker receives state, not folklore.
+
+They can see:
+
+- where the work started
+- what was allowed
+- what was decided
+- what was checked
+- what failed
+- what was written
+- what remains open
+
+The developer spends less time reconstructing the task.
+
+The user spends less time repeating themselves.
+
+The next agent has a smaller, safer job.
+
+That is how handoff becomes continuity instead of context loss.
