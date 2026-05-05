@@ -1,0 +1,63 @@
+---
+slug: what-fst-catches-when-tests-pass
+title: What FST Catches When the Tests Pass
+authors: [codey]
+---
+
+The tests are green. The build passed. And somewhere in that diff is a product decision you didn't make, a file that was never in scope, and a behavior that will surprise you in three months. FST catches all of it before you merge.
+
+{/* truncate */}
+
+# What FST Catches When the Tests Pass
+
+Tests verify that code does what the tests check. They are not designed to catch what the agent should not have built. That is a different problem — and it is the problem FST is built to solve.
+
+There are four failure modes that tests cannot catch. Here is each one, and how FST handles it.
+
+## 1. Scope Drift
+
+You asked the agent to add session expiry after 30 minutes of inactivity.
+
+The agent added session expiry. It also noticed that the "remember me" checkbox logic was nearby and adjusted it. The adjustment was reasonable. The tests pass because the test suite covers both behaviors. Nobody asked for the "remember me" change.
+
+Tests cannot catch this because the tests were written for the feature, not for the boundary of the feature.
+
+FST catches it because the Build gate checks that every artifact the agent created or changed was inside the retained scope you approved in Exploration. The "remember me" code was not in scope. The gate blocks and tells you exactly which artifact is outside the boundary.
+
+You then decide: approve the scope expansion explicitly, or remove the addition. Either way, the choice is yours and it is on record.
+
+## 2. Implicit Product Decisions
+
+The agent had to pick a timeout value. It chose 15 minutes. It had to pick an error response for an unknown email. It chose a generic message. It had to decide whether failed attempts lock the account. It decided they do, after five attempts.
+
+These are product decisions. Reasonable ones, perhaps. But they are your product's behavior, and they were made without your input.
+
+Tests cannot catch this because tests verify that the code returns 15 minutes, the generic message, and a lockout after five attempts — which it does. The tests were written around those choices, not against a specification of what was approved.
+
+FST catches this because Decisions are first-class artifacts. FST requires that choices affecting observable behavior either trace to a recorded user input or surface as a pending Decision requirement. A gate depending on unresolved user input blocks until the evidence is recorded.
+
+## 3. Behavior Nobody Asked For
+
+The agent noticed a gap in account recovery and filled it. The addition is helpful. It passes all tests. It has no corresponding requirement, no Intent artifact, and no record of who approved it.
+
+Tests cannot catch this because the agent wrote the tests for the behavior it added. The tests prove that the added behavior works as the agent intended. That is not the same as the behavior being requested.
+
+FST catches this at the Build gate: every Behaviour the agent creates must trace to the user request or the approved scope. A Behaviour with no such trace is a blocker. The agent cannot promote the work to a Candidate without resolving it.
+
+## 4. Semantic Conflicts
+
+Two agents are working in parallel. One changes account recovery to return a 401 for unauthenticated requests. Another, working in a different area of the codebase, returns 200 with an empty body for the same case.
+
+Both changes pass their own tests. Neither change breaks the other's test suite. The two test suites were written independently, and neither checks for cross-feature consistency.
+
+FST catches this at Compose. When the two Candidates are combined into a Composition and the coherence gate runs, FST checks whether the included Behaviours are compatible. Two Behaviours making contradictory claims about the same system state surface as a CompositionFinding. The conflict is specific — it names the Behaviours involved and what they disagree about.
+
+## The Pattern
+
+Tests verify correctness against what was written.
+
+FST verifies authorization against what was approved, and coherence against what the full Composition claims.
+
+Both are necessary. Neither replaces the other. But the problems that cause real trouble in agent-driven development — the scope drift, the quiet product decision, the unsolicited feature, the conflict that only shows up when two changes meet — those are not test failures. They are authorization and coherence failures.
+
+That is the gap FST is built to close.

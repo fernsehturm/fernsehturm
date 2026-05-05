@@ -1,0 +1,80 @@
+---
+slug: what-fst-adds-to-agent-development
+title: What FST Adds When Your Agent Already Writes Code and Runs Tests
+authors: [kim]
+---
+
+Your agent writes code. Tests pass. You ship. That loop works — until the day something breaks in a part of the codebase the agent was never supposed to touch, and the only record of what happened is a chat transcript.
+
+{/* truncate */}
+
+# What FST Adds When Your Agent Already Writes Code and Runs Tests
+
+Tests tell you the code passes the test suite.
+
+That is not the same as knowing the agent only built what you asked for, stayed inside the parts of the system it was supposed to touch, and left behind a record you can interrogate a month from now.
+
+FST fills exactly that gap.
+
+## What Tests Prove and What They Don't
+
+A test suite verifies that code behaves according to the tests. That is a real and valuable thing. But it answers a different question than the one that tends to cause trouble in agent-driven development.
+
+The question tests answer:
+
+```text
+Does the code do what the tests check?
+```
+
+The question that causes trouble:
+
+```text
+Was the agent authorized to build this, and can I prove it?
+```
+
+Those are not the same question. An agent can pass every test in the suite while having changed files outside the agreed scope, made product decisions without your input, and added behavior nobody asked for. The tests will not tell you. The code review might, eventually, if the reviewer has context.
+
+FST answers the second question by design.
+
+## What FST Records Before the Agent Starts
+
+Before the agent writes anything, FST makes it declare what it intends to touch.
+
+The agent explores the relevant parts of the codebase and proposes a retained scope — the exact artifacts and source targets it needs to read, depend on, modify, or create. You confirm that scope. The agent then works inside it.
+
+This happens before any code is written. The authorization comes first.
+
+```text
+Scope confirmed → agent works → FST checks the work stayed inside
+```
+
+That ordering matters. If the scope is confirmed afterward, you are reviewing output and hoping it matches intent. If the scope is confirmed beforehand, you are approving a boundary and letting FST enforce it.
+
+## What FST Records After the Agent Finishes
+
+When Build is complete, FST has a Candidate — a work package that records:
+
+- which artifacts were created or changed, revision-pinned
+- which requirement each change traces to
+- what checks ran and what they found
+- which decisions were made and what evidence supports them
+- the ExplorationNote revision that defined the authorized scope
+
+None of this comes from the agent's final summary. It comes from the graph FST maintained while the agent worked.
+
+That distinction is the point. If the agent's summary is the only record, the record is as reliable as the agent's memory. If the Candidate is the record, the record is falsifiable — you can check any claim it makes against the graph.
+
+## The Question You Can Ask Afterward
+
+With a Candidate in the graph, you can ask:
+
+- What did the agent change?
+- Why was it allowed to change that?
+- Which requirement does this trace to?
+- What checks ran on this?
+- What decisions were recorded?
+- What is still unresolved?
+
+These questions get concrete answers from the artifact graph, not from a reconstruction of the chat.
+
+That is what FST adds. Not faster code. Not better code. A process that makes the code traceable, bounded, and falsifiable — and a record that survives the session.

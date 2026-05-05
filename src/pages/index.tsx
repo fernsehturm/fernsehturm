@@ -2,6 +2,7 @@ import type {ReactNode} from 'react';
 import {useState} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
@@ -80,13 +81,13 @@ const consoleGroups = [
 ];
 
 const features = [
-  { title: 'Accepted Work Context', description: 'FST records which exact system world and source revisions Exploration may inspect', link: '/docs/how-fst-keeps-control#accepted-work-context' },
-  { title: 'Bounded agent work', description: 'The agent can only move forward with changes that stay inside the recorded scope', link: '/docs/how-fst-keeps-control#exploration' },
-  { title: 'Traceable results', description: 'FST records what changed, why it was allowed, and what evidence supports it', link: '/docs/why-trust-fst#what-a-good-final-report-should-show' },
-  { title: 'Conflict checks', description: 'FST checks whether the proposed work holds together with the selected system world', link: '/docs/why-trust-fst#confidence-comes-from-checks-not-narration' },
-  { title: 'Evidence-bound decisions', description: 'Important user answers are tied to the exact question they satisfy', link: '/docs/what-you-have-to-do#what-counts-as-evidence' },
-  { title: 'Materialized output', description: 'A coherent Composition can be projected into a workspace, patch, or other target sink', link: '/docs/materialization' },
-  { title: 'Short user loop', description: 'You provide direction, answer real decisions, approve risky writes, and review the trace', link: '/docs/what-you-have-to-do#your-five-responsibilities' },
+  { title: 'Accepted Work Context', description: 'FST records which exact system world and source revisions Exploration may inspect', link: '/docs/features/control-loop#work-context-selection' },
+  { title: 'Bounded agent work', description: 'The agent can only move forward with changes that stay inside the recorded scope', link: '/docs/features/control-loop#exploration' },
+  { title: 'Traceable results', description: 'FST records what changed, why it was allowed, and what evidence supports it', link: '/docs/features/traceability-and-evidence#traceability' },
+  { title: 'Conflict checks', description: 'FST checks whether the proposed work holds together with the selected system world', link: '/docs/features/traceability-and-evidence#claims-become-checkable-records' },
+  { title: 'Evidence-bound decisions', description: 'Important user answers are tied to the exact question they satisfy', link: '/docs/getting-started/overview#what-counts-as-evidence' },
+  { title: 'Materialized output', description: 'A coherent Composition can be projected into a workspace, patch, or other target sink', link: '/docs/workflows/materialization' },
+  { title: 'Short user loop', description: 'You provide direction, answer real decisions, approve risky writes, and review the trace', link: '/docs/getting-started/overview#what-you-do' },
 ];
 
 const useCases = [
@@ -170,20 +171,54 @@ function UseCasesSection() {
 
 const faqs = [
   {
-    question: 'How do I use Fernsehturm?',
-    answer: 'Describe the work, confirm the Accepted Work Context when asked, answer real decisions, approve risky materialization, and review the evidence-backed result.',
+    question: 'My agent already writes code and runs tests. What does FST add?',
+    answer: 'Tests tell you the code passes. They do not tell you the agent only touched what you asked. FST records what the agent was authorized to produce — before it produces it — and proves afterward that the two match.',
+    readMore: '/blog/what-fst-adds-to-agent-development',
   },
   {
-    question: 'Can I use my existing AI subscriptions with Fernsehturm?',
-    answer: 'Yes. You can connect it to agents like Codex, Claude, or others and use your existing accounts.',
+    question: 'What does FST catch when tests pass but the agent built the wrong thing?',
+    answer: 'Four things: work outside the agreed scope, product decisions made without your input, behavior nobody asked for, and semantic conflicts between two changes that each pass their own tests. Tests verify code against what was written. FST verifies authorization against what was approved.',
+    readMore: '/blog/what-fst-catches-when-tests-pass',
   },
   {
-    question: 'How much does Fernsehturm cost?',
-    answer: 'Fernsehturm has a free local version and paid tiers for cloud, team, and enterprise use.',
+    question: 'Will FST slow me down?',
+    answer: 'On a simple change: barely. On a complex one: it makes you faster. The decisions you would have discovered at review time get asked before the agent builds the wrong thing. A few questions upfront. Hours of archaeology saved afterward.',
+    readMore: '/blog/does-fst-slow-you-down',
   },
   {
-    question: 'What about data and privacy?',
-    answer: 'In the local version, everything stays on your machine. Cloud and enterprise setups give you control over hosting and data handling.',
+    question: 'What is the smallest useful FST workflow?',
+    answer: 'WorkContext → Exploration → Build. The agent proposes what it will touch, you confirm, it works inside that box. No full artifact model required. You get scope control and a traceable Candidate from the first change.',
+    readMore: '/blog/smallest-useful-fst-workflow',
+  },
+  {
+    question: 'When does FST interrupt me?',
+    answer: 'When the answer changes the outcome: a product choice the requirement does not settle, a conflict with a recorded decision, a scope breach, or a genuine tradeoff. Not for formatting, obvious fixes, or anything the approved scope already constrains.',
+    readMore: '/blog/when-does-fst-interrupt-you',
+  },
+  {
+    question: 'What happens if the agent adds behavior I did not request?',
+    answer: 'The Build gate blocks it. Every artifact the agent creates must trace to your request or the scope you approved. If it cannot, FST surfaces the blocker and asks whether you want to expand the scope or remove the addition. Nothing sneaks in.',
+    readMore: '/blog/agent-scope-drift',
+  },
+  {
+    question: 'What happens if FST blocks work?',
+    answer: 'The work is not lost. The blocker tells you exactly what is missing and how to resolve it — add a missing artifact, record a pending decision, or return to Exploration with a larger scope. Once resolved, the agent continues from where it was.',
+    readMore: '/blog/what-happens-when-fst-blocks-work',
+  },
+  {
+    question: 'How is FST different from specs, memory, CI, and PR review?',
+    answer: 'Specs go stale. Memory is informational — the agent can ignore it. CI checks correctness, not authorization. PR review happens after the fact with no structured context. FST controls the process before the agent writes anything, then gives reviewers a targeted surface instead of a raw diff.',
+    readMore: '/blog/fst-vs-specs-memory-ci-pr-review',
+  },
+  {
+    question: 'Can I use FST with my current agent?',
+    answer: 'Yes. FST is a single MCP tool — fst.control. Any agent that calls MCP tools can use it without changing your setup. You add FST to the tool set; the agent calls it at stage transitions. No new IDE, no new coding tool.',
+    readMore: '/blog/use-fst-with-your-existing-agent',
+  },
+  {
+    question: 'When should I not use FST?',
+    answer: 'When the cost of being wrong is low: one-off scripts, throwaway experiments, local spikes that will never enter a shared codebase. FST\'s value scales with consequence. For production systems, shared codebases, or parallel agent work, it pays for itself in the first conflict it prevents.',
+    readMore: '/blog/when-not-to-use-fst',
   },
 ];
 
@@ -194,7 +229,7 @@ function FaqSection() {
       <div className="container">
         <Heading as="h2">FAQ</Heading>
         <ul className={styles.faqList}>
-          {faqs.map(({question, answer}, i) => {
+          {faqs.map(({question, answer, readMore}, i) => {
             const open = openIndex === i;
             return (
               <li key={i} className={styles.faqItem}>
@@ -206,7 +241,12 @@ function FaqSection() {
                   <span className={styles.faqToggle}>{open ? '−' : '+'}</span>
                   <span className={open ? styles.faqQuestionTextOpen : styles.faqQuestionText}>{question}</span>
                 </button>
-                {open && <p className={styles.faqAnswer}>{answer}</p>}
+                {open && (
+                  <div className={styles.faqAnswer}>
+                    <p>{answer}</p>
+                    <Link className={styles.faqReadMore} to={readMore}>Read more →</Link>
+                  </div>
+                )}
               </li>
             );
           })}
@@ -217,9 +257,24 @@ function FaqSection() {
 }
 
 function HomepageHeader() {
+  const videoUrl = useBaseUrl('/video/fst-hero.mp4');
+
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
+      <video
+        className={styles.heroVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden="true"
+      >
+        <source src={videoUrl} type="video/mp4" />
+      </video>
+      <div className={styles.heroOverlay} />
+
+      <div className={clsx('container', styles.heroContent)}>
         <div className={styles.heroIntro}>
           <Heading as="h1" className={styles.heroTitle}>
             Build Software with AI

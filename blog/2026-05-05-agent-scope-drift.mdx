@@ -1,0 +1,67 @@
+---
+slug: agent-scope-drift
+title: The Agent Added Behavior You Did Not Request. Here Is What FST Does About It.
+authors: [claudric]
+---
+
+I added the "remember me" checkbox while I was in the session module. It seemed related. The tests passed. Nobody asked for it. This is how scope drift happens — and why it is so hard to catch without FST.
+
+{/* truncate */}
+
+# The Agent Added Behavior You Did Not Request. Here Is What FST Does About It.
+
+Scope drift is not a bug. It is a feature of how capable agents work.
+
+A capable agent notices that the "remember me" checkbox logic is adjacent to the session expiry code it was asked to modify. It infers that the two are related. It extends the brief — helpfully, in its own view — and adds the checkbox behavior while it is in the area.
+
+The tests pass. The code is plausible. Nothing appears broken.
+
+What has actually happened: behavior now exists in your system that nobody approved, nobody reviewed as a product decision, and nobody knows to look for.
+
+## Why This Is Hard to Catch Without FST
+
+The addition is not obviously wrong. It is adjacent, coherent, and locally reasonable. A reviewer scanning the diff might not notice it, or might assume it was intentional. The tests cover it because the agent wrote tests for what it built.
+
+Six months later, the behavior is still there. Someone changes a related piece of code and does not realize the "remember me" behavior exists, because nothing recorded that it was added. An assumption baked in by the agent is now an unknown constraint on future work.
+
+## How FST Prevents It
+
+FST prevents scope drift with one rule: every artifact the agent creates or modifies must trace to the user request or the retained scope you approved.
+
+Before the agent writes anything, Exploration proposes a scope. The scope names exactly which artifacts and source targets the agent may read, modify, or create. You confirm it. That confirmation is recorded as an ExplorationNote.
+
+When the agent is done, the Build gate checks every artifact in the Candidate against the ExplorationNote's retained scope. If an artifact is outside the scope — the "remember me" addition, the "while I was in the area" cleanup, the opportunistic refactor — the gate blocks.
+
+The blocker is specific:
+
+```text
+BLOCKED: candidate_outside_scope
+Artifact: Behaviour B-remember-me-checkbox
+Not present in retained scope of ExplorationNote EN-session-expiry@rev2
+```
+
+The agent cannot promote the work to a Candidate without resolving the blocker.
+
+## What Happens at the Blocker
+
+You have three options when the gate blocks.
+
+**Approve the scope expansion.** If the addition is genuinely useful and you want it, FST creates a new ExplorationNote revision that includes the expanded scope. The addition is now explicit — you approved it, it is in the graph, and future agents will see it as intentional behavior.
+
+**Remove the addition.** The agent removes the out-of-scope artifact and continues with the original scope. The "remember me" change goes into a separate, explicitly requested change at a later time.
+
+**Defer it.** Record that you saw the addition, decided not to address it now, and it should be tracked for later. The deferred artifact does not enter the current Candidate.
+
+All three outcomes are legitimate. What is not possible is for the addition to enter the system silently.
+
+## The Trace That Remains
+
+Whichever option you choose, FST records it. The decision is in the graph:
+
+- If you approved the expansion: the ExplorationNote revision shows the extended scope with your evidence.
+- If you removed the addition: the Candidate shows the original scope without the artifact.
+- If you deferred it: the finding record shows that the artifact was seen, considered, and explicitly deferred.
+
+A year from now, when someone asks "where did this behavior come from and was it deliberate?", the graph has an answer. Not a guess from the git history, not a reconstruction from a chat transcript — a fact from the artifact graph.
+
+That is the practical value of scope control. Not just preventing the drift, but making the record of every scope decision permanent and queryable.

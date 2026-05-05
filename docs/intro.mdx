@@ -6,60 +6,38 @@ sidebar_position: 1
 
 Fernsehturm (FST) is a control system for AI-assisted software development.
 
-You keep the product direction. Your agent does the nitty-gritty work. FST keeps the work bounded, traceable, and checked before the agent moves forward.
-
-The headline promise is simple:
+You keep the product direction. Your agent does the work. FST keeps the work bounded, traceable, and checked before the agent moves forward.
 
 > Build Software with AI without Losing Control.
 
-FST delivers that promise by making every meaningful change pass through a controlled path:
+## How It Works
+
+FST controls four stages, each with a strict exit gate:
 
 ```text
-Accepted Work Context -> Exploration -> Build -> Compose
+Work-Context Selection → Exploration → Build → Compose
 ```
 
-The agent is free to inspect, experiment, draft, run tests, and revise inside a stage. FST controls the transition between stages.
+The agent is free inside each stage — inspecting, experimenting, testing, revising. FST checks whether the result is ready to leave the stage.
 
 ## What You Do
 
-Most of the time, you only do five things:
+You do five things:
 
 1. Say what you want.
-2. Confirm the Accepted Work Context when there is more than one sensible starting point.
-3. Answer decisions the system cannot safely infer.
-4. Approve risky scope changes, policy exceptions, or materialization choices.
-5. Review the final result.
+2. Confirm the starting context when there is more than one sensible option.
+3. Answer decisions that affect behaviour, scope, policy, or risk.
+4. Approve scope changes or materialization choices.
+5. Review the trace-backed result.
 
-You do not manually maintain a requirements database. You do not guide every implementation step. You do not review every line of generated code just to keep the agent from drifting.
+Everything else — implementation, verification, coherence checking — the agent and FST handle.
 
-## What FST Does For You
+## Read the Docs
 
-FST keeps the agent from turning a loose prompt into uncontrolled changes.
+Start with the [Getting Started overview](getting-started/overview.md), then move through the sections:
 
-It makes sure the agent starts from the right part of your system, stays inside the agreed scope, stops for decisions that need your judgment, and leaves behind a trace of what was changed and why.
-
-The practical benefit is that you can ask direct questions:
-
-- What did the agent change?
-- Why was it allowed to change that?
-- Which decisions did I make?
-- What was checked?
-- What is still unresolved?
-
-FST's job is to make those answers concrete instead of depending on the agent's memory.
-
-## Why This Is Different
-
-Ordinary AI coding merges by files. FST composes by meaning.
-
-That matters because large changes often fail outside the edited file. A session timeout change may touch product behavior, security policy, existing tests, user-visible wording, and old architectural decisions. FST forces those connections into the record before the change is treated as coherent.
-
-The user experience becomes very focused:
-
-```text
-You give direction.
-FST asks only when the answer changes the safe path.
-The agent works inside the recorded path.
-```
-
-**Next:** [The Four FST Phases](./four-phases)
+- **[Getting Started](getting-started/overview.md)** — install, initialize, connect your agent
+- **[FST In Action](fst-in-action/scope-drift.md)** — see the control shape on real examples
+- **[Features](features/control-loop.md)** — control loop, traceability, composition slots
+- **[Workflows](workflows/working-with-agents.md)** — working with agents, materialization, integration
+- **[Concepts](concepts/01_the-model.md)** — full model, artifacts, process entities, API reference, glossary

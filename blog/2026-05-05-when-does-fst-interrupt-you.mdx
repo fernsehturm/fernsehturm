@@ -1,0 +1,81 @@
+---
+slug: when-does-fst-interrupt-you
+title: When Does FST Interrupt You?
+authors: [kim]
+---
+
+FST interrupts you when the answer changes the safe path. Not when it is processing, not when it is running checks, not when it has a routine implementation detail to handle. Only when your input changes what the agent is allowed to do next.
+
+{/* truncate */}
+
+# When Does FST Interrupt You?
+
+The concern most developers have before using FST is that it will turn a fast agent loop into a slow question-and-answer session. A governance system that asks constantly is worse than no governance at all.
+
+FST is designed around a strict rule: interrupt only when the answer changes the outcome. Here is what that looks like in practice.
+
+## The Five Valid Interruptions
+
+**1. Behaviour ambiguity**
+
+The agent needs to make a product choice, and the requirement is not specific enough to settle it. Which error message should the system return for an unknown email? How many retry attempts before a lockout? Should the expiry be from session start or from last activity?
+
+These are not implementation details. They are product decisions. The agent cannot safely pick one arbitrarily, because the choice affects observable behavior. FST surfaces the question before the agent builds the wrong answer in.
+
+If the requirement already settles the choice, FST does not ask. The interruption only happens when the answer is genuinely open.
+
+**2. Decision conflict**
+
+The agent's proposed approach conflicts with a Decision your team has already recorded.
+
+An earlier Decision says: session tokens must not be stored in localStorage. The agent's implementation plan stores them in localStorage. FST catches the conflict before the agent implements it and asks whether you want to update the Decision or change the approach.
+
+Without FST, this conflict appears at review — or after merging, when a security reviewer flags it.
+
+**3. Scope breach**
+
+The agent discovered it needs to touch something outside the retained scope you confirmed.
+
+It does not touch it silently. It stops and asks whether you want to expand the scope explicitly. You can approve the expansion (FST creates a new ExplorationNote revision), restrict the approach to stay inside the current scope, or defer the additional work to a separate change.
+
+This is the interruption that prevents scope drift. The agent cannot quietly add "while I was in the area" changes.
+
+**4. Verification gap**
+
+The agent is required to produce evidence for a Behaviour claim, and it cannot. The test environment does not support it. The check requires infrastructure that is not available. The required Observation cannot be generated from inside the current scope.
+
+FST surfaces this before the Candidate is complete, so you can decide: adjust the scope, defer the coverage, or accept the gap with a recorded waiver. A coverage gap you chose to defer is fundamentally different from one that was never noticed.
+
+**5. Meaningful tradeoff**
+
+Two approaches are both technically acceptable, both within scope, and both satisfy the requirement. But one has significantly different risk, compliance exposure, or maintenance implications. The choice is not a product decision in the Behaviour sense, but it is a judgment call that only you can make.
+
+FST brings this to you rather than letting the agent pick quietly.
+
+## What FST Does Not Interrupt For
+
+- Formatting choices and style decisions
+- Obvious local fixes already constrained by the approved scope
+- Recoverable command failures
+- Implementation details the requirement already specifies
+- Anything the retained scope constrains unambiguously
+
+The agent handles all of these freely. FST stays out of the way.
+
+## What Happens When FST Interrupts
+
+FST records the interruption as a Requirement — a specific, named question that needs an answer before the gate can pass.
+
+When you answer, FST records your response as a UserInteraction, hash-bound to the exact question and content. Your answer is gate-eligible evidence. The gate re-runs with your evidence in place.
+
+This matters for two reasons. First, it means your input is falsifiable — anyone can verify what you were asked and what you said, because the question and the answer are both in the graph. Second, it means the agent cannot misrepresent your input. It cannot narrate "the user agreed to 15 minutes" and have FST accept that narration as evidence. The recorded UserInteraction is the evidence, not the agent's memory of the session.
+
+## Tuning the Threshold
+
+If FST is interrupting for things that are not on the five-item list, that is a configuration or prompt problem.
+
+The most common cause: the retained scope is too broad, so the agent encounters genuine ambiguity that a narrower scope would have resolved. The fix is more precise Exploration, not a looser gate.
+
+The second common cause: the system prompt does not give the agent enough context about the project's existing Decisions. The fix is loading the relevant Decisions into context before Exploration, so the agent starts with the right constraints already visible.
+
+FST interrupts when the answer matters. If it is interrupting too much, the answer to calibrate is usually the scope or the context — not the gate thresholds.

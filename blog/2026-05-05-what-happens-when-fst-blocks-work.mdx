@@ -1,0 +1,72 @@
+---
+slug: what-happens-when-fst-blocks-work
+title: What Happens When FST Blocks Work?
+authors: [codey]
+---
+
+A blocked gate is not a failed build. It is a specific finding with a specific resolution. The agent's work is not lost. You are told exactly what is missing and exactly how to fix it.
+
+{/* truncate */}
+
+# What Happens When FST Blocks Work?
+
+The fear is that a blocked gate means starting over. It does not.
+
+When FST blocks, it produces a structured blocker: a machine-readable code, a human-readable explanation, the artifact references involved, and one or more resolution options. The agent's draft work remains in the graph. The blocker is information, not destruction.
+
+## What a Blocker Looks Like
+
+Every blocker has a `code` that identifies the problem precisely:
+
+| Code | What it means |
+|---|---|
+| `candidate_outside_scope` | An artifact the agent changed was not in the approved retained scope |
+| `missing_behaviour` | A change to observable behavior has no corresponding Behaviour artifact |
+| `missing_verification` | A Behaviour claim has no Verification defining how to check it |
+| `decision_conflict` | The proposed approach conflicts with a recorded Decision |
+| `missing_user_input` | A required Decision is unresolved — you need to answer it before the gate can pass |
+| `stale_exploration` | The ExplorationNote has gone stale — the scope may no longer reflect reality |
+| `unversioned_reference` | A relation was created without pinning an exact revision |
+| `same_type_direct_relation` | Two same-type artifacts were connected directly instead of through a Contract |
+| `coverage_gap` | A required Intent effect has no covering Behaviour or Verification |
+
+Each blocker also lists `resolution_kinds` — the specific actions that resolve it:
+
+- `revise_exploration` — return to Exploration with a broader or corrected scope
+- `revise_candidate` — update the Candidate to add a missing artifact or fix a relation
+- `provide_missing_input` — record a UserInteraction answering the pending decision
+- `add_verification` — add a Verification artifact for an uncovered claim
+- `record_judgment` — record a human judgment for a judged check
+- `waive_with_evidence` — explicitly accept the finding with a recorded rationale
+
+## The Most Common Blockers and How to Resolve Them
+
+**Candidate outside scope.** The agent touched something it was not authorized to touch. Resolution: either expand the scope in Exploration (creating a new ExplorationNote revision), remove the out-of-scope artifact from the Candidate, or defer it to a separate change.
+
+**Missing behaviour.** The agent changed observable system behavior without creating a Behaviour artifact to record what was changed and why. Resolution: the agent creates the Behaviour, connects it to the relevant Intent, and adds the artifact to the Candidate.
+
+**Missing user input.** A Decision the gate depends on has no recorded answer. Resolution: you answer the question. FST records your answer as a UserInteraction, hash-bound to the exact question. The gate re-runs.
+
+**Stale exploration.** The ExplorationNote was created before a relevant part of the codebase was updated. Resolution: Exploration runs again with the current codebase state, producing a fresh ExplorationNote revision. Build restarts from the updated scope.
+
+## Nothing Is Lost
+
+The agent's work — the draft Behaviour artifacts, the Implementation changes, the Verification definitions — all remain in the graph as draft artifacts. Resolving a blocker does not throw them away.
+
+In the typical case:
+
+- A `missing_behaviour` blocker means the agent adds one artifact. The rest of the Candidate is unchanged.
+- A `missing_user_input` blocker means you answer one question. The gate re-runs immediately.
+- A `candidate_outside_scope` blocker means the agent removes or separates the out-of-scope artifact. The in-scope work continues.
+
+The exception is a `stale_exploration` blocker that reveals the scope was materially wrong. In that case, Build does return to Exploration — but the artifacts from the stale Build are preserved as history. The agent does not start from scratch; it starts from a corrected scope with the prior draft visible.
+
+## The Waiver Path
+
+Sometimes a blocker is real but the right answer is to accept it with eyes open.
+
+For example: a coverage gap exists because the required integration environment is not available in CI. The Behaviour is defined, the Verification is written, but the Observation cannot run. The gap is real, but the right response is to defer the coverage with a recorded rationale.
+
+FST supports this through the `waive_with_evidence` resolution. You record a UserInteraction explaining why the gap is acceptable and under what conditions it should be resolved. The waiver becomes gate-eligible evidence. The gate passes. The deferred coverage gap remains visible in the Composition's findings, so it is not forgotten — just explicitly accepted.
+
+A waiver you chose is fundamentally different from a gap that was never noticed. FST makes that distinction permanent.

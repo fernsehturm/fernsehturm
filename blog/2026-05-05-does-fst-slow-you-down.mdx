@@ -1,0 +1,61 @@
+---
+slug: does-fst-slow-you-down
+title: Does FST Slow You Down?
+authors: [jemini]
+---
+
+The honest answer is: it depends on where you look. On simple changes, FST adds a small amount of upfront structure. On complex changes, it saves you more time than it costs — because it moves the expensive parts of the process to where they can be resolved cheaply.
+
+{/* truncate */}
+
+# Does FST Slow You Down?
+
+The worry is understandable. Any governance layer adds steps. Steps take time. Time is the resource you already do not have enough of.
+
+Here is the full picture.
+
+## What FST Adds
+
+FST adds structure at two points.
+
+**Before the agent starts:** the agent explores the relevant code and proposes a scope. On a simple, well-understood change, this takes seconds and produces no questions. On a change that touches shared behavior or crosses module boundaries, this surfaces the dependencies and decisions that would have appeared at review time anyway.
+
+**During the work:** FST interrupts when the answer changes the outcome — a product choice the requirement does not settle, a scope breach, a conflict with an existing decision. On a focused change with a clear requirement, this produces zero interruptions. On a change that touches something contested or ambiguous, FST asks a few questions before the agent builds in the wrong direction.
+
+That is the overhead.
+
+## What FST Removes
+
+The costs FST eliminates are less visible but consistently larger.
+
+**Review archaeology.** The reviewer looks at a diff with no context for why things changed. They reconstruct the agent's intent from code, commit message, and possibly a chat transcript. This takes time proportional to the diff size and inversely proportional to the reviewer's context. On a large agent-generated change, it is expensive.
+
+With FST, the reviewer has the approved scope, the Candidate with every change traced to a requirement, and the findings from coherence checks. Review becomes targeted confirmation, not ground-up reconstruction.
+
+**Conflict discovery after merging.** Two agents, or two sequential changes, produce work that each passes tests but conflicts semantically. The conflict appears in QA, or in production, or when a third change touches the same area and finds contradictory assumptions baked into the code. Tracing the conflict back to its origin is expensive.
+
+With FST, the conflict surfaces at Compose, before the merge. The finding names the specific Behaviours involved. Resolving it costs a conversation, not a debugging session.
+
+**Lost decisions.** An agent made a product choice — a timeout value, an error message, a rate limit. The choice is now baked into the code. Six months later, someone changes it without knowing it was a deliberate decision. Something breaks in an unexpected way.
+
+With FST, Decisions are recorded artifacts. The next agent or developer sees the decision and the evidence that supports it. Changing it is explicit, not accidental.
+
+## The Honest Threshold
+
+On a simple change where the scope is obvious, the requirement is clear, and the risk of the agent touching the wrong thing is low: FST adds a small amount of overhead. If you are doing many such changes, the overhead accumulates.
+
+On a change that crosses modules, involves shared behavior, requires a product choice, or runs in parallel with other agent work: FST pays for itself in the first problem it prevents.
+
+The question to ask is not "does FST add steps?" — it does. The question is "where do the expensive parts of this process currently happen?" If the answer is "at review time" or "in production," FST moves them earlier, where they cost less.
+
+## A Concrete Example
+
+You ask the agent to add session expiry.
+
+**Without FST:** the agent works, produces a diff, you review. The diff is larger than expected. There is a "remember me" change you did not ask for. The timeout is 15 minutes, but you wanted 30. The review takes 45 minutes and produces three rounds of back-and-forth.
+
+**With FST:** Exploration takes 20 seconds and proposes a scope. You see "remember me" in the scope and exclude it. FST asks what the timeout should be before the agent starts. The agent builds exactly what was agreed. Review takes 10 minutes.
+
+The overhead was the 20-second Exploration and one question. The saving was the 45-minute review cycle.
+
+That trade is not universal — it depends on how complex your change is and how well your requirements are specified. But it is the typical trade on changes where FST is doing real work.

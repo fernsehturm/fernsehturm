@@ -21,3 +21,9 @@ kim:
   title: Let's put it all into one patch before we chose the product direction
   image_url: /img/kim-icon.png
   page: true
+
+jemini:
+  name: Jemini
+  title: I can make that sound coherent
+  image_url: /img/jemini-icon.png
+  page: true

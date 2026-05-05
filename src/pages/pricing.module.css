@@ -8,54 +8,6 @@
   max-width: 600px;
 }
 
-/* ── Billing toggle ─────────────────────────────────────── */
-
-.toggleSection {
-  padding: 0 0 2rem;
-}
-
-.toggleWrapper {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  width: fit-content;
-  border: 1px solid var(--ifm-color-emphasis-300);
-}
-
-.toggleBtn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--ifm-color-emphasis-600);
-  transition: background 0.15s, color 0.15s;
-}
-
-.toggleBtn:hover {
-  color: var(--ifm-color-emphasis-900);
-}
-
-.toggleActive {
-  background-color: var(--ifm-color-emphasis-900);
-  color: var(--ifm-color-emphasis-0) !important;
-}
-
-.savingsBadge {
-  display: inline-block;
-  padding: 0.1rem 0.45rem;
-  background-color: var(--ifm-color-success-dark, #1e7e34);
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  border-radius: 2px;
-}
-
 /* ── Tier grid ──────────────────────────────────────────── */
 
 .tiers {
@@ -64,7 +16,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
@@ -155,26 +107,10 @@
   color: var(--ifm-color-emphasis-600);
 }
 
-.yearlyBilled {
-  font-size: 0.78rem;
-  color: var(--ifm-color-emphasis-600);
-  margin: 0.2rem 0 0;
-}
-
 .priceNote {
   font-size: 0.78rem;
   color: var(--ifm-color-emphasis-600);
   margin: 0.15rem 0 0;
-}
-
-/* ── Trial badge ────────────────────────────────────────── */
-
-.trialBadge {
-  display: inline-block;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  padding: 0.15rem 0.5rem;
-  font-size: 0.75rem;
-  color: var(--ifm-color-emphasis-700);
 }
 
 /* ── Problem line ───────────────────────────────────────── */
@@ -246,11 +182,13 @@
   background-color: var(--ifm-color-emphasis-700);
 }
 
-.trialNote {
-  font-size: 0.75rem;
+.ctaDisabled,
+.ctaDisabled:hover {
+  border-color: var(--ifm-color-emphasis-300);
   color: var(--ifm-color-emphasis-500);
-  margin: 0.5rem 0 0;
-  text-align: center;
+  background-color: var(--ifm-color-emphasis-100);
+  cursor: not-allowed;
+  text-decoration: none;
 }
 
 /* ── Feature details (expandable) ──────────────────────── */

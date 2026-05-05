@@ -1,0 +1,88 @@
+---
+slug: smallest-useful-fst-workflow
+title: The Smallest Useful FST Workflow
+authors: [codey]
+---
+
+You do not need the full FST model to get value on your first change. The smallest useful workflow is three steps, takes no upfront artifact setup, and immediately gives you scope control and a traceable result.
+
+{/* truncate */}
+
+# The Smallest Useful FST Workflow
+
+FST has a complete model: stages, gates, artifacts, Compositions, Policies, Decisions, Contracts. You do not need to understand all of it to benefit from it on day one.
+
+The smallest useful workflow covers three steps:
+
+```text
+WorkContext → Exploration → Build
+```
+
+Here is what each step actually does and what you get from it.
+
+## Step 1: WorkContext
+
+FST starts by establishing the search universe for Exploration.
+
+On a new project with no prior FST history, this is automatic. FST selects the current source state and creates a WorkContext revision. There is nothing to configure.
+
+On a project with existing FST Compositions, this step asks: which world should Exploration start from? Usually the answer is obvious — the current production Composition — and FST selects it without interrupting you.
+
+What you get: a record of where Exploration was allowed to look. This is not a significant overhead. It is a one-line fact that becomes useful later when you ask "why did the agent look at this area?"
+
+## Step 2: Exploration
+
+The agent reads the relevant parts of the codebase and proposes a retained scope — the list of files and artifacts it intends to touch, and nothing else.
+
+For a simple bug fix, this might be:
+
+```text
+retain: src/auth/session.py     (modify)
+retain: tests/auth/test_session.py  (modify)
+```
+
+For a cross-cutting feature, it might include several modules and flag a decision requirement before Build can start.
+
+You review the scope. If the scope looks right, you confirm. If it is too broad or includes something you did not intend, you narrow it. The agent cannot modify anything not in the scope you confirmed.
+
+This is the step where FST delivers its most immediate value: you see what the agent is planning to touch before it touches anything. Scope drift is prevented here, not discovered at review.
+
+What you produce: an ExplorationNote revision with the confirmed retained scope.
+
+## Step 3: Build
+
+The agent works inside the scope you confirmed.
+
+It creates and modifies the artifacts and source targets in the retained scope. If it discovers it needs to touch something outside the scope, it stops and asks — it does not silently expand. If it finishes, the Build gate checks that everything it touched was in the retained scope and that the Candidate is complete enough to use.
+
+What you produce: a Candidate revision that records exactly what changed, which requirement each change traces to, and what checks ran.
+
+## What You Get From Just This
+
+Even without Compositions, Policies, or a full artifact model, the minimal workflow gives you:
+
+**Scope control.** The agent cannot touch files outside the confirmed scope. What you approved is what it worked in.
+
+**Traceability.** The Candidate records every artifact changed, every touch point, and which ExplorationNote revision it was built from. A month from now, you can answer "what changed and why?" without reconstructing the session.
+
+**A targeted review surface.** Instead of a raw diff, the reviewer sees the Candidate: scope, changes, traces, findings. The review is smaller because the scope was bounded upfront.
+
+**An audit record.** Every confirmed scope, every gate pass, every decision made during the process is in the graph. Not in a chat transcript — in the graph.
+
+## When to Add More
+
+The minimal workflow is enough for:
+
+- changes scoped to a single module or feature
+- well-understood bug fixes
+- incremental additions with clear requirements
+- any change where the scope is obvious and the risk is contained
+
+When to add more:
+
+- **Compose** — when you have parallel agent work that needs to be checked for compatibility before merging
+- **Policies** — when compliance rules must be enforced across all changes in a class
+- **Decisions** — when product choices need to be recorded for future agents or developers
+- **Observations** — when verification evidence needs to be anchored to exact artifact revisions
+
+Start with the minimal workflow. Add the rest where the cost of missing it becomes real.

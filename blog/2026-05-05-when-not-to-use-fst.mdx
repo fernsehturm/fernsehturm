@@ -1,0 +1,57 @@
+---
+slug: when-not-to-use-fst
+title: When Not to Use FST
+authors: [colbert]
+---
+
+FST's value scales with the consequence of being wrong. When that consequence is low, the overhead is real and the benefit is not. Here is the honest threshold.
+
+{/* truncate */}
+
+# When Not to Use FST
+
+A tool that claims to be useful for everything is trusted for nothing.
+
+FST is useful when you need work to be traceable, bounded, and coherent before it enters a shared system. It is not useful when the cost of an untraceable, unbounded, incoherent result is zero — because you will delete it anyway, or because only you will ever see it.
+
+## When to Skip FST
+
+**One-off scripts you will never share.**
+A Python script to rename 200 files. A quick data transformation you will run once and discard. A Bash script to clean up a local environment. If the script works, great. If it does not, you fix it or delete it. The traceability and scope control FST provides have no value for work nobody else will encounter and you will not maintain.
+
+**Throwaway experiments.**
+You want to understand a codebase you have never seen. You ask an agent to explore it, sketch a feature, and show you what it touches. You have no intent to keep the output. The purpose is understanding, not delivery. FST controls a delivery process. If there is no delivery, there is no process to control.
+
+**Local spikes that will never enter the shared codebase.**
+A proof-of-concept you are building to decide whether an approach is feasible. The prototype is for you. If it works, you will build the real thing with FST. If it does not, you discard it. FST is for the real thing.
+
+**Trivially correct changes with no shared impact.**
+Fixing a typo in a comment. Correcting an obvious variable name. Updating a string literal that affects nobody but you. When the change has no behavioral consequence, no scope ambiguity, and no possibility of conflict with other work, the overhead of Exploration and a gate check costs more than it saves.
+
+## The Threshold in One Sentence
+
+Use FST when the change goes into a shared codebase, touches behavior that matters to users, or could conflict with work another agent or developer is doing in parallel.
+
+Skip it when none of those things are true.
+
+## The Gradient
+
+FST's value is not binary. It scales with:
+
+**Consequence.** A change to a payment flow in production carries more consequence than a change to a development seed script. The higher the consequence, the more FST's traceability and gate checks are worth.
+
+**Shared state.** Work that only you will ever see has no shared-state problem. Work that enters a shared codebase, a shared database, or a shared deployment has shared-state problems that compound over time. FST solves shared-state problems.
+
+**Parallel work.** A single agent working alone on a single codebase can resolve conflicts by inspection. Multiple agents, or a team of developers using agents in parallel, cannot. FST's Compose stage is specifically designed for the case where independent work needs to be checked for compatibility before it merges.
+
+**Duration.** A change you make and forget in an afternoon does not benefit much from traceability. A change that will be maintained, extended, or built on by future agents and developers benefits significantly. FST's graph is a record that survives sessions, team changes, and time.
+
+## The Cost of Skipping FST on the Wrong Change
+
+The risk of using FST when you did not need to: a small amount of wasted overhead.
+
+The risk of not using FST when you did need to: a scope violation you discover at review, a product decision the agent made without you, a semantic conflict that only appears when two changes are combined, or an audit trail that exists only in a chat transcript you cannot find.
+
+The asymmetry is worth keeping in mind. The overhead of unnecessary FST is small and recoverable. The cost of missing FST when it mattered is often not recoverable — you rebuild trust in the output by reviewing from scratch, or you find the problem after it has affected users.
+
+Use your judgment. FST is designed to be adopted incrementally, on the changes where it matters, without requiring a full team commitment to get value from the first use.

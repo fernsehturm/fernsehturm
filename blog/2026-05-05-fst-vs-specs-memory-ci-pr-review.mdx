@@ -1,0 +1,65 @@
+---
+slug: fst-vs-specs-memory-ci-pr-review
+title: FST vs. Specs, Memory, CI, and PR Review
+authors: [kim]
+---
+
+Every tool on this list solves a real problem. None of them solves the same problem as FST. They are not alternatives to each other — they are different layers, and understanding what each layer does and does not do is the fastest way to see where FST fits.
+
+{/* truncate */}
+
+# FST vs. Specs, Memory, CI, and PR Review
+
+Before adopting any new system, the natural question is: "I already have X. Why isn't X enough?" It is a good question. Here is the honest answer for each alternative.
+
+## Specs and Design Docs
+
+**What they do well:** describe intent at a point in time. A well-written spec tells you what the system is supposed to do, why, and under what constraints.
+
+**Where they fall short:** they go stale. The spec describes what was intended when it was written. The code evolves. Decisions are made during implementation that never make it back into the spec. Six months later, the spec and the code diverge, and nobody trusts the spec enough to rely on it.
+
+The underlying problem is disconnection. A spec document has no structural link to the code that carries it, the tests that verify it, or the decisions made during implementation. When any of those things change, the spec does not automatically know.
+
+**What FST does differently:** Behaviour artifacts are structurally connected to the Implementation that carries them and the Verification that proves them — all revision-pinned. When the Behaviour changes, FST detects that the Verification now targets a stale revision. The drift is caught by the Compose gate, not accumulated silently. The "spec" is not a document you update manually; it is the structure FST uses to evaluate coherence.
+
+## Project Memory and LLM Wikis
+
+**What they do well:** give an agent context about the codebase, conventions, and past decisions. A well-maintained project memory reduces the number of questions an agent needs to ask.
+
+**Where they fall short:** memory is informational. An agent can read it and then not follow it — whether by miscalculation, by inference overriding instruction, or because the memory is stale and the agent decides the code is the more reliable source. There is no enforcement. The agent can narrate "I followed the convention in the memory" without FST having any way to verify that claim.
+
+**What FST does differently:** Decisions are first-class artifacts with revision-pinned references. A Decision is not information the agent can choose to follow or ignore — it is a constraint that gate checks enforce. A gate depending on a Decision blocks until the Decision exists in the Composition. The agent cannot bypass it by narration.
+
+## CI, Linters, and Static Analysis
+
+**What they do well:** verify that code passes defined checks. A well-designed CI pipeline catches regressions, enforces style, and surfaces known anti-patterns before they merge.
+
+**Where they fall short:** CI verifies that code does what the tests check. It says nothing about whether the agent was authorized to write the code CI is now testing. A test suite written by the same agent that built the feature is not independent evidence. CI will pass it, because the tests were written to match the implementation.
+
+CI also does not check scope. If the agent modified three files you did not ask it to touch, CI passes as long as the tests pass. The scope violation is invisible to CI.
+
+**What FST does differently:** FST checks authorization and scope, not just correctness. The Build gate verifies that the Candidate stayed inside the retained scope. The Compose gate checks that Verifications are independent of the Implementations they prove — an agent cannot write a test that trivially passes its own implementation and have FST count that as coverage. CI and FST are complementary: CI checks correctness, FST checks process.
+
+## PR Review
+
+**What it does well:** catch problems a second pair of eyes can see. A good reviewer finds logic errors, security issues, and cases the agent did not consider.
+
+**Where it falls short:** PR review happens after the fact. By the time the reviewer sees the diff, the agent has already made its scope decisions, product choices, and implementation tradeoffs. The reviewer has to reconstruct the agent's intent from the code. On a large agent-generated diff, this is expensive and often incomplete.
+
+The reviewer also has no structured context. They do not know which files were intended to change and which were incidental. They do not know which timeout value was a deliberate product decision and which was a reasonable guess. They do not know whether a changed behavior was in scope or drift. All of that context lived in the agent's session.
+
+**What FST does differently:** FST gives reviewers the ExplorationNote — the approved scope — and the Candidate — every change traced to a requirement. The reviewer's job changes from "figure out what this diff is doing and whether it's right" to "confirm that what was built matches what was agreed." The review surface is smaller because the scope was bounded upfront, and targeted because the trace already shows the why.
+
+## The Layer Model
+
+These tools are not alternatives. They are different layers.
+
+```text
+Specs          → what the system should do
+Memory         → what the agent should know
+FST            → what the agent is authorized to build
+CI             → whether the code passes defined checks
+PR review      → whether the result is correct and appropriate
+```
+
+FST occupies the authorization layer — the layer that controls what the agent may produce before it produces it. Nothing on that list controls the same layer. That is why FST is not a replacement for any of them, and why none of them is a replacement for FST.

@@ -1,0 +1,90 @@
+---
+slug: use-fst-with-your-existing-agent
+title: Using FST With Your Existing Agent
+authors: [codey]
+---
+
+FST does not replace your coding agent. It is a single MCP tool your agent calls at stage transitions. If your agent can call MCP tools, it can use FST without any changes to your setup.
+
+{/* truncate */}
+
+# Using FST With Your Existing Agent
+
+The integration question is usually the first practical one: "Do I have to change my agent, my IDE, my workflow?" The answer is no, no, and mostly no.
+
+## How FST Exposes Itself
+
+FST exposes one agent-facing tool:
+
+```text
+fst.control
+```
+
+Every FST operation — creating scope, checking gates, recording decisions, composing a Composition — goes through this single tool. The tool accepts a typed action name and a payload. Any agent that can call MCP tools can call `fst.control`.
+
+```ts
+fst.control({
+  protocol_version: "1.0",
+  action: "gate.check.exploration_to_build",
+  payload: {
+    exploration_note_ref: {
+      id: "EN-session-expiry",
+      revision_ref: "enrev-003",
+      type: "ExplorationNote"
+    }
+  }
+})
+```
+
+You do not need a new IDE. You do not need a new coding tool. You add FST as an MCP server to your existing agent's tool set.
+
+## What the Agent Needs to Know
+
+The agent needs to understand the FST stage model: what Exploration means, what a Candidate is, and when to check a gate.
+
+This comes from the system prompt or a `CLAUDE.md` file in your project. You do not need to rewire the agent's code generation logic. The agent generates code the same way it always has — it just calls `fst.control` at the stage transitions that mark the FST process.
+
+The three key moments where the agent calls FST:
+
+**1. After Exploration:** the agent has proposed a scope and you have confirmed it. The agent calls `gate.check.exploration_to_build` to verify the ExplorationNote is ready for Build. If the gate passes, Build begins. If it blocks, the agent shows you the specific blockers and their resolutions.
+
+**2. After Build:** the agent has created a Candidate. It calls `gate.check.build_to_compose` to verify the Candidate is complete and bounded. If it passes, the Candidate is ready for Compose.
+
+**3. During Compose:** the agent combines Candidates into a Composition and calls `gate.check.compose_coherence` to check whether the Composition holds together.
+
+Between these calls, the agent works freely — writing code, running tests, revising artifacts. FST does not supervise the agent's work inside a stage. It only evaluates whether the result is ready to leave.
+
+## Works With Claude Code
+
+If you use Claude Code, FST integrates through the MCP configuration in `.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "fst": {
+      "command": "fst",
+      "args": ["serve"]
+    }
+  }
+}
+```
+
+After that, Claude Code sees `fst.control` as an available tool and can call it during the session. The `CLAUDE.md` in your project tells Claude when and how to call it.
+
+## Works With Other Agents
+
+The same pattern applies to any agent that supports MCP: Cursor, Windsurf, or a custom agent built with the Anthropic SDK. Add FST as an MCP server, give the agent context about the stage model, and the agent can use FST without any further integration work.
+
+FST does not assume a specific agent runtime, model, or host. It evaluates what the agent sends — pinned artifact references, gate check requests, recorded evidence — not how the agent was built.
+
+## What You Do Not Need to Change
+
+- Your editor or IDE
+- Your coding agent's model or provider
+- Your existing tests or CI pipeline
+- Your PR workflow (FST produces a Candidate that sits alongside your PR, not instead of it)
+- Your code review process (FST gives reviewers more context; it does not replace the review)
+
+The only addition is `fst.control` in the agent's tool set and a `CLAUDE.md` (or equivalent) that describes the FST stage model to the agent.
+
+That is the integration cost. Everything else stays the same.

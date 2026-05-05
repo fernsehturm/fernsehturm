@@ -1,4 +1,3 @@
-import {useState} from 'react';
 import type {ReactNode} from 'react';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
@@ -22,303 +21,149 @@ type Tier = {
   bullets: string[];
   details: FeatureGroup[];
   cta: string;
-  ctaTo: string;
+  ctaTo?: string;
   badge?: string;
   highlighted?: boolean;
   isFree?: boolean;
-  hasTrial: boolean;
+  comingSoon?: boolean;
 };
 
 const tiers: Tier[] = [
   {
-    id: 'build',
-    name: 'BUILD',
-    headline: 'Build scalable systems with AI',
-    problem: '"Can I build this?"',
-    forWhom: 'Individual developers starting out, experimenting with agentic workflows, building first real systems — anyone who wants full capability without commitment.',
+    id: 'free',
+    name: 'FREE',
+    headline: 'Run the full FST loop locally',
+    problem: '"Can I keep one agent workflow under control?"',
+    forWhom:
+      'Individual developers trying FST, running one local system, or coordinating a small amount of parallel agent work.',
     monthlyPrice: null,
-    priceLabel: '',
+    priceLabel: 'forever',
     isFree: true,
-    hasTrial: false,
     bullets: [
-      'Full system building with AI agents',
-      'Code, requirements & decisions as a unified system',
-      'Runs locally — no setup or cloud required',
-      'Scales to real projects, not a toy',
+      '3 active Composition slots',
+      'Base world plus 2 parallel agent work worlds',
+      'Full WorkContext -> Exploration -> Build -> Compose loop',
+      'Local database on the agent machine',
     ],
-    cta: 'Start building free',
+    cta: 'Start free',
     ctaTo: '/docs/intro',
     details: [
       {
-        title: 'Full agent loop',
+        title: 'Complete control loop',
         items: [
-          'Create goals → derive requirements → implement → verify',
-          'No artificial limits on system size or features',
+          'Create a WorkContext, explore scope, build Candidates, and compose coherent worlds',
+          'Automated gates, traceability, evidence records, and local snapshots included',
         ],
       },
       {
-        title: 'Database-native system',
+        title: 'Composition slots',
         items: [
-          'Code, requirements, and decisions live together',
-          'Consistent structure from the beginning',
+          'One slot for your base world',
+          'Two slots for safe parallel agent work or temporary alternatives',
         ],
       },
       {
-        title: 'Local-first',
+        title: 'Local-first runtime',
         items: [
-          'Runs entirely on your machine',
-          'No dependency on external services',
-        ],
-      },
-      {
-        title: 'Basic consistency checks',
-        items: [
-          'Detect obvious gaps and conflicts',
-          'Ensure minimum system integrity',
+          'Runs on your machine',
+          'No shared server or cloud dependency required',
         ],
       },
     ],
   },
   {
-    id: 'control',
-    name: 'CONTROL',
-    headline: 'Build safely, even with multiple agents',
-    problem: '"Will this break?"',
-    forWhom: 'Solo developers using multiple agents, developers working on real projects, anyone hitting "things overwrite each other", early teams coordinating shared work.',
+    id: 'pro',
+    name: 'PRO',
+    headline: 'Remove the Composition slot limit',
+    problem: '"I need more possible worlds active at once."',
+    forWhom:
+      'Developers running several agents, keeping alternatives alive, or managing serious local work that needs more than 3 active Composition slots.',
     monthlyPrice: 29,
     priceLabel: '/mo',
-    hasTrial: true,
     badge: 'Most popular',
     highlighted: true,
     bullets: [
-      'Safe parallel development with multiple agents',
-      'Prevent conflicts and accidental overwrites',
-      'Controlled changes to shared system artifacts',
-      'Understand impact before applying changes',
+      'Unlimited active Composition slots',
+      'Run more parallel agent work safely',
+      'Keep experiments and repair worlds active',
+      'Still local-first on the agent machine',
     ],
-    cta: 'Start free trial',
+    cta: 'Start Pro trial',
     ctaTo: '/docs/intro',
     details: [
       {
-        title: 'Safe writes (proposal-based changes)',
+        title: 'Unlimited active worlds',
         items: [
-          'Agents propose changes instead of writing directly',
-          'System validates before accepting',
-          'Prevents accidental overwrites',
+          'Open more live Composition lines without archiving work',
+          'Compare alternatives and keep failed worlds available for repair',
         ],
       },
       {
-        title: 'Conflict detection',
+        title: 'More parallel capacity',
         items: [
-          'Detects when multiple agents modify the same artifact',
-          'Highlights incompatible changes early',
-          'Prevents silent inconsistencies',
+          'Agent capacity scales with active Composition slots',
+          'Use the base world plus as many live agent work worlds as you need',
         ],
       },
       {
-        title: 'Artifact ownership & control',
+        title: 'Same local runtime',
         items: [
-          'Define who/what can modify parts of the system',
-          'Optional strict enforcement',
-          'Prevents uncontrolled changes',
-        ],
-      },
-      {
-        title: 'Parallel workflows',
-        items: [
-          'Agents work in isolated revision sets',
-          'Merge changes safely',
-          'No stepping on each other',
-        ],
-      },
-      {
-        title: 'Impact-aware changes',
-        items: [
-          'Analyze what a change affects before applying it',
-          'Detect risk across features',
-          'Avoid breaking unrelated parts',
-        ],
-      },
-      {
-        title: 'Write policies',
-        items: [
-          'Enforce consistency rules automatically',
-          'Ensure changes follow system constraints',
+          'Uses the local database on the agent machine',
+          'Designed for individual Pro use',
         ],
       },
     ],
   },
   {
-    id: 'trust',
-    name: 'TRUST',
-    headline: 'Understand, control, and trust your system',
-    problem: '"Do I understand this?"',
-    forWhom: 'Developers building complex systems, long-running projects, anyone who feels "I don\'t fully understand what\'s happening anymore", advanced solo devs and serious teams.',
-    monthlyPrice: 79,
-    priceLabel: '/mo',
-    hasTrial: true,
+    id: 'team',
+    name: 'TEAM',
+    headline: 'Shared FST runtime for teams',
+    problem: '"Can we run this together?"',
+    forWhom:
+      'Teams that need a shared database, multiple users, and a deployable FST runtime instead of one local agent-machine database.',
+    monthlyPrice: null,
+    priceLabel: '',
+    comingSoon: true,
     bullets: [
-      'Full visibility into how your system works',
-      'Control how AI makes decisions',
-      'Predict impact before changes happen',
-      'System improves itself over time',
+      'Deployable Docker database/runtime',
+      'Shared state across users and machines',
+      'Team collaboration and reviewer workflows',
+      'Central operational setup',
     ],
-    cta: 'Start free trial',
-    ctaTo: '/docs/intro',
+    cta: 'Coming soon',
     details: [
       {
-        title: 'Trainer (controlled delegation)',
+        title: 'Shared deployment',
         items: [
-          'Define how the agent behaves',
-          'Control ambiguity handling and decision authority',
-          'Configure escalation rules and critique strictness',
-          'Profiles: fast prototyping · balanced · strict engineering · compliance mode',
+          'Run the FST database as a deployable Docker container',
+          'Keep one shared system state across agents, developers, and machines',
         ],
       },
       {
-        title: 'System explainability',
+        title: 'Team operation',
         items: [
-          'Understand what your system does',
-          'See how features connect',
-          'Understand why decisions were made',
-        ],
-      },
-      {
-        title: 'Impact analysis',
-        items: [
-          'Predict what will break before changing anything',
-          'Identify affected requirements and features',
-          'Safe refactoring planning',
-        ],
-      },
-      {
-        title: 'System health & risk detection',
-        items: [
-          'Identify inconsistencies',
-          'Detect fragile areas',
-          'Highlight duplication and drift',
-        ],
-      },
-      {
-        title: 'Deep traceability',
-        items: [
-          'Trace from requirement → code → runtime',
-          'Explain why something exists',
-          'Debug by reasoning, not guessing',
-        ],
-      },
-      {
-        title: 'Self-improvement',
-        items: [
-          'System learns from past loops',
-          'Improves prompts and workflows',
-          'Identifies recurring problems and proposes better ways to build',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'foundation',
-    name: 'FOUNDATION',
-    headline: 'Run your own shared, evolving system',
-    problem: '"Can we run this together long-term?"',
-    forWhom: 'Teams working on the same system, individuals running multiple machines, developers building long-term or production systems, anyone creating their own "agentic organization".',
-    monthlyPrice: 20,
-    priceLabel: '/seat/mo',
-    hasTrial: true,
-    bullets: [
-      'One shared system across machines and users',
-      'Persistent system memory beyond one device',
-      'Multiple developers and agents working together',
-      'Centralized governance and learning',
-    ],
-    cta: 'Start free trial',
-    ctaTo: '/docs/intro',
-    details: [
-      {
-        title: 'Shared system state',
-        items: [
-          'Single source of truth across all machines',
-          'All agents operate on the same system',
-          'No divergence between environments',
-        ],
-      },
-      {
-        title: 'Multi-machine access',
-        items: [
-          'Connect from multiple devices',
-          'Work seamlessly across environments',
-          'System is no longer tied to one machine',
-        ],
-      },
-      {
-        title: 'Multi-user collaboration',
-        items: [
-          'Multiple developers contribute to the same system',
-          'Shared artifacts, decisions, and requirements',
-          'Unified development flow',
-        ],
-      },
-      {
-        title: 'Centralized agent coordination',
-        items: [
-          'Agents across machines remain aligned',
-          'Shared policies and constraints',
-          'Unified decision model',
-        ],
-      },
-      {
-        title: 'Persistent organizational memory',
-        items: [
-          'System remembers decisions, requirements, feedback, and improvements',
-          'Knowledge accumulates over time',
-        ],
-      },
-      {
-        title: 'Shared self-improvement',
-        items: [
-          'All loops contribute to system learning',
-          'Improvements apply globally',
-          'System evolves as a whole',
-        ],
-      },
-      {
-        title: 'Foundation for agentic organizations',
-        items: [
-          'Run your own system as a long-lived entity',
-          'Coordinate many agents and developers',
-          'System becomes a shared asset',
+          'Built for shared work rather than one local machine',
+          'Designed for future team roles, reviewers, and operational controls',
         ],
       },
     ],
   },
 ];
 
-function PriceDisplay({tier, yearly}: {tier: Tier; yearly: boolean}) {
-  if (tier.isFree) {
+function PriceDisplay({tier}: {tier: Tier}) {
+  if (tier.comingSoon) {
     return (
       <div className={styles.priceBlock}>
-        <span className={styles.price}>Free</span>
-        <span className={styles.priceLabel}>forever</span>
+        <span className={styles.price}>Coming soon</span>
       </div>
     );
   }
 
-  const monthly = tier.monthlyPrice!;
-  const yearlyTotal = monthly * 10;
-  const yearlyMonthlyEquiv = Math.round(yearlyTotal / 12);
-  const isFoundation = tier.id === 'foundation';
-
-  if (!yearly) {
+  if (tier.isFree) {
     return (
       <div className={styles.priceBlock}>
-        <div className={styles.priceRow}>
-          <span className={styles.price}>€{monthly}</span>
-          <span className={styles.priceLabel}>{tier.priceLabel}</span>
-        </div>
-        {isFoundation && (
-          <p className={styles.priceNote}>Min. 5 seats · from €{monthly * 5}/mo</p>
-        )}
+        <span className={styles.price}>Free</span>
+        <span className={styles.priceLabel}>{tier.priceLabel}</span>
       </div>
     );
   }
@@ -326,20 +171,15 @@ function PriceDisplay({tier, yearly}: {tier: Tier; yearly: boolean}) {
   return (
     <div className={styles.priceBlock}>
       <div className={styles.priceRow}>
-        <span className={styles.price}>€{yearlyMonthlyEquiv}</span>
+        <span className={styles.price}>€{tier.monthlyPrice}</span>
         <span className={styles.priceLabel}>{tier.priceLabel}</span>
       </div>
-      <p className={styles.yearlyBilled}>
-        Paid annually · €{isFoundation ? `${yearlyTotal}/seat` : yearlyTotal}/year
-      </p>
-      {isFoundation && (
-        <p className={styles.priceNote}>Min. 5 seats · from €{yearlyMonthlyEquiv * 5}/mo</p>
-      )}
+      <p className={styles.priceNote}>7-day free trial</p>
     </div>
   );
 }
 
-function TierCard({tier, yearly}: {tier: Tier; yearly: boolean}) {
+function TierCard({tier}: {tier: Tier}) {
   return (
     <div className={`${styles.card} ${tier.highlighted ? styles.cardHighlighted : ''}`}>
       {tier.badge && <div className={styles.badge}>{tier.badge}</div>}
@@ -347,10 +187,7 @@ function TierCard({tier, yearly}: {tier: Tier; yearly: boolean}) {
       <div className={styles.cardHeader}>
         <div className={styles.tierName}>{tier.name}</div>
         <Heading as="h2" className={styles.headline}>{tier.headline}</Heading>
-        <PriceDisplay tier={tier} yearly={yearly} />
-        {tier.hasTrial && (
-          <div className={styles.trialBadge}>7-day free trial</div>
-        )}
+        <PriceDisplay tier={tier} />
       </div>
 
       <p className={styles.problem}>{tier.problem}</p>
@@ -365,13 +202,16 @@ function TierCard({tier, yearly}: {tier: Tier; yearly: boolean}) {
       </ul>
 
       <div className={styles.cardFooter}>
-        <Link
-          className={`${styles.cta} ${tier.highlighted ? styles.ctaHighlighted : ''}`}
-          to={tier.ctaTo}>
-          {tier.cta} →
-        </Link>
-        {tier.hasTrial && (
-          <p className={styles.trialNote}>Cancel anytime before trial ends. No charge.</p>
+        {tier.ctaTo ? (
+          <Link
+            className={`${styles.cta} ${tier.highlighted ? styles.ctaHighlighted : ''}`}
+            to={tier.ctaTo}>
+            {tier.cta} →
+          </Link>
+        ) : (
+          <span className={`${styles.cta} ${styles.ctaDisabled}`}>
+            {tier.cta}
+          </span>
         )}
       </div>
 
@@ -396,37 +236,18 @@ function TierCard({tier, yearly}: {tier: Tier; yearly: boolean}) {
 }
 
 export default function Pricing(): ReactNode {
-  const [yearly, setYearly] = useState(false);
-
   return (
     <Layout
       title="Pricing"
-      description="Each tier removes a specific pain. Start free, upgrade when you need to.">
+      description="Start free with 3 active Composition slots. Upgrade to Pro when you need more live possible worlds.">
       <main>
         <section className={styles.hero}>
           <div className="container">
             <Heading as="h1">Pricing</Heading>
             <p className={styles.heroSub}>
-              Each tier removes a specific pain. Start free — upgrade when your system needs to scale, be trusted, or be shared.
+              Start free with the full FST loop. Upgrade only when you need more
+              active Composition slots for parallel agent work.
             </p>
-          </div>
-        </section>
-
-        <section className={styles.toggleSection}>
-          <div className="container">
-            <div className={styles.toggleWrapper}>
-              <button
-                className={`${styles.toggleBtn} ${!yearly ? styles.toggleActive : ''}`}
-                onClick={() => setYearly(false)}>
-                Monthly
-              </button>
-              <button
-                className={`${styles.toggleBtn} ${yearly ? styles.toggleActive : ''}`}
-                onClick={() => setYearly(true)}>
-                Yearly
-                <span className={styles.savingsBadge}>2 months free</span>
-              </button>
-            </div>
           </div>
         </section>
 
@@ -434,7 +255,7 @@ export default function Pricing(): ReactNode {
           <div className="container">
             <div className={styles.grid}>
               {tiers.map((tier) => (
-                <TierCard key={tier.id} tier={tier} yearly={yearly} />
+                <TierCard key={tier.id} tier={tier} />
               ))}
             </div>
           </div>
@@ -443,7 +264,9 @@ export default function Pricing(): ReactNode {
         <section className={styles.ctaSection}>
           <div className="container">
             <p className={styles.ctaText}>
-              <strong>Start free.</strong> No credit card required for BUILD. Paid tiers include a 7-day free trial — cancel before it ends and you won't be charged.
+              <strong>Start free.</strong> Free includes your base world plus 2
+              parallel agent work worlds. Pro removes the active Composition
+              slot limit for local use.
             </p>
             <Link className={styles.ctaButton} to="/docs/intro">
               Get started →
