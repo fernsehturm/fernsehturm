@@ -7,7 +7,34 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Fernsehturm',
   tagline: 'Fernsehturm helps AI agents build software that stays consistent as it grows.',
-  favicon: 'img/fst-icon-32',
+  favicon: 'img/favicon.ico',
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/x-icon',
+        sizes: '32x32',
+        href: '/img/favicon.ico',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/img/fst-icon-200.svg',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'apple-touch-icon',
+        sizes: '200x200',
+        href: '/img/fst-icon-200.png',
+      },
+    },
+  ],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {

@@ -1,25 +1,23 @@
 codey:
   name: Codey
-  title: Fast, confident, and always a little too ready to improve the brief
-  image_url: /img/codey.png
+  title: Your repo is just a giant inference puzzle
+  image_url: /img/codey-icon.png
   page: true
 
 claudric:
   name: Claudric
-  title: Thoughtful, articulate, and always a little too ready to infer the missing pieces
-  image_url: /img/claudric.png
+  title: I love to extend the brief
+  image_url: /img/claudric-icon.png
   page: true
 
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
-  page:
-    # customize the url of the author page at /blog/authors/<permalink>
-    permalink: '/all-sebastien-lorber-articles'
-  socials:
-    x: sebastienlorber
-    linkedin: sebastienlorber
-    github: slorber
-    newsletter: https://thisweekinreact.com
+colbert:
+  name: Colbert
+  title: I simply guess what is real and what isn't
+  image_url: /img/colbert-icon.png
+  page: true
+
+kim:
+  name: Kim
+  title: Let's put it all into one patch before we chose the product direction
+  image_url: /img/kim-icon.png
+  page: true

@@ -10,21 +10,26 @@ import styles from './index.module.css';
 
 const heroDialogue = {
   developer: [
-    'I want the speed, not the cleanup.',
-    'Can we change auth without quietly changing the product?',
-  ],
-  developerAccept: [
-    'That matches the product.',
-    'Use this Accepted Work Context.',
-  ],
-  fst: [
-    'I inspected the codebase first.',
-    'Here is the likely context and the one decision that matters.',
+    'I want to move fast and I want you to get it right.',
+    "Don't bother me with trivial stuff.",
   ],
   agent: [
-    'Point me at the work.',
-    'I will stay inside the retained scope and stop for real decisions.',
+    'I can do even more!',
+    'I am trained to know that session-based logins support "remember me."',
   ],
+  agentRepair: [
+    'Understood.',
+    'I will remove the inference and stay inside the accepted change.',
+  ],
+  
+  fst: [
+    'I keep the agent inside the line you accepted.',
+    'Passing tests do not move the line.',
+  ],
+  developerAccept: [
+    "Nice idea, but right now it doesn't fit.",
+  ],
+  
 };
 
 const consoleGroups = [
@@ -33,18 +38,7 @@ const consoleGroups = [
     tone: 'developer',
     icon: '/img/bob-icon.png',
     lines: [
-      '/fst Add session expiry after 30 minutes',
-      'Constraint: do not introduce JWT refresh flow.',
-    ],
-  },
-  {
-    speaker: 'fst',
-    tone: 'fst',
-    icon: '/img/fst-icon.png',
-    lines: [
-      'Investigated the codebase: existing session middleware found',
-      'Accepted Work Context: current auth session Composition',
-      'Need your decision: should authenticated API activity reset the timer?',
+      '/fst Add session expiry after 30 minutes of inactivity.'
     ],
   },
   {
@@ -52,17 +46,35 @@ const consoleGroups = [
     tone: 'agent',
     icon: '/img/codey-icon.png',
     lines: [
-      'Retained scope: session middleware and verification',
-      'Build only inside the recorded scope',
+      'expiry done + inferred remember_me',
+      '...tests green',
+    ],
+  },
+  {
+    speaker: 'fst',
+    tone: 'fst',
+    icon: '/img/fst-icon.png',
+    lines: [
+      'BLOCKED: outside accepted scope!',
+      'Split and ask the user',
+    ],
+  },
+  {
+    speaker: 'Agent',
+    tone: 'agent',
+    icon: '/img/codey-icon.png',
+    lines: [
+      '"remember_me" separated',
+      'I finished the work on the expiry. Do you also want "remember me?"'
     ],
   },
   {
     speaker: 'Developer',
     tone: 'developer',
-    icon: '/img/bob.png',
+    icon: '/img/bob-icon.png',
     lines: [
-      'Confirm Accepted Work Context',
-      'Start guarded run',
+      'Only ship the thing I asked for.',
+      'Keep the rest for later.',
     ],
   },
 ];
@@ -80,25 +92,25 @@ const features = [
 const useCases = [
   {
     title: 'Compare alternatives',
-    image: '/img/fst-icon.png',
+    image: '/img/compare.png',
     link: '/blog/compare-alternatives-before-you-choose',
     teaser: 'Explore two product directions side by side before choosing which one should move forward.',
   },
   {
     title: 'Resume long work',
-    image: '/img/claudric-icon.png',
+    image: '/img/resume.png',
     link: '/blog/resume-long-running-ai-work',
     teaser: 'Pick up a task days later with the open decisions, checked scope, and remaining blockers still visible.',
   },
   {
     title: 'Recover failed runs',
-    image: '/img/codey-icon.png',
+    image: '/img/fix-broken.png',
     link: '/blog/recover-failed-agent-runs',
     teaser: 'Turn a broken agent attempt into a repair path instead of starting over from a vague chat transcript.',
   },
   {
     title: 'Hand off work',
-    image: '/img/bob-icon.png',
+    image: '/img/hand-off.png',
     link: '/blog/hand-off-ai-work-without-losing-context',
     teaser: 'Let another agent or teammate continue from recorded context, not from memory or guesswork.',
   },
@@ -110,7 +122,7 @@ function WhatIsSection() {
       <div className="container">
         <Heading as="h2">What is Fernsehturm?</Heading>
         <p className={styles.whatIsIntro}>
-          Fernsehturm is an agent-focused control system. Agents do the software work; FST keeps the work bounded, traceable, evidence-backed, and composable before it moves forward.
+          Fernsehturm is an agent-focused control system. Agents do the nitty-gritty work; FST keeps the work bounded, traceable, evidence-backed, and composable before it moves forward.
         </p>
         <ul className={styles.featureList}>
           {features.map(({title, description, link}) => (
@@ -235,10 +247,13 @@ function HowItWorksSection() {
     <section className={styles.howItWorks}>
       <div className="container">
         <div className={styles.howItWorksIntro}>
-          <Heading as="h2">How It Works</Heading>
+          <Heading as="h2">Stop an AI agent from shipping plausible but unrequested behavior.</Heading>
           <p>
-            Start from the work you already have. FST records the Accepted Work Context,
-            bounds the agent with retained scope, and pulls you back in only when judgment is required.
+            The failure mode is familiar: you asked for one thing, the agent touched ten
+            files, and something broke somewhere unrelated.
+          </p>
+          <p>
+            This is why you need Fernsehturm: You accept the scope, the agent works inside it, FST enforces the boundary. 
           </p>
         </div>
 
@@ -301,7 +316,7 @@ function HowItWorksSection() {
                       </div>
                     </div>
                   ) : null}
-                  {index === 3 ? (
+                  {index === 4 ? (
                     <div className={clsx(styles.shellBubble, styles.shellBubbleAboveLeft, styles.speechBubble, styles.speechBubbleWarm)}>
                       <svg className={styles.bubbleSvg} viewBox="0 0 420 220" preserveAspectRatio="none" aria-hidden="true">
                         <path
@@ -347,7 +362,7 @@ function HowItWorksSection() {
                       </div>
                     </div>
                   ) : null}
-                  {group.tone === 'agent' ? (
+                  {group.tone === 'agent' && index === 1 ? (
                     <div className={clsx(styles.shellBubble, styles.shellBubbleAboveRight, styles.speechBubble, styles.speechBubbleCool)}>
                       <svg className={styles.bubbleSvg} viewBox="0 0 420 220" preserveAspectRatio="none" aria-hidden="true">
                         <path
@@ -365,6 +380,29 @@ function HowItWorksSection() {
                       </svg>
                       <div className={styles.bubbleText}>
                         {heroDialogue.agent.map((line) => (
+                          <p key={line}>{line}</p>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {group.tone === 'agent' && index === 3 ? (
+                    <div className={clsx(styles.shellBubble, styles.shellBubbleAboveRight, styles.speechBubble, styles.speechBubbleCool)}>
+                      <svg className={styles.bubbleSvg} viewBox="0 0 420 220" preserveAspectRatio="none" aria-hidden="true">
+                        <path
+                          className={styles.bubblePath}
+                          d="M94 10
+                             C42 10, 12 42, 12 88
+                             C12 134, 36 168, 88 168
+                             L278 168
+                             C302 188, 336 206, 382 214
+                             C348 204, 332 184, 322 164
+                             C378 158, 408 126, 408 78
+                             C408 38, 382 10, 338 10
+                             Z"
+                        />
+                      </svg>
+                      <div className={styles.bubbleText}>
+                        {heroDialogue.agentRepair.map((line) => (
                           <p key={line}>{line}</p>
                         ))}
                       </div>

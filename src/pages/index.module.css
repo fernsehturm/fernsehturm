@@ -58,7 +58,7 @@
 }
 
 .speechBubbleCool {
-  --bubble-fill: #c0f1ff;
+  --bubble-fill: #259bab;
 }
 
 .speechBubbleNeutral {
@@ -385,6 +385,17 @@
   }
 }
 
+@media screen and (max-width: 399px) {
+  .bubbleText {
+    padding-top: 1.35rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .bubbleText p {
+    font-size: 0.74rem;
+  }
+}
+
 .whatIs {
   padding: 3rem 0 4rem;
   background-color: var(--ifm-background-surface-color);
@@ -526,10 +537,12 @@
 
 .useCaseImage {
   display: block;
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  height: auto;
   object-fit: contain;
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
 }
 
 .useCaseCard h3 {
