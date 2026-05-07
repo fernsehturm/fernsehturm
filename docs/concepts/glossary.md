@@ -8,6 +8,31 @@ This page defines every FST term used in the documentation. All uses of these te
 
 Terms are organized by category. Within each category, they appear in logical reading order.
 
+## Quick Term Map
+
+Core flow:
+
+- [WorkContext](#workcontext)
+- [SearchView](#searchview)
+- [ExplorationNote](#explorationnote)
+- [Candidate](#candidate)
+- [Composition](#composition)
+- [Materialization](#materialization)
+
+Evidence and control:
+
+- [Verification](#verification)
+- [Observation](#observation)
+- [UserInteraction](#userinteraction)
+- [DecisionRequirement](#decisionrequirement)
+- [PolicyChangeRequirement](#policychangerequirement)
+
+System constraints:
+
+- [Policy](#policy)
+- [Decision](#decision)
+- [Contract](#contract)
+
 ---
 
 ## Stage and Process Terms
@@ -186,6 +211,43 @@ Agent narration does not satisfy gates. A UserInteraction record does.
 UserInteractions are the mechanism by which decisions, approvals, scope changes, policy exceptions, and other human inputs become part of the evidence graph rather than disappearing into chat history.
 
 See also: [Process Entities: UserInteraction](./03_process-entities.md#userinteraction)
+
+---
+
+### DecisionRequirement
+
+A blocker that records a product, behaviour, scope, or risk question that must
+be answered before a gate can pass.
+
+DecisionRequirements are created when the agent or FST discovers that the safe
+path depends on a human or designated reviewer choice. The answer must be
+recorded as gate-eligible [UserInteraction](#userinteraction) evidence. Agent
+narration such as "the user approved the plan" does not satisfy the
+requirement.
+
+Examples:
+
+- session expiry should be measured from last activity or session creation
+- passwordless links should expire after 15 minutes or 30 minutes
+- a scope expansion should include only one email template or all templates
+
+---
+
+### PolicyChangeRequirement
+
+A blocker that records that proposed work conflicts with, weakens, expands, or
+requires an exception to an active [Policy](#policy).
+
+PolicyChangeRequirements prevent agents from treating policy changes as local
+implementation details. The requirement must be resolved by changing the work,
+recording a new or revised Policy, or recording a gate-eligible policy exception
+with the permitted actor and scope.
+
+Examples:
+
+- storing session tokens in browser localStorage conflicts with a security policy
+- emitting production data to a debug log requires a policy exception
+- adding SMS recovery changes the account-recovery policy surface
 
 ---
 

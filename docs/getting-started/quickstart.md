@@ -4,10 +4,11 @@ sidebar_position: 2
 
 # Quickstart
 
-This quickstart covers the local developer path:
+This quickstart gets one local repository under FST control and runs one
+controlled development task:
 
 ```text
-Install -> initialize FST -> install the agent skill -> run one controlled task
+Install -> initialize FST -> install the agent skill -> check setup -> run one task
 ```
 
 The current product path is local-first. Free and Pro both run against a local
@@ -37,6 +38,8 @@ fst init
 ```
 
 This creates the local FST configuration and state needed for controlled work.
+Run it in the target repository, not in the FST source repository, unless you are
+using FST to control work on FST itself.
 
 ## 3. Install The Agent Skill
 
@@ -79,8 +82,25 @@ Keep the current server-side session model.
 Do not add persistent login.
 ```
 
-FST should propose the starting context and retained scope before the agent
-builds. The agent works inside that box and records what it changed.
+The agent should first establish the starting context and scope for the task. If
+it asks you to choose between alternatives, answer in product terms:
+
+```text
+Use the current server-side session flow.
+Ignore the old JWT refresh-token experiment.
+Do not add persistent login in this task.
+```
+
+During the run, answer only prompts that affect the requested behaviour, allowed
+scope, risk, or where output may be written. Let the agent handle ordinary
+implementation and verification steps.
+
+At the end, ask the agent to show:
+
+- what changed
+- which decisions or approvals it used
+- which checks ran
+- whether any blockers remain
 
 ## 6. Optional: Add `agents.md`
 
@@ -89,5 +109,6 @@ points the agent at the FST workflow. See [Agent Setup](agents.md).
 
 ## Next
 
-Run the [Scope-Drift Demo](../fst-in-action/scope-drift.md) to see the first
-useful FST moment.
+Run the [Scope-Drift Demo](../fst-in-action/scope-drift.md), or read
+[FST Use Cases](../understanding/use-cases.md) for the reasoning behind the
+workflow.

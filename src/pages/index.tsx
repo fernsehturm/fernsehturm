@@ -85,9 +85,9 @@ const features = [
   { title: 'Bounded agent work', description: 'The agent can only move forward with changes that stay inside the recorded scope', link: '/docs/features/control-loop#exploration' },
   { title: 'Traceable results', description: 'FST records what changed, why it was allowed, and what evidence supports it', link: '/docs/features/traceability-and-evidence#traceability' },
   { title: 'Conflict checks', description: 'FST checks whether the proposed work holds together with the selected system world', link: '/docs/features/traceability-and-evidence#claims-become-checkable-records' },
-  { title: 'Evidence-bound decisions', description: 'Important user answers are tied to the exact question they satisfy', link: '/docs/getting-started/overview#what-counts-as-evidence' },
+  { title: 'Evidence-bound decisions', description: 'Important user answers are tied to the exact question they satisfy', link: '/docs/understanding/use-cases#8-cleaner-user-agent-interaction' },
   { title: 'Materialized output', description: 'A coherent Composition can be projected into a workspace, patch, or other target sink', link: '/docs/workflows/materialization' },
-  { title: 'Short user loop', description: 'You provide direction, answer real decisions, approve risky writes, and review the trace', link: '/docs/getting-started/overview#what-you-do' },
+  { title: 'Short user loop', description: 'You provide direction, answer real decisions, approve risky writes, and review the trace', link: '/docs/understanding/use-cases#8-cleaner-user-agent-interaction' },
 ];
 
 const useCases = [

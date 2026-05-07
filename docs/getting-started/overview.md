@@ -4,73 +4,41 @@ sidebar_position: 1
 
 # Overview
 
-FST is a control system for AI-assisted software development.
+This section gets FST installed, connected to your coding agent, and running on
+one project.
 
-It does not replace your coding agent. It gives the agent a controlled path to
-work inside:
+It is a how-to section. If you want the background first, read
+[FST Use Cases](../understanding/use-cases.md).
 
-```text
-Work-Context Selection -> Exploration -> Build -> Compose
-```
+## What You Need
 
-You give the direction. The agent does the work. FST records the box, checks the
-exits, and blocks work that is not traceable, bounded, or coherent.
+- the `fst` CLI on your `PATH`
+- a repository where you want your agent to work
+- an agent integration, such as the Codex skill
+- permission to run normal project commands such as tests or builds
 
-The practical promise:
+## Where FST Runs
 
-```text
-Let the agent move fast inside the box.
-Stop or record it when it tries to move the box.
-```
+The current Free and Pro product path is local-first:
 
-## What You Do
+- the `fst` CLI runs on the same machine as your coding agent
+- FST uses a local database on that machine
+- `fst init` prepares the selected repository for controlled work
+- the agent talks to FST through the installed integration
 
-| Responsibility | When | What a good answer looks like |
-|---|---|---|
-| State the goal | At the start | "Add 30-minute session expiry without JWT refresh tokens." |
-| Choose context | When multiple starting worlds make sense | "Use the current email-only reset Composition, not the SMS experiment." |
-| Resolve decisions | When behavior, policy, or tradeoffs are ambiguous | "Reset on authenticated API activity, not on background refresh checks." |
-| Authorize risk | When scope, policy, coverage, or materialization needs approval | "Allow this migration as patch output only." |
-| Review the result | At the end | "Show the Composition, checks, decisions, and remaining blockers." |
+The future Team plan will add a shared deployable runtime for teams that need a
+central FST service.
 
-## What FST Does
+## What You Will Do
 
-- records where Exploration may look
-- records what Build may touch
-- records what the agent created as a Candidate
-- checks exact pinned revisions in a Composition
-- records evidence instead of relying on agent narration
-
-## What FST Does Not Ask You To Do
-
-You should not need to:
-
-- maintain a requirements spreadsheet
-- manually list every file the agent may touch
-- review every generated line just to find scope drift
-- remember what you approved earlier
-- trust an agent summary as proof of agreement
-
-## What Counts As Evidence
-
-For gate-relevant input, agent narration is not enough. FST binds your answer to the specific question:
-
-```text
-Question:
-Should API activity reset the session timer?
-
-Answer:
-Yes, for authenticated API requests only.
-
-Evidence binding:
-This answer satisfies DecisionRequirement DR-session-activity-reset.
-```
-
-That binding prevents later drift. The agent cannot replace it with "the user approved the timeout plan."
+1. Install the CLI.
+2. Initialize FST in the repository you want to work on.
+3. Install or configure the agent integration.
+4. Run `fst doctor`.
+5. Start one controlled task from your agent.
+6. Answer any concrete setup, scope, or decision prompts the agent presents.
+7. Review the result the agent reports.
 
 ## Start Here
 
-Continue with the [Quickstart](quickstart.md), then run the
-[Scope-Drift Demo](../fst-in-action/scope-drift.md).
-
-For the full model reference, see [The FST Model](../concepts/01_the-model.md).
+Continue with the [Quickstart](quickstart.md).

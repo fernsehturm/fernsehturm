@@ -4,13 +4,7 @@ sidebar_position: 3
 
 # Agent Setup
 
-FST works with agents through a controlled tool surface and a small operating
-rule:
-
-```text
-The agent does the work.
-FST controls stage exits, evidence, scope, and coherence.
-```
+Use this page to connect an agent to an already installed `fst` CLI.
 
 ## Codex
 
@@ -28,13 +22,16 @@ Then invoke FST from a normal task:
 
 ## Other Agents
 
-For other agents, the integration requirement is the same:
+For other agents, configure the agent so it can call the FST MCP tool.
 
-- the agent must be able to call the FST MCP tool
-- the public control tool is `fst.control`
-- the agent must use FST help actions for API details instead of reading local
-  target docs during a controlled run
-- the agent must not treat its own summary as gate evidence
+The public tool name is:
+
+```text
+fst.control
+```
+
+The agent should use FST's runtime help actions for FST API details. It should
+not infer live action payloads from local markdown files.
 
 ## Optional `agents.md`
 
@@ -46,11 +43,9 @@ Use a short repository-level instruction file when your agent supports it:
 Use FST for controlled development work.
 
 - Start user-requested changes through `/fst` when available.
-- Treat Work-Context Selection, Exploration, Build, and Compose as the control
-  loop.
-- Work freely inside a stage, but call FST before crossing a gate.
-- Do not claim user approval. Record gate-relevant user input through FST.
-- If an action shape is unclear, ask `fst.help.*` through `fst.control`.
+- Do not claim user approval. Record user decisions through FST.
+- If FST API details are unclear, ask FST's runtime help through `fst.control`.
+- Do not use local docs as a fallback for live FST API construction.
 ```
 
 Keep this file short. The runtime FST help surface is authoritative for action
