@@ -4,54 +4,45 @@ sidebar_position: 1
 
 # Control Loop
 
-FST controls one context-selection phase and three work stages:
+FST controls boundary crossings in agent work.
 
 ```text
-Work-Context Selection -> Exploration -> Build -> Compose
+agent intent -> gate evaluation -> route -> evidence -> next action
 ```
 
-The agent is free inside a stage. FST controls whether a pinned result may leave
-the stage.
+The agent can reason freely inside the allowed boundary. FST decides when the
+work may cross into a controlled action, approval, package, report, or effect.
 
-## Work-Context Selection
+## Gates
 
-Answers:
+FST evaluates:
+
+- decision gates
+- approval gates
+- process-conformance gates
+
+Each gate belongs to the active process profile.
+
+## Routes
+
+Routes are fixed across profiles:
 
 ```text
-Where may Exploration look?
+Continue
+InstructAgent
+AskUser
+AwaitApproval
+Blocked
+MaterializeMock
+MaterializeAllowed
+Complete
 ```
 
-It creates a WorkContext and usually a SearchView.
+The route tells the agent exactly what kind of step is allowed next.
 
-## Exploration
+## Why This Matters
 
-Answers:
+Without FST, an agent can say it followed a process. With FST, the process
+decides whether the run state satisfies the gate.
 
-```text
-What does this work touch?
-```
-
-It creates an ExplorationNote. The retained scope is the box Build must stay
-inside.
-
-## Build
-
-Answers:
-
-```text
-What did the agent create or change inside the box?
-```
-
-It creates a Candidate.
-
-## Compose
-
-Answers:
-
-```text
-Do these pinned revisions hold together as one possible world?
-```
-
-It creates a Composition and checks coherence.
-
-For the full reference, see [The FST Model](../concepts/01_the-model.md).
+That is the control loop.

@@ -4,41 +4,61 @@ sidebar_position: 1
 
 # Overview
 
-This section gets FST installed, connected to your coding agent, and running on
-one project.
+This section gets the local FST MVP installed and running.
 
-It is a how-to section. If you want the background first, read
-[FST Use Cases](../understanding/use-cases.md).
+The MVP is a Linux package with a single `fst` binary. The public installer
+downloads the latest GitHub release, installs the command locally, and installs
+the bundled process packs. FST initializes a local workspace, selects a store,
+runs scenarios, records evidence, and exposes `fst.control` to agents through a
+local MCP server.
+
+## Install Command
+
+```bash
+curl -fsSL https://www.fernsehturm.dev/install.sh | bash
+fst version
+```
+
+The installer uses the latest `fernsehturm/fernsehturm` GitHub release and
+installs without `sudo` by default.
 
 ## What You Need
 
-- the `fst` CLI on your `PATH`
-- a repository where you want your agent to work
-- an agent integration, such as the Codex skill
-- permission to run normal project commands such as tests or builds
-
-## Where FST Runs
-
-The current Free and Pro product path is local-first:
-
-- the `fst` CLI runs on the same machine as your coding agent
-- FST uses a local database on that machine
-- `fst init` prepares the selected repository for controlled work
-- the agent talks to FST through the installed integration
-
-The future Team plan will add a shared deployable runtime for teams that need a
-central FST service.
+- Linux
+- `curl` or `wget` for the one-command installer
+- a workspace directory where FST may write `.fst/`
+- an agent that can connect to the local FST MCP controller
+- Python or Node only if the active process pack uses that hook runtime
 
 ## What You Will Do
 
-1. Install the CLI.
-2. Initialize FST in the repository you want to work on.
-3. Install or configure the agent integration.
-4. Run `fst doctor`.
-5. Start one controlled task from your agent.
-6. Answer any concrete setup, scope, or decision prompts the agent presents.
-7. Review the result the agent reports.
+1. Install the latest `fst` release with the one-command installer.
+2. Initialize a workspace with `local_file` or `sqlite` storage.
+3. Validate the workspace with `fst doctor`.
+4. Install and activate a process pack.
+5. Run the process pack scenarios.
+6. Start the local MCP controller.
+7. Point your agent at `fst.control`.
 
-## Start Here
+## Local Workspace Shape
+
+An initialized workspace contains:
+
+```text
+workspace/
+  .fst/
+    config.yaml
+    environment.yaml
+    active-profile.yaml
+    profiles/
+    core-store/
+    state/
+    trace/
+```
+
+The config file selects the store, runtime protocol versions, profile API, and
+active runtime behavior.
+
+## Next
 
 Continue with the [Quickstart](quickstart.md).

@@ -4,75 +4,64 @@ sidebar_position: 2
 
 # Traceability And Evidence
 
-FST does not ask you to trust the agent's final summary. It records the work as
-linked evidence.
+FST records why a route was returned.
 
-## Traceability
+That evidence is what makes agent work inspectable after the fact.
 
-Every meaningful change should connect to:
+## What Evidence Records
 
-- the user request
-- the WorkContext
-- the ExplorationNote retained scope
-- the Candidate that contains the work
-- the system artifacts changed or created
-- the Verification definitions and Observations
-- the Composition where the result is checked
+Evidence can include:
 
-## Evidence
+- requested action
+- payload hash
+- actor
+- run id
+- profile id, version, and hash
+- gate id and type
+- route
+- reason and instruction
+- missing artifacts
+- required approval
+- created artifacts
+- hook input and output hashes
+- materialization plan and result
 
-Gate-relevant user input must be system-recorded, hash-bound, and meaning-bound.
+## Agent Claims Are Not Enough
 
 Invalid:
 
 ```text
-Agent says the user approved.
+The agent says the user approved.
 ```
 
 Valid:
 
 ```text
-UserInteraction records the exact prompt and reply.
-The content hash matches.
-The answer is bound to the specific requirement it satisfies.
+An approval record exists from a trusted approval surface, scoped to the action.
 ```
 
-## Claims Become Checkable Records
-
-FST does not ask you to trust the agent's confidence. It turns agent claims into checkable records:
-
-| Agent claim | FST checks |
-|---|---|
-| "I stayed in scope." | Does the Candidate modify only retained scope from the pinned ExplorationNote? |
-| "The tests passed." | Which Verification revision was run, and which Observation records the result? |
-| "The user approved it." | Which UserInteraction is hash-bound and meaning-bound to the required question? |
-| "It does not conflict." | Does the Composition pass automated and judged checks for the pinned revisions? |
-
-## What FST Can Verify Automatically
-
-- every effective reference is revision-pinned
-- relations are allowed by the relation rules
-- same-type dependencies go through Contracts
-- a Composition does not include conflicting revisions of the same entity
-- Decisions are unique inside the Composition
-- Policies are satisfied where the rule is computable
-- Verifications target the effective revisions they claim to cover
-- required coverage exists or is explicitly deferred
-- user evidence exists when a gate needs it
-
-## Why It Matters
-
-When review happens later, the question is no longer:
+Invalid:
 
 ```text
-Can I reconstruct what happened from the patch?
+The agent says it ran the checks.
 ```
 
-It becomes:
+Valid:
 
 ```text
-Which exact recorded intent, scope, decisions, and evidence does this patch trace to?
+A test_run_artifact records the command, result, run id, and profile version.
 ```
 
-For deeper reference, see [System Artifacts](../concepts/02_artifacts.md) and
-[Process Entities](../concepts/03_process-entities.md).
+## Replay
+
+`fst replay show --latest` should explain:
+
+- which profile version controlled the run
+- which action was submitted
+- which gate fired
+- why the route was returned
+- which artifacts or approvals were missing
+- which evidence refs were written
+
+Replay is not logging for curiosity. It is how FST proves the route decision was
+based on controlled state.

@@ -4,111 +4,168 @@ sidebar_position: 2
 
 # Quickstart
 
-This quickstart gets one local repository under FST control and runs one
-controlled development task:
+This quickstart follows the MVP installation path:
 
 ```text
-Install -> initialize FST -> install the agent skill -> check setup -> run one task
+install fst -> init workspace -> install process pack -> run scenarios -> start MCP
 ```
 
-The current product path is local-first. Free and Pro both run against a local
-database on the agent machine. The future Team plan will add a shared deployable
-runtime.
+## 1. Install FST
 
-## 1. Install The CLI
-
-Install `fst` from the release bundle or installer script for your platform.
-The installer should leave the `fst` binary on your `PATH`.
-
-Verify it:
+Install the latest Linux package with one command:
 
 ```bash
+curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 fst version
 ```
 
-If you are working from a local checkout, build or use the local bundle first,
-then make sure the resulting `fst` binary is on your `PATH`.
-
-## 2. Initialize FST In A Project
-
-From the repository you want your agent to work on:
+If your current shell does not yet see `$HOME/.local/bin`, run:
 
 ```bash
-fst init
+export PATH="$HOME/.local/bin:$PATH"
+fst version
 ```
 
-This creates the local FST configuration and state needed for controlled work.
-Run it in the target repository, not in the FST source repository, unless you are
-using FST to control work on FST itself.
-
-## 3. Install The Agent Skill
-
-For Codex:
+To inspect the installer before running it:
 
 ```bash
-fst install-skill
+curl -fsSLO https://www.fernsehturm.dev/install.sh
+less install.sh
+bash install.sh
 ```
 
-If you use a custom Codex home:
+Raw GitHub fallback:
 
 ```bash
-fst install-skill --codex-home /path/to/codex-home
+curl -fsSL https://raw.githubusercontent.com/fernsehturm/fernsehturm/main/static/install.sh | bash
 ```
 
-The skill is the user-facing entry point. It teaches the agent to route work
-through FST instead of inventing its own process.
+The installer downloads the latest release asset from GitHub, verifies
+`checksums.txt` when `sha256sum` is available, installs `fst` to
+`$HOME/.local/bin`, and installs bundled assets to
+`${XDG_DATA_HOME:-$HOME/.local/share}/fst`.
 
-## 4. Check The Setup
-
-Run:
-
-```bash
-fst doctor
-```
-
-For a deeper check:
-
-```bash
-fst doctor --deep
-```
-
-## 5. Start A Controlled Task
-
-In your agent, ask for a normal development task through FST:
+The MVP package includes:
 
 ```text
-/fst Add session expiry after 30 minutes of inactivity.
-Keep the current server-side session model.
-Do not add persistent login.
+fst
+INSTALL.md
+licenses/
+schemas/
+process-packs/local_patch_review-0.1.0.fstpack
+process-packs/purchase_request_preflight-0.1.0.fstpack
+examples/
 ```
 
-The agent should first establish the starting context and scope for the task. If
-it asks you to choose between alternatives, answer in product terms:
+The bundled process packs use JS hooks, so `node` must be available on `PATH`
+before running their scenarios.
 
-```text
-Use the current server-side session flow.
-Ignore the old JWT refresh-token experiment.
-Do not add persistent login in this task.
+## 2. Initialize A Workspace
+
+Set reusable paths:
+
+```bash
+export FST_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fst"
+export FST_WORKSPACE="$HOME/fst-workspace"
 ```
 
-During the run, answer only prompts that affect the requested behaviour, allowed
-scope, risk, or where output may be written. Let the agent handle ordinary
-implementation and verification steps.
+Use SQLite for the product-shaped local path:
 
-At the end, ask the agent to show:
+```bash
+fst init --store sqlite --workspace "$FST_WORKSPACE"
+fst store migrate --workspace "$FST_WORKSPACE"
+```
 
-- what changed
-- which decisions or approvals it used
-- which checks ran
-- whether any blockers remain
+Use `local_file` when you want inspectable file-backed state:
 
-## 6. Optional: Add `agents.md`
+```bash
+fst init --store local_file --workspace "$FST_WORKSPACE"
+```
 
-If your agent supports repository instructions, add an `agents.md` file that
-points the agent at the FST workflow. See [Agent Setup](agents.md).
+Check the workspace:
+
+```bash
+fst doctor --workspace "$FST_WORKSPACE" --fst-bin "$(command -v fst)"
+```
+
+## 3. Install The MVP Process Pack
+
+Install and activate the local patch review pack:
+
+```bash
+fst process install "$FST_DATA_DIR/process-packs/local_patch_review-0.1.0.fstpack" \
+  --workspace "$FST_WORKSPACE"
+
+fst process activate local_patch_review@0.1.0 \
+  --workspace "$FST_WORKSPACE"
+```
+
+Activation changes the default profile for new runs. Existing runs stay bound
+to the profile version they started with.
+
+## 4. Run A Scenario
+
+Run the happy path:
+
+```bash
+fst scenario run local_patch_review.happy_path \
+  --workspace "$FST_WORKSPACE"
+```
+
+Run blocked examples as well:
+
+```bash
+fst scenario run local_patch_review.generated_file_blocked \
+  --workspace "$FST_WORKSPACE"
+
+fst scenario run local_patch_review.secret_literal_blocked \
+  --workspace "$FST_WORKSPACE"
+```
+
+Scenarios prove that the active profile, hook logic, gates, routes, artifacts,
+and evidence behave as expected.
+
+## 5. Inspect Replay Evidence
+
+Show the latest run:
+
+```bash
+fst replay show --latest --workspace "$FST_WORKSPACE"
+```
+
+Replay should show which profile version ran, which action was requested, which
+gate fired, which route was returned, and which evidence was recorded.
+
+## 6. Start The Agent Controller
+
+Start the local MCP server:
+
+```bash
+fst mcp start --workspace "$FST_WORKSPACE"
+```
+
+Your agent should call the `fst.control` tool before controlled actions. It
+should follow returned routes and stop on `AwaitApproval` or `Blocked`.
+
+## 7. Expected MVP Smoke
+
+A complete local smoke looks like:
+
+```bash
+tmpdir="$(mktemp -d)"
+export FST_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fst"
+fst version
+fst init --store sqlite --workspace "$tmpdir/sqlite"
+fst store migrate --workspace "$tmpdir/sqlite"
+fst doctor --workspace "$tmpdir/sqlite" --fst-bin "$(command -v fst)"
+fst process install "$FST_DATA_DIR/process-packs/local_patch_review-0.1.0.fstpack" --workspace "$tmpdir/sqlite"
+fst process activate local_patch_review@0.1.0 --workspace "$tmpdir/sqlite"
+fst scenario run local_patch_review.happy_path --workspace "$tmpdir/sqlite"
+fst replay show --latest --workspace "$tmpdir/sqlite"
+```
 
 ## Next
 
-Run the [Scope-Drift Demo](../fst-in-action/scope-drift.md), or read
-[FST Use Cases](../understanding/use-cases.md) for the reasoning behind the
-workflow.
+Read [Agent Setup](agents.md) to connect an agent, or read
+[Local Patch Review](../fst-in-action/demo.md) to see what the MVP process
+controls.

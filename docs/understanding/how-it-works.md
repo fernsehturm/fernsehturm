@@ -4,143 +4,134 @@ sidebar_position: 2
 
 # How FST Works
 
-FST is the control layer around agentic software work. Your agent still reads,
-plans, edits, and tests. FST controls when that work is allowed to move from one
-kind of state to the next.
-
-The core path is short:
+FST wraps agent work in a deterministic control loop.
 
 ```text
-User request
-  |
-  v
-Work-Context Selection -> Exploration -> Build -> Compose
-       |                    |            |        |
-       v                    v            v        v
-   WorkContext        ExplorationNote  Candidate  Composition
-   SearchView         retained scope   evidence   coherence
+agent intent
+  -> active process profile
+  -> Core gate evaluation
+  -> route decision
+  -> evidence record
+  -> controlled materialization
 ```
 
-Stages have flexible interiors. Gates have strict exits. The agent can move
-quickly inside a stage, but it must produce the right FST record before the next
-stage begins.
+The agent still reasons and does useful work. FST decides whether the next
+controlled boundary may be crossed.
 
-## The Short Model
-
-| Step | Question | FST record | Why it matters |
-| --- | --- | --- | --- |
-| Work-Context Selection | Where may Exploration look? | [WorkContext](../concepts/glossary.md#workcontext), [SearchView](../concepts/glossary.md#searchview) | Prevents the agent from treating every reachable file or old experiment as current truth. |
-| Exploration | What does this work touch? | [ExplorationNote](../concepts/glossary.md#explorationnote) | Creates the retained scope: the exact box Build must stay inside. |
-| Build | What did the agent create or change inside the box? | [Candidate](../concepts/glossary.md#candidate) | Turns implementation work into a bounded, traceable work package. |
-| Compose | Do the pinned revisions hold together? | [Composition](../concepts/glossary.md#composition) | Checks whether selected work forms a coherent possible system world. |
-
-## 1. Work-Context Selection
-
-Work-Context Selection chooses the starting universe for the task.
-
-It records which Composition revisions, source revisions, and discovery policy
-Exploration may use. This matters because search is not permission. A repo can
-contain old experiments, rejected branches, stale docs, and unrelated code. FST
-does not let the agent infer that everything it can find is allowed context.
-
-Work-Context Selection produces:
-
-- a [WorkContext](../concepts/glossary.md#workcontext), the approved starting universe
-- a [SearchView](../concepts/glossary.md#searchview), the searchable surface derived from it
-
-This does not approve implementation. It only answers:
+## The Runtime Pieces
 
 ```text
-Where may Exploration look?
+Kernel
+  Core semantics, profile validation, gate evaluation, artifact acceptance,
+  route selection, evidence, replay, materialization preflight, store contract.
+
+Adapters
+  local_file store, sqlite store, trace store, local report materializer,
+  hook runtime host.
+
+Configuration
+  .fst/config.yaml selects store, runtime protocols, profile API, and adapter
+  options.
+
+Process pack
+  Business-specific profile, actions, artifacts, gates, hooks, scenarios,
+  templates, and skill instructions.
 ```
 
-## 2. Exploration
+The process pack owns business logic. Core owns control semantics.
 
-Exploration discovers the real shape of the work before implementation starts.
+## The Control Request
 
-It identifies affected behaviours, source areas, policies, decisions, contracts,
-verification needs, unknowns, and user input that must be resolved before Build.
-Its most important output is retained scope.
+An agent submits a closed action name and payload:
+
+```ts
+fst.control({
+  protocol_version: "fst.control.v1",
+  action: "patch.rules.evaluate",
+  actor: "agent",
+  payload: {
+    decision: "pass"
+  },
+  run_id: "run_123",
+  idempotency_key: "rules-run-1"
+})
+```
+
+Core loads the active profile version, checks the action, evaluates gates
+against current run state and artifacts, and returns a route.
+
+## Gate Types
+
+FST uses three gate types:
 
 ```text
-retained_scope = the approved box for Build
+Decision gate
+  Missing facts, branching, classification, or hard rules.
+
+Approval gate
+  Authority increases or risky work that requires a trusted human decision.
+
+Process-conformance gate
+  Required valid artifacts before the action can proceed.
 ```
 
-If the task is session expiry, retained scope might allow session middleware,
-the server-side session store, and expiry tests while excluding persistent login,
-JWT refresh tokens, and browser localStorage.
+Gate evaluation is deterministic for the same profile version, run state,
+payload, artifacts, approvals, and idempotency key.
 
-Exploration produces an [ExplorationNote](../concepts/glossary.md#explorationnote).
-The Exploration gate passes only when the note is specific enough for Build to
-start.
+## Routes
 
-## 3. Build
-
-Build is where the agent creates the concrete work package.
-
-The agent can implement, revise, run checks, and repair inside the retained
-scope. It cannot silently expand that scope. If the work needs a larger box, FST
-returns to Exploration so the scope change is explicit.
-
-Build produces a [Candidate](../concepts/glossary.md#candidate). A useful
-Candidate records:
-
-- which ExplorationNote revision it used
-- which artifacts and source targets changed
-- expected and actual touch points
-- Verification definitions
-- Observations from checks that ran
-- scope compliance evidence
-
-The Build gate blocks work that is incomplete, unpinned, unverified, or outside
-the retained scope.
-
-## 4. Compose
-
-Compose combines one or more Candidates into a pinned possible world.
-
-FST checks whether the selected revisions hold together: no conflicting
-decisions, no incompatible contracts, no missing required coverage, no stale
-verification targets, no policy violations, and no incompatible implementation
-targets.
-
-Compose produces a [Composition](../concepts/glossary.md#composition).
+FST returns one fixed route vocabulary:
 
 ```text
-coherent = this pinned world holds together under FST's checks and evidence
+Continue
+InstructAgent
+AskUser
+AwaitApproval
+Blocked
+MaterializeMock
+MaterializeAllowed
+Complete
 ```
 
-A coherent Composition is not global truth. It is one checked possible world.
-Different Compositions can hold different decisions, alternatives, and candidate
-sets at the same time.
+The route is the boundary. It tells the agent, CLI, orchestrator, and scenario
+runner what may happen next.
 
-## Where Materialization Fits
+## Evidence And Replay
 
-[Materialization](../concepts/glossary.md#materialization) projects a coherent
-Composition into a concrete sink such as a workspace, patch, generated folder,
-migration folder, or deployment manifest.
+Every meaningful decision records evidence:
 
-Materialization is not a fourth stage. It is an output step. The important point
-is that the write target is explicit and the projected result traces back to the
-Composition that was checked.
+- profile id, version, and hash
+- run id and action
+- actor and idempotency key
+- gate id and type
+- route and reason
+- missing artifacts or required approval
+- created artifacts and evidence refs
+- hook input/output hashes when hooks run
 
-## What The User Controls
+Replay uses stored evidence and run state to explain why FST returned a route.
 
-FST is designed to keep human input focused on decisions that change the safe
-path. You do not need to drive every implementation step.
+## Hooks
 
-You normally control:
+Process packs may include hook logic. Hooks compute facts, validate artifacts,
+or render templates.
 
-- the request and product intent
-- the starting WorkContext when more than one is plausible
-- behaviour, policy, scope, and risk decisions
-- scope expansion when Build needs a larger box
-- materialization into a concrete output target
+Hooks do not decide routes and do not grant authority. If hook output tries to
+return a route, approval record, publication, or materialization permission, FST
+rejects it.
 
-The agent handles ordinary implementation work inside the approved path.
+## Materialization
 
-## What To Read Next
+Materialization is the outside effect: write a report, create a package, mark a
+patch ready, send an email, or touch a protected system.
 
-For the formal model, read [The FST Model](../concepts/01_the-model.md). For a
-concrete walkthrough, read the [Session Expiry Demo](../fst-in-action/demo.md).
-For the full vocabulary, use the [Glossary](../concepts/glossary.md).
+For the MVP, materialization is local and conservative:
+
+```text
+mock
+shadow
+approved_real, later and only when the profile and environment allow it
+```
+
+Materialization preflight checks route, artifacts, approvals, scope fields, and
+idempotency before any effect.

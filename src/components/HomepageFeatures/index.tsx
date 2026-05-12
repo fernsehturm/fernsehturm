@@ -9,42 +9,52 @@ type FeatureItem = {
   img: string;
   description: ReactNode;
   link?: string;
+  storyLabel?: string;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Keep systems consistent as they grow',
+    title: 'A prompt is just text',
     img: require('@site/static/img/agents.png').default,
     description: (
       <>
-        Let agents move fast without quietly changing the product. Fernsehturm keeps context, scope, decisions, checks, and implementation material linked, so drift becomes a blocker instead of hidden behavior.
+        You can tell an agent to follow rules. But the agent can still skip, reinterpret, or claim it followed them and do whatever it wants.
+        <br /><br />
+        Fernsehturm makes work pass through gates before it can proceed.
       </>
     ),
-    link: '/blog/keep-systems-consistent-as-they-grow',
+    link: '/docs/understanding/how-it-works',
+    storyLabel: 'Read more →',
   },
   {
-    title: 'Make changes without breaking everything',
+    title: 'Tool access is not authority control',
     img: require('@site/static/img/changing.png').default,
     description: (
       <>
-        Change one part of the system and know what else must move. Fernsehturm shows which decisions, policies, checks, and prior work are affected, and leaves a repairable trace when something drifts, breaks, or needs to be reverified.
+        Tools let agents act. But they do not define when an action is allowed, what evidence is required, or when to escalate.
+        <br /><br />
+        Fernsehturm keeps agent actions inside controlled routes.
       </>
     ),
-    link: '/blog/make-changes-without-breaking-everything',
+    link: '/docs/fst-in-action/demo',
+    storyLabel: 'Read more →',
   },
   {
-    title: 'Give AI a system it can reason about',
+    title: 'The agent should not audit itself.',
     img: require('@site/static/img/reason.png').default,
     description: (
       <>
-        Stop making agents guess from scattered files, tickets, chats, and PRs. Fernsehturm gives them a pinned context, retained scope, and explicit evidence requirements before work can become part of a coherent Composition.
+        An agent should not be the worker, checker, approver, auditor, and completion judge at the same time.
+        <br /><br />
+        FST separates doing the work from deciding whether the work is valid.
       </>
     ),
-    link: '/blog/give-ai-a-system-it-can-reason-about',
+    link: '/docs/features/traceability-and-evidence',
+    storyLabel: 'Read more →',
   },
 ];
 
-function Feature({title, img, description, link}: FeatureItem) {
+function Feature({title, img, description, link, storyLabel}: FeatureItem) {
   const content = (
     <>
       <div className="text--center">
@@ -53,7 +63,7 @@ function Feature({title, img, description, link}: FeatureItem) {
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
         <p>{description}</p>
-        {link ? <p className={styles.readMore}>Read more...</p> : null}
+        {link ? <p className={styles.readMore}>{storyLabel}</p> : null}
       </div>
     </>
   );

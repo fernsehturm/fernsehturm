@@ -4,49 +4,76 @@ sidebar_position: 3
 
 # Agent Setup
 
-Use this page to connect an agent to an already installed `fst` CLI.
-
-## Codex
-
-Install the FST skill:
-
-```bash
-fst install-skill
-```
-
-Then invoke FST from a normal task:
-
-```text
-/fst Add session expiry after 30 minutes of inactivity.
-```
-
-## Other Agents
-
-For other agents, configure the agent so it can call the FST MCP tool.
-
-The public tool name is:
+Agents interact with FST through one local control surface:
 
 ```text
 fst.control
 ```
 
-The agent should use FST's runtime help actions for FST API details. It should
-not infer live action payloads from local markdown files.
+The MCP controller is started by the `fst` CLI:
 
-## Optional `agents.md`
+```bash
+fst mcp start --workspace "$HOME/fst-workspace"
+```
 
-Use a short repository-level instruction file when your agent supports it:
+## Agent Rule
+
+Before a controlled action, the agent submits intent to FST:
+
+```ts
+fst.control({
+  protocol_version: "fst.control.v1",
+  action: "patch.review_packet.create",
+  actor: "agent",
+  payload: {
+    review_packet_path: "reports/review.md"
+  },
+  idempotency_key: "stable-key"
+})
+```
+
+FST returns a route. The agent follows the route.
+
+## Route Behavior
+
+- `Continue`: proceed with the allowed action.
+- `AskUser`: ask the task user for the missing fact.
+- `InstructAgent`: create or repair the required artifact.
+- `AwaitApproval`: stop until the trusted approval path records a decision.
+- `Blocked`: stop or repair the request; do not work around the block.
+- `MaterializeMock`: write only the allowed mock/draft artifact.
+- `MaterializeAllowed`: perform only the approved real effect.
+- `Complete`: report evidence and outcome.
+
+## Process Contract Help
+
+Agents should discover current process actions from FST, not from stale docs.
+
+Use the process contract action:
+
+```text
+fst.help.process_contract
+```
+
+The contract tells the agent the active profile id, version, actions, payload
+fields, routes, gates, required artifacts, and next allowed actions.
+
+## Agent Instructions
+
+When your agent supports repository instructions, keep them short:
 
 ```md
 # Agent Instructions
 
-Use FST for controlled development work.
+Use FST for controlled work.
 
-- Start user-requested changes through `/fst` when available.
-- Do not claim user approval. Record user decisions through FST.
-- If FST API details are unclear, ask FST's runtime help through `fst.control`.
-- Do not use local docs as a fallback for live FST API construction.
+- Submit intended controlled actions through `fst.control`.
+- Treat FST routes as authoritative.
+- Ask the task user only for facts.
+- Do not claim approval from chat.
+- Stop on `AwaitApproval` or `Blocked`.
+- Report evidence refs when the run completes.
 ```
 
-Keep this file short. The runtime FST help surface is authoritative for action
-schemas and current payload shapes.
+The runtime process contract is authoritative for action names and payload
+shapes.

@@ -16,7 +16,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
   align-items: start;
 }
@@ -78,16 +78,16 @@
 }
 
 .headline {
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-  margin: 0 0 1rem !important;
-  line-height: 1.4 !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  margin: 0 0 0.75rem !important;
+  line-height: 1.1 !important;
 }
 
 /* ── Price ──────────────────────────────────────────────── */
 
 .priceBlock {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.55rem;
 }
 
 .priceRow {
@@ -97,9 +97,9 @@
 }
 
 .price {
-  font-size: 1.75rem;
-  font-weight: 800;
-  line-height: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .priceLabel {

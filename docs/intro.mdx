@@ -4,45 +4,54 @@ sidebar_position: 1
 
 # Introduction
 
-Fernsehturm (FST) is a control system for AI-assisted software development.
+Fernsehturm (FST) is a local control layer for agent work.
 
-You keep the product direction. Your agent does the work. FST keeps the work bounded, traceable, and checked before the agent moves forward.
-
-> Build Software with AI without Losing Control.
-
-## How It Works
-
-FST controls four stages, each with a strict exit gate:
+Agents can inspect, draft, run tools, and propose effects. FST decides what is
+allowed next by evaluating a process profile, recorded artifacts, approvals,
+and the current run state.
 
 ```text
-Work-Context Selection → Exploration → Build → Compose
+agent intent -> FST profile gate -> route -> evidence -> controlled effect
 ```
 
-The agent is free inside each stage — inspecting, experimenting, testing, revising. FST checks whether the result is ready to leave the stage.
+The MVP is local-first:
+
+```text
+one fst Linux binary
+local_file or sqlite store
+versioned workspace config
+installable process packs
+hook-backed process logic
+scenario runner
+replayable evidence
+local MCP controller
+```
+
+## What FST Controls
+
+FST answers these questions for an agent:
+
+- Is this action part of the active process profile?
+- Which gate applies before the action?
+- Which artifacts or approvals are missing?
+- Should the agent continue, ask, repair, wait, or stop?
+- May this effect be mocked, shadowed, or materialized?
+- What evidence should be recorded for replay?
+
+The agent stays useful. It does not become the authority.
 
 ## What You Do
 
-You do five things:
+You install `fst`, initialize a workspace, install or activate a process pack,
+run scenarios, and connect your agent through the local MCP controller.
 
-1. Say what you want.
-2. Confirm the starting context when there is more than one sensible option.
-3. Answer decisions that affect behaviour, scope, policy, or risk.
-4. Approve scope changes or materialization choices.
-5. Review the trace-backed result.
+For the MVP, the main process pack is `local_patch_review`: it controls when a
+local patch may be marked ready for review.
 
-Everything else — implementation, verification, coherence checking — the agent and FST handle.
+## Start Here
 
-## Read the Docs
-
-Start with [Getting Started](getting-started/overview.md) if you want to install
-FST and run a first task. Read [FST Use Cases](understanding/use-cases.md) if
-you want the reasoning behind the workflow.
-
-- **[Getting Started](getting-started/overview.md)** — install, initialize, connect your agent
-- **[Use Cases](understanding/use-cases.md)** — the eight problems FST is designed to solve
-- **[How FST Works](understanding/how-it-works.md)** — WorkContext, ExplorationNote, Candidate, and Composition in one flow
-- **[Comparisons](understanding/comparisons.md)** — how FST differs from prompts, memory, RAG, sandboxes, orchestrators, CI, and PR review
-- **[FST In Action](fst-in-action/demo.md)** — see the control shape on a concrete session-expiry example
-- **[Features](features/control-loop.md)** — control loop, traceability, composition slots
-- **[Workflows](workflows/working-with-agents.md)** — working with agents, materialization, integration
-- **[Concepts](concepts/01_the-model.md)** — full model, artifacts, process entities, API reference, and [glossary](concepts/glossary.md)
+- [Getting Started](getting-started/overview.md): install and run the local MVP
+- [How FST Works](understanding/how-it-works.md): the runtime control loop
+- [Developing A Process](workflows/developing-a-process.md): how to create process profiles
+- [Process Builder Agent Guide](workflows/process-builder-agent.md): how an agent helps build profiles
+- [API Reference](concepts/04_api.md): `fst.control` request and response shape

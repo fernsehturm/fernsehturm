@@ -2,132 +2,92 @@
 sidebar_position: 3
 ---
 
-# FST Comparisons
+# Comparisons
 
-FST does not replace prompts, memory, RAG, sandboxes, orchestrators, CI, or PR
-review. Those tools still matter. FST fills the control gap between a user
-request and a coherent result.
-
-The short contrast:
+FST does not replace prompts, guardrails, MCP, sandboxes, CI, PR review, or
+orchestrators. It adds a process-control layer around agent work.
 
 ```text
-Prompts describe intent.
-Memory and RAG provide context.
-Sandboxes contain execution.
-Orchestrators schedule work.
+Prompts describe behavior.
+MCP exposes tools.
+Sandboxes constrain execution.
 CI runs checks.
-PR review inspects a diff.
-FST controls the work record that connects intent, scope, decisions,
-implementation, verification, evidence, and composition.
+PR review inspects output.
+FST decides whether a process gate allows the next action.
 ```
-
-## Comparison Map
-
-| Comparison | What it is good for | Where it stops | What FST adds |
-| --- | --- | --- | --- |
-| Prompts | Telling the agent what you want | Prompt text is not a durable gate record | Stage records, retained scope, and gate evidence |
-| Memory | Carrying useful facts between sessions | Memory is advisory and can be stale or ignored | Revision-pinned WorkContext and Composition-scoped truth |
-| RAG | Finding relevant context | Retrieval does not decide what is accepted or allowed | SearchView, retained scope, and controlled context selection |
-| Sandboxes | Isolating execution and filesystem effects | Isolation does not prove the work was authorized | Candidate scope checks and traceability |
-| Orchestrators | Dispatching tasks across agents | Scheduling does not make outputs coherent | Composition checks across candidates and decisions |
-| CI and PR review | Running tests and reviewing code | They happen after work exists and focus on files | Pre-build authorization and evidence-backed review surface |
 
 ## FST Vs Prompts
 
-Prompts are useful for expressing intent, constraints, and preferences. They are
-not enough when the work needs to be audited later.
+A prompt can say:
 
-A prompt can say "do not add persistent login." FST turns that constraint into
-retained scope, policy, decision evidence, and a Build gate that blocks a
-Candidate if persistent login appears anyway.
+```text
+Do not touch generated files.
+Do not introduce secrets.
+Create a review packet before marking ready.
+```
 
-FST adds:
+FST turns those instructions into profile gates, required artifacts, route
+decisions, scenarios, and replayable evidence.
 
-- a [WorkContext](../concepts/glossary.md#workcontext) before Exploration
-- a retained [ExplorationNote](../concepts/glossary.md#explorationnote) before Build
-- [Candidate](../concepts/glossary.md#candidate) scope evidence after Build
-- [Composition](../concepts/glossary.md#composition) checks before the result moves forward
+## FST Vs Guardrails
 
-## FST Vs Memory
+Guardrails usually sit around model input, output, or tool calls. They are
+useful, but they often lack durable process state.
 
-Memory helps an agent remember facts, preferences, and prior work. It does not
-decide which facts are active in this task.
+FST checks the run against a process profile:
 
-FST treats truth as Composition-scoped. A decision can be active in one
-Composition, absent from another, and replaced in a third. That keeps historical
-or experimental knowledge from becoming accidental permission.
+- which action is being requested
+- which artifacts are valid
+- which approvals exist
+- which route is allowed
+- which evidence is recorded
 
-FST adds:
+## FST Vs MCP
 
-- revision-pinned references instead of floating memory
-- explicit decision and policy records
-- stale-evidence detection
-- coherent possible worlds instead of one global memory stream
+MCP lets agents discover and call tools. FST can expose an MCP tool, but the
+tool is not an untyped command tunnel.
 
-## FST Vs RAG
+The agent calls:
 
-RAG improves what an agent can find. It does not make found context safe to use.
+```text
+fst.control
+```
 
-FST separates searchable context from approved scope. A [SearchView](../concepts/glossary.md#searchview)
-defines what Exploration may inspect. The retained scope inside the
-ExplorationNote defines what Build may use, modify, create, and verify.
-
-FST adds:
-
-- controlled Work-Context Selection
-- explicit SearchView derivation
-- retained scope for Build
-- blockers when retrieved context conflicts with accepted decisions or policies
+FST evaluates the active profile before allowing, blocking, asking, or
+materializing.
 
 ## FST Vs Sandboxes
 
-Sandboxes contain where code can run and what it can touch at runtime. They do
-not explain whether the agent should have produced the work in the first place.
+A sandbox can limit filesystem or network access. It does not prove the action
+is part of the approved process.
 
-An agent can build the wrong feature entirely inside a sandbox. FST checks
-authorization and traceability, not just execution containment.
+FST answers a different question:
 
-FST adds:
-
-- accepted scope before implementation
-- expected versus actual touch-point comparison
-- Verification and Observation records
-- explicit materialization approval for concrete outputs
-
-## FST Vs Orchestrators
-
-Orchestrators distribute work: run these agents, in this order, with these
-inputs, and collect their outputs. That is useful for throughput.
-
-FST controls whether the outputs can compose. Two agents can each produce work
-that passes local tests while still making incompatible product decisions,
-violating the same contract, or touching the same implementation target in
-conflicting ways.
-
-FST adds:
-
-- separate Candidate work packages
-- revision-pinned references
-- decision, policy, contract, and coverage checks
-- Composition findings that explain why a combination is coherent or blocked
+```text
+Given this profile, run state, artifacts, and approvals, may this action happen?
+```
 
 ## FST Vs CI And PR Review
 
-CI proves that configured checks ran. PR review inspects a diff. Both usually
-happen after the work already exists.
+CI proves configured checks ran. PR review inspects a diff.
 
-FST asks whether the work was allowed before Build starts, then gives CI and PR
-review a narrower, evidence-backed surface afterward.
+FST records why the work was allowed to reach that point:
 
-FST adds:
+- source request
+- active profile version
+- gate decisions
+- required artifacts
+- approval records
+- scenario results
+- materialization preflight
 
-- pre-build scope authorization
-- trace links from intent to behaviour, implementation, verification, and observation
-- user-input evidence for decisions and exceptions
-- coherence checks across the selected system world
+CI and review become stronger when they receive this evidence.
 
-## What To Read Next
+## FST Vs Orchestrators
 
-For the control path, read [How FST Works](./how-it-works.md). For examples,
-read the [Session Expiry Demo](../fst-in-action/demo.md). For exact terms, use
-the [Glossary](../concepts/glossary.md).
+Orchestrators schedule work across agents and tools. They do not necessarily
+own process authority.
+
+FST can sit under an orchestrator as the route authority for controlled actions.
+The orchestrator asks for work; FST decides whether that work can cross the
+process boundary.

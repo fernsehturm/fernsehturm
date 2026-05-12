@@ -16,57 +16,59 @@ type Tier = {
   headline: string;
   problem: string;
   forWhom: string;
-  monthlyPrice: number | null;
-  priceLabel: string;
+  price: string;
+  priceLabel?: string;
+  priceNote?: string;
   bullets: string[];
   details: FeatureGroup[];
   cta: string;
   ctaTo?: string;
   badge?: string;
   highlighted?: boolean;
-  isFree?: boolean;
   comingSoon?: boolean;
 };
 
 const tiers: Tier[] = [
   {
-    id: 'free',
-    name: 'FREE',
-    headline: 'Run the full FST loop locally',
-    problem: '"Can I keep one agent workflow under control?"',
+    id: 'community',
+    name: 'COMMUNITY',
+    headline: 'Real standalone local processes',
+    problem: '"Can I run useful agent workflows locally without paying first?"',
     forWhom:
-      'Individual developers trying FST, running one local system, or coordinating a small amount of parallel agent work.',
-    monthlyPrice: null,
+      'Individuals and small self-managed workflows that need local process packs, evidence, replay, reports, and user-managed tool integration.',
+    price: 'Free',
     priceLabel: 'forever',
-    isFree: true,
+    priceNote: 'Safety, validation, and local evidence are not paywalled.',
     bullets: [
-      '3 active Composition slots',
-      'Base world plus 2 parallel agent work worlds',
-      'Full WorkContext -> Exploration -> Build -> Compose loop',
-      'Local database on the agent machine',
+      'Put real local agent workflows under control',
+      'See why each agent step continued or stopped',
+      'Catch missing evidence before work counts',
+      'Use your own local tools and scripts',
+      'Review every run with local replay',
+      'Create custom process packs without paying',
     ],
-    cta: 'Start free',
-    ctaTo: '/docs/intro',
+    cta: 'Start Community',
+    ctaTo: '/docs/getting-started/quickstart',
     details: [
       {
-        title: 'Complete control loop',
+        title: 'Run real work locally',
         items: [
-          'Create a WorkContext, explore scope, build Candidates, and compose coherent worlds',
-          'Automated gates, traceability, evidence records, and local snapshots included',
+          'Turn patch review, vendor intake, email prep, or similar workflows into controlled standalone processes',
+          'Install multiple packs and switch between standalone processes as the runtime supports them',
         ],
       },
       {
-        title: 'Composition slots',
+        title: 'Know why work was allowed',
         items: [
-          'One slot for your base world',
-          'Two slots for safe parallel agent work or temporary alternatives',
+          'Validate profiles, evaluate gates, check artifacts, and run materialization preflight before output counts',
+          'Write scenarios, execute hooks, record manual approvals, and replay evidence after the run',
         ],
       },
       {
-        title: 'Local-first runtime',
+        title: 'Keep your setup self-managed',
         items: [
-          'Runs on your machine',
-          'No shared server or cloud dependency required',
+          'Use local scripts, mock connectors, local report output, and configured tools inside your workspace policy',
+          'Stay local without a connector marketplace, shared credential broker, or support contract',
         ],
       },
     ],
@@ -74,76 +76,116 @@ const tiers: Tier[] = [
   {
     id: 'pro',
     name: 'PRO',
-    headline: 'Remove the Composition slot limit',
-    problem: '"I need more possible worlds active at once."',
+    headline: 'Connected personal process systems',
+    problem: '"Can I connect my local processes into one controlled workflow?"',
     forWhom:
-      'Developers running several agents, keeping alternatives alive, or managing serious local work that needs more than 3 active Composition slots.',
-    monthlyPrice: 29,
+      'Individuals building a personal agent operating system with process-to-process handoff, multi-agent review, and composite evidence.',
+    price: '€29',
     priceLabel: '/mo',
-    badge: 'Most popular',
+    priceNote: 'Local upgrade boundary; connected-process features can land incrementally.',
+    badge: 'Connected workflows',
     highlighted: true,
     bullets: [
-      'Unlimited active Composition slots',
-      'Run more parallel agent work safely',
-      'Keep experiments and repair worlds active',
-      'Still local-first on the agent machine',
+      'Connect separate processes into one workflow',
+      'Hand off artifacts without losing evidence',
+      'Add reviewer agents before approval',
+      'Replay the full workflow chain',
+      'Create cross-process reports',
+      'Run recurring local process batches',
     ],
     cta: 'Start Pro trial',
     ctaTo: '/docs/intro',
     details: [
       {
-        title: 'Unlimited active worlds',
+        title: 'Build a personal process system',
         items: [
-          'Open more live Composition lines without archiving work',
-          'Compare alternatives and keep failed worlds available for repair',
+          'Connect patch review to test runner, risk review, report rendering, or other local process packs',
+          'Move from isolated local runs to one controlled workflow with evidence carried between steps',
         ],
       },
       {
-        title: 'More parallel capacity',
+        title: 'Get better second opinions',
         items: [
-          'Agent capacity scales with active Composition slots',
-          'Use the base world plus as many live agent work worlds as you need',
+          'Add critic, reviewer, or second-opinion agent lanes before final user approval',
+          'Catch risky outputs earlier with synthetic 4-eyes-style checks for one operator',
         ],
       },
       {
-        title: 'Same local runtime',
+        title: 'Understand the whole chain',
         items: [
-          'Uses the local database on the agent machine',
-          'Designed for individual Pro use',
+          'Use composite replay, cross-process reports, larger local evidence indexing, and shared scenario bundles',
+          'Search and explain evidence across your personal local process system',
         ],
       },
     ],
   },
   {
-    id: 'team',
-    name: 'TEAM',
-    headline: 'Shared FST runtime for teams',
-    problem: '"Can we run this together?"',
+    id: 'teams',
+    name: 'TEAMS',
+    headline: 'Shared controlled agent work',
+    problem: '"Can our team share profiles, approvals, connectors, and evidence?"',
     forWhom:
-      'Teams that need a shared database, multiple users, and a deployable FST runtime instead of one local agent-machine database.',
-    monthlyPrice: null,
-    priceLabel: '',
+      'Teams that need shared profiles, human approval routing, team-managed connectors, and a common evidence store.',
+    price: 'Coming soon',
+    priceNote: 'Roadmap tier, not an active MVP edition.',
     comingSoon: true,
     bullets: [
-      'Deployable Docker database/runtime',
-      'Shared state across users and machines',
-      'Team collaboration and reviewer workflows',
-      'Central operational setup',
+      'Route approvals to the right people',
+      'Share approved profiles across the team',
+      'Separate requester and approver roles',
+      'Keep one evidence trail for team work',
+      'Manage shared connectors centrally',
+      'Produce team-ready reports',
     ],
     cta: 'Coming soon',
     details: [
       {
-        title: 'Shared deployment',
+        title: 'Make approvals accountable',
         items: [
-          'Run the FST database as a deployable Docker container',
-          'Keep one shared system state across agents, developers, and machines',
+          'Route approvals to distinct people and keep profile changes reviewable',
+          'Use real human 4-eyes approval, distinct approver roles, and separation of duties',
         ],
       },
       {
-        title: 'Team operation',
+        title: 'Operate from one shared record',
         items: [
-          'Built for shared work rather than one local machine',
-          'Designed for future team roles, reviewers, and operational controls',
+          'Share profile packs, connector configuration, team reports, and retention settings',
+          'Give reviewers and operators one evidence store instead of scattered agent transcripts',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'enterprise',
+    name: 'ENTERPRISE',
+    headline: 'Production enforcement and regulated scale',
+    problem: '"Can FST enforce protected effects in production with enterprise controls?"',
+    forWhom:
+      'Organizations that need production protected connectors, private deployment, SSO, SIEM/audit exports, supported packs, and SLA.',
+    price: 'Talk to us',
+    priceNote: 'For production enforcement, custom deployment, and supported connectors.',
+    bullets: [
+      'Enforce controls on production effects',
+      'Run in private or customer-hosted environments',
+      'Meet SSO, SIEM, and retention requirements',
+      'Use supported protected connectors',
+      'Adopt maintained production profile packs',
+      'Get security review, connector support, and SLA',
+    ],
+    cta: 'Talk to us',
+    details: [
+      {
+        title: 'Move protected effects behind FST',
+        items: [
+          'Use approved-real materialization through supported protected connectors',
+          'Adopt maintained profile packs for access, data, email, software change, and incident workflows',
+        ],
+      },
+      {
+        title: 'Meet enterprise control requirements',
+        items: [
+          'Use SSO, role-based admin controls, audit export, SIEM export, and retention settings',
+          'Get connector SDK support, security review, private deployment help, and support SLA',
         ],
       },
     ],
@@ -151,30 +193,13 @@ const tiers: Tier[] = [
 ];
 
 function PriceDisplay({tier}: {tier: Tier}) {
-  if (tier.comingSoon) {
-    return (
-      <div className={styles.priceBlock}>
-        <span className={styles.price}>Coming soon</span>
-      </div>
-    );
-  }
-
-  if (tier.isFree) {
-    return (
-      <div className={styles.priceBlock}>
-        <span className={styles.price}>Free</span>
-        <span className={styles.priceLabel}>{tier.priceLabel}</span>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.priceBlock}>
       <div className={styles.priceRow}>
-        <span className={styles.price}>€{tier.monthlyPrice}</span>
-        <span className={styles.priceLabel}>{tier.priceLabel}</span>
+        <span className={styles.price}>{tier.price}</span>
+        {tier.priceLabel && <span className={styles.priceLabel}>{tier.priceLabel}</span>}
       </div>
-      <p className={styles.priceNote}>7-day free trial</p>
+      {tier.priceNote && <p className={styles.priceNote}>{tier.priceNote}</p>}
     </div>
   );
 }
@@ -186,8 +211,8 @@ function TierCard({tier}: {tier: Tier}) {
 
       <div className={styles.cardHeader}>
         <div className={styles.tierName}>{tier.name}</div>
-        <Heading as="h2" className={styles.headline}>{tier.headline}</Heading>
         <PriceDisplay tier={tier} />
+        <Heading as="h2" className={styles.headline}>{tier.headline}</Heading>
       </div>
 
       <p className={styles.problem}>{tier.problem}</p>
@@ -239,14 +264,15 @@ export default function Pricing(): ReactNode {
   return (
     <Layout
       title="Pricing"
-      description="Start free with 3 active Composition slots. Upgrade to Pro when you need more live possible worlds.">
+      description="Build and run controlled local agent processes for free. Upgrade when your processes become a connected system.">
       <main>
         <section className={styles.hero}>
           <div className="container">
             <Heading as="h1">Pricing</Heading>
             <p className={styles.heroSub}>
-              Start free with the full FST loop. Upgrade only when you need more
-              active Composition slots for parallel agent work.
+              Build and run controlled local agent processes for free. Upgrade
+              when standalone processes become a connected personal system.
+              Teams and Enterprise add shared governance and production support.
             </p>
           </div>
         </section>
@@ -264,11 +290,13 @@ export default function Pricing(): ReactNode {
         <section className={styles.ctaSection}>
           <div className="container">
             <p className={styles.ctaText}>
-              <strong>Start free.</strong> Free includes your base world plus 2
-              parallel agent work worlds. Pro removes the active Composition
-              slot limit for local use.
+              <strong>Safety is never paywalled.</strong> Community includes
+              real standalone local processes, validation, local evidence,
+              replay, hooks, scenarios, manual approvals, local MCP, and custom
+              process development. Pro starts when one user connects processes
+              into a broader workflow.
             </p>
-            <Link className={styles.ctaButton} to="/docs/intro">
+            <Link className={styles.ctaButton} to="/docs/getting-started/quickstart">
               Get started →
             </Link>
           </div>

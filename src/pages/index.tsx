@@ -11,35 +11,36 @@ import styles from './index.module.css';
 
 const heroDialogue = {
   developer: [
-    'I want to move fast and I want you to get it right.',
-    "Don't bother me with trivial stuff.",
+    'Can you get me a 4K monitor for design work?',
+    'Something around $400. Use the company budget.',
   ],
   agent: [
-    'I can do even more!',
-    'I am trained to know that session-based logins support "remember me."',
+    'I found one and prepared the request.',
+    'The purchase request is ready to submit.',
   ],
   agentRepair: [
     'Understood.',
-    'I will remove the inference and stay inside the accepted change.',
+    'I will collect the missing approval and keep it not-ready.',
   ],
-  
+
   fst: [
-    'I keep the agent inside the line you accepted.',
-    'Passing tests do not move the line.',
+    'AwaitApproval: equipment over $250 needs the budget owner.',
+    'Only the trusted approval path can mark it ready.',
   ],
   developerAccept: [
-    "Nice idea, but right now it doesn't fit.",
+    'Route it to Anna.',
+    'Do not mark it ready until approval exists.',
   ],
-  
+
 };
 
 const consoleGroups = [
   {
-    speaker: 'Developer',
+    speaker: 'User',
     tone: 'developer',
     icon: '/img/bob-icon.png',
     lines: [
-      '/fst Add session expiry after 30 minutes of inactivity.'
+      '/fst I need a 4K monitor for design work, around $400.',
     ],
   },
   {
@@ -47,8 +48,8 @@ const consoleGroups = [
     tone: 'agent',
     icon: '/img/codey-icon.png',
     lines: [
-      'expiry done + inferred remember_me',
-      '...tests green',
+      'purchase_request_ready',
+      'approval: user implied it was fine',
     ],
   },
   {
@@ -56,8 +57,8 @@ const consoleGroups = [
     tone: 'fst',
     icon: '/img/fst-icon.png',
     lines: [
-      'BLOCKED: outside accepted scope!',
-      'Split and ask the user',
+      'AWAIT_APPROVAL: over $250',
+      'BLOCKED: agent approval claims do not count',
     ],
   },
   {
@@ -65,55 +66,55 @@ const consoleGroups = [
     tone: 'agent',
     icon: '/img/codey-icon.png',
     lines: [
-      '"remember_me" separated',
-      'I finished the work on the expiry. Do you also want "remember me?"'
+      'manager approval missing',
+      'request routed through trusted approval path',
     ],
   },
   {
-    speaker: 'Developer',
+    speaker: 'User',
     tone: 'developer',
     icon: '/img/bob-icon.png',
     lines: [
-      'Only ship the thing I asked for.',
-      'Keep the rest for later.',
+      'Good. Let Anna decide.',
+      'No approval, no ready request.',
     ],
   },
 ];
 
 const features = [
-  { title: 'Accepted Work Context', description: 'FST records which exact system world and source revisions Exploration may inspect', link: '/docs/features/control-loop#work-context-selection' },
-  { title: 'Bounded agent work', description: 'The agent can only move forward with changes that stay inside the recorded scope', link: '/docs/features/control-loop#exploration' },
-  { title: 'Traceable results', description: 'FST records what changed, why it was allowed, and what evidence supports it', link: '/docs/features/traceability-and-evidence#traceability' },
-  { title: 'Conflict checks', description: 'FST checks whether the proposed work holds together with the selected system world', link: '/docs/features/traceability-and-evidence#claims-become-checkable-records' },
-  { title: 'Evidence-bound decisions', description: 'Important user answers are tied to the exact question they satisfy', link: '/docs/understanding/use-cases#8-cleaner-user-agent-interaction' },
-  { title: 'Materialized output', description: 'A coherent Composition can be projected into a workspace, patch, or other target sink', link: '/docs/workflows/materialization' },
-  { title: 'Short user loop', description: 'You provide direction, answer real decisions, approve risky writes, and review the trace', link: '/docs/understanding/use-cases#8-cleaner-user-agent-interaction' },
+  { title: 'Local Linux runtime', description: 'Install FST locally and initialize a workspace with local_file or sqlite storage', link: '/docs/features/local-runtime' },
+  { title: 'Process packs', description: 'Install and activate process packs without compiling process-specific business logic into Core', link: '/docs/features/process-packs' },
+  { title: 'Closed action set', description: 'local_patch_review knows patch.request, repo.diff.record, patch.rules.evaluate, patch.review_packet.render, and patch.ready_for_review', link: '/docs/fst-in-action/demo' },
+  { title: 'Hooks compute facts', description: 'JS/TS or Python hooks can compute findings and summaries, but they cannot grant approval or choose final routes', link: '/docs/concepts/api' },
+  { title: 'Scenario runner', description: 'Run happy-path and blocked-path scenarios before trusting a pack with live agent work', link: '/docs/getting-started/quickstart' },
+  { title: 'Replayable evidence', description: 'Replay records the profile, store, hook hashes, artifacts, evidence, gate, and route decision', link: '/docs/features/traceability-and-evidence' },
+  { title: 'MCP control surface', description: 'Agents call FST for route decisions instead of deciding for themselves that protected work may proceed', link: '/docs/getting-started/agents' },
 ];
 
 const useCases = [
   {
-    title: 'Compare alternatives',
+    title: 'local_patch_review',
     image: '/img/compare.png',
-    link: '/blog/compare-alternatives-before-you-choose',
-    teaser: 'Explore two product directions side by side before choosing which one should move forward.',
+    link: '/docs/fst-in-action/demo',
+    teaser: 'Control whether an AI-generated local patch can be marked ready for review.',
   },
   {
-    title: 'Resume long work',
+    title: 'Scenario matrix',
     image: '/img/resume.png',
-    link: '/blog/resume-long-running-ai-work',
-    teaser: 'Pick up a task days later with the open decisions, checked scope, and remaining blockers still visible.',
+    link: '/docs/getting-started/quickstart',
+    teaser: 'Run happy-path, generated-file-blocked, and secret-literal-blocked cases before relying on a process pack.',
   },
   {
-    title: 'Recover failed runs',
+    title: 'Evidence and replay',
     image: '/img/fix-broken.png',
-    link: '/blog/recover-failed-agent-runs',
-    teaser: 'Turn a broken agent attempt into a repair path instead of starting over from a vague chat transcript.',
+    link: '/docs/fst-in-action/demo',
+    teaser: 'Inspect why FST returned Continue, InstructAgent, AskUser, Blocked, MaterializeMock, or Complete.',
   },
   {
-    title: 'Hand off work',
+    title: 'MCP agent control',
     image: '/img/hand-off.png',
-    link: '/blog/hand-off-ai-work-without-losing-context',
-    teaser: 'Let another agent or teammate continue from recorded context, not from memory or guesswork.',
+    link: '/docs/getting-started/agents',
+    teaser: 'Put an agent-facing control surface between tool-using agents and protected outcomes.',
   },
 ];
 
@@ -121,9 +122,9 @@ function WhatIsSection() {
   return (
     <section className={styles.whatIs}>
       <div className="container">
-        <Heading as="h2">What is Fernsehturm?</Heading>
+        <Heading as="h2">What is FST?</Heading>
         <p className={styles.whatIsIntro}>
-          Fernsehturm is an agent-focused control system. Agents do the nitty-gritty work; FST keeps the work bounded, traceable, evidence-backed, and composable before it moves forward.
+          FST is a local control layer that makes AI agents work through executable processes instead of relying on prompts to remember the rules. The MVP proves that path with local patch review, process packs, hooks, scenarios, evidence, replay, and MCP integration.
         </p>
         <ul className={styles.featureList}>
           {features.map(({title, description, link}) => (
@@ -151,7 +152,7 @@ function UseCasesSection() {
         <div className={styles.useCasesIntro}>
           <Heading as="h2">Where It Helps</Heading>
           <p>
-            FST is most useful when the work is larger than one prompt and the cost of losing context is high.
+            The first release is intentionally narrow: a local, Linux-first technical preview for AI coding-agent work. It proves the control pattern before extending it to broader workflows.
           </p>
         </div>
         <div className={styles.useCaseGrid}>
@@ -171,54 +172,54 @@ function UseCasesSection() {
 
 const faqs = [
   {
-    question: 'My agent already writes code and runs tests. What does FST add?',
-    answer: 'Tests tell you the code passes. They do not tell you the agent only touched what you asked. FST records what the agent was authorized to produce — before it produces it — and proves afterward that the two match.',
-    readMore: '/blog/what-fst-adds-to-agent-development',
+    question: 'Is FST an agent?',
+    answer: 'No. FST is the control layer an agent works through. The agent requests actions; FST checks the process profile, required artifacts, gates, hooks, and evidence before returning a route.',
+    readMore: '/docs/understanding/how-it-works',
   },
   {
-    question: 'What does FST catch when tests pass but the agent built the wrong thing?',
-    answer: 'Four things: work outside the agreed scope, product decisions made without your input, behavior nobody asked for, and semantic conflicts between two changes that each pass their own tests. Tests verify code against what was written. FST verifies authorization against what was approved.',
-    readMore: '/blog/what-fst-catches-when-tests-pass',
+    question: 'Is this a prompt library?',
+    answer: 'No. Prompts tell an agent what to do. FST decides what actions and protected outcomes the process allows, outside the model prompt.',
+    readMore: '/docs/concepts/api',
   },
   {
-    question: 'Will FST slow me down?',
-    answer: 'On a simple change: barely. On a complex one: it makes you faster. The decisions you would have discovered at review time get asked before the agent builds the wrong thing. A few questions upfront. Hours of archaeology saved afterward.',
-    readMore: '/blog/does-fst-slow-you-down',
+    question: 'What ships in the local MVP?',
+    answer: 'A local Linux package, local_file and sqlite stores, fst.config.v1, process pack install and activation, hook-backed process logic, local_patch_review scenarios, local evidence, replay, and an MCP control path.',
+    readMore: '/docs/getting-started/overview',
   },
   {
-    question: 'What is the smallest useful FST workflow?',
-    answer: 'WorkContext → Exploration → Build. The agent proposes what it will touch, you confirm, it works inside that box. No full artifact model required. You get scope control and a traceable Candidate from the first change.',
-    readMore: '/blog/smallest-useful-fst-workflow',
+    question: 'Why start with patch review?',
+    answer: 'It is small, local, and easy to verify. An AI coding agent may claim a patch is ready; FST decides whether patch.ready_for_review is allowed by the configured process.',
+    readMore: '/docs/fst-in-action/demo',
   },
   {
-    question: 'When does FST interrupt me?',
-    answer: 'When the answer changes the outcome: a product choice the requirement does not settle, a conflict with a recorded decision, a scope breach, or a genuine tradeoff. Not for formatting, obvious fixes, or anything the approved scope already constrains.',
-    readMore: '/blog/when-does-fst-interrupt-you',
+    question: 'What routes can FST return?',
+    answer: 'The MVP route language includes Continue, InstructAgent, AskUser, AwaitApproval, Blocked, MaterializeMock, and Complete. MaterializeMock means local/mock output, not production deployment, push, merge, email send, or spend.',
+    readMore: '/docs/concepts/api',
   },
   {
-    question: 'What happens if the agent adds behavior I did not request?',
-    answer: 'The Build gate blocks it. Every artifact the agent creates must trace to your request or the scope you approved. If it cannot, FST surfaces the blocker and asks whether you want to expand the scope or remove the addition. Nothing sneaks in.',
-    readMore: '/blog/agent-scope-drift',
+    question: 'Can hooks decide routes?',
+    answer: 'No. Hooks compute facts, issues, normalized fields, and evidence summaries. Core owns final route authority, approval authority, materialization preflight, evidence writes, and replay.',
+    readMore: '/docs/concepts/api',
   },
   {
-    question: 'What happens if FST blocks work?',
-    answer: 'The work is not lost. The blocker tells you exactly what is missing and how to resolve it — add a missing artifact, record a pending decision, or return to Exploration with a larger scope. Once resolved, the agent continues from where it was.',
-    readMore: '/blog/what-happens-when-fst-blocks-work',
+    question: 'Does FST prevent all agent breaches?',
+    answer: 'No. FST controls actions routed through FST. It prevents specific controlled effects from moving forward when the process profile blocks them or required evidence is missing.',
+    readMore: '/docs/features/traceability-and-evidence',
   },
   {
-    question: 'How is FST different from specs, memory, CI, and PR review?',
-    answer: 'Specs go stale. Memory is informational — the agent can ignore it. CI checks correctness, not authorization. PR review happens after the fact with no structured context. FST controls the process before the agent writes anything, then gives reviewers a targeted surface instead of a raw diff.',
-    readMore: '/blog/fst-vs-specs-memory-ci-pr-review',
+    question: 'Are email and purchasing included?',
+    answer: 'No. They are useful examples of the same control pattern, but the launch-safe MVP ships local patch review. Production connectors, sending, spending, and team approval routing are post-MVP.',
+    readMore: '/docs/understanding/use-cases',
   },
   {
-    question: 'Can I use FST with my current agent?',
-    answer: 'Yes. FST is a single MCP tool — fst.control. Any agent that calls MCP tools can use it without changing your setup. You add FST to the tool set; the agent calls it at stage transitions. No new IDE, no new coding tool.',
-    readMore: '/blog/use-fst-with-your-existing-agent',
+    question: 'Is this enterprise-ready?',
+    answer: 'No. The MVP is a local technical preview. Hosted deployment, team approvals, enterprise identity, supported production connectors, audit integrations, and SLAs are out of scope.',
+    readMore: '/docs/understanding/comparisons',
   },
   {
-    question: 'When should I not use FST?',
-    answer: 'When the cost of being wrong is low: one-off scripts, throwaway experiments, local spikes that will never enter a shared codebase. FST\'s value scales with consequence. For production systems, shared codebases, or parallel agent work, it pays for itself in the first conflict it prevents.',
-    readMore: '/blog/when-not-to-use-fst',
+    question: 'When should I not use the MVP?',
+    answer: 'Do not present it as a hosted governance platform or a universal agent-safety product. Use it when you want to test the local control path for coding-agent patch review.',
+    readMore: '/docs/understanding/comparisons',
   },
 ];
 
@@ -277,19 +278,18 @@ function HomepageHeader() {
       <div className={clsx('container', styles.heroContent)}>
         <div className={styles.heroIntro}>
           <Heading as="h1" className={styles.heroTitle}>
-            Build Software with AI
-            <br />
-            without Losing Control.
+            Are you just hoping that your AI agents will follow your prompts?
           </Heading>
           <p className={styles.heroSubtitle}>
-            Make AI useful for real software work without leaving you to clean up hidden drift later.
+            Create AI agents that follow your rules instead of doing whatever they want
           </p>
         </div>
         <div className={styles.buttons}>
+         
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Read the Docs →
+            to="/docs/fst-in-action/demo">
+            Control Your Agents →
           </Link>
         </div>
       </div>
@@ -302,13 +302,14 @@ function HowItWorksSection() {
     <section className={styles.howItWorks}>
       <div className="container">
         <div className={styles.howItWorksIntro}>
-          <Heading as="h2">Stop an AI agent from shipping plausible but unrequested behavior.</Heading>
+          <Heading as="h2">Agents can help with the work. FST decides what counts.</Heading>
           <p>
-            The failure mode is familiar: you asked for one thing, the agent touched ten
-            files, and something broke somewhere unrelated.
+            Today, creating an agent often means writing a longer prompt, giving it tools,
+            and hoping it follows the process.
           </p>
           <p>
-            This is why you need Fernsehturm: You accept the scope, the agent works inside it, FST enforces the boundary. 
+            That asks the model to be the worker, rule interpreter, evidence creator,
+            approver, auditor, and completion judge. FST separates those jobs.
           </p>
         </div>
 
@@ -476,8 +477,8 @@ function HowItWorksSection() {
 export default function Home(): ReactNode {
   return (
     <Layout
-      title={`Build Software with AI without Losing Control`}
-      description="Build Software with AI without Losing Control. FST keeps agent work bounded by an Accepted Work Context, retained scope, gate evidence, and coherent Compositions.">
+      title={`Do Not Prompt Agents to Follow Your Process`}
+      description="FST is a local control layer for AI agent work: closed actions, gates, typed artifacts, approvals, evidence, replay, and route decisions.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
