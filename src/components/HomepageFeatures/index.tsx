@@ -14,39 +14,36 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'A prompt is just text',
-    img: require('@site/static/img/agents.png').default,
+    title: 'Your process defines the rules',
+    img: require('@site/static/img/define-rules.png').default,
     description: (
       <>
-        You can tell an agent to follow rules. But the agent can still skip, reinterpret, or claim it followed them and do whatever it wants.
-        <br /><br />
-        Fernsehturm makes work pass through gates before it can proceed.
+        Fernsehturm turns a user-specific process into actions, required facts, gates, approvals, and valid outcomes for the agent to work through.
+        <br />
       </>
     ),
     link: '/docs/understanding/how-it-works',
     storyLabel: 'Read more →',
   },
   {
-    title: 'Tool access is not authority control',
-    img: require('@site/static/img/changing.png').default,
+    title: 'Fernsehturm guides and enforces',
+    img: require('@site/static/img/guide-and-enforce.png').default,
     description: (
       <>
-        Tools let agents act. But they do not define when an action is allowed, what evidence is required, or when to escalate.
-        <br /><br />
-        Fernsehturm keeps agent actions inside controlled routes.
+        Fernsehturm tells the agent the next valid step, asks for missing information, blocks invalid shortcuts, and requires approval before protected work can count.
+        <br />
       </>
     ),
     link: '/docs/fst-in-action/demo',
     storyLabel: 'Read more →',
   },
   {
-    title: 'The agent should not audit itself.',
-    img: require('@site/static/img/reason.png').default,
+    title: 'Fernsehturm keeps track',
+    img: require('@site/static/img/keep-track.png').default,
     description: (
       <>
-        An agent should not be the worker, checker, approver, auditor, and completion judge at the same time.
-        <br /><br />
-        FST separates doing the work from deciding whether the work is valid.
+        Fernsehturm persists run state, records artifacts and route decisions, and creates replayable evidence so the work can be reviewed, resumed, and audited.
+        <br />
       </>
     ),
     link: '/docs/features/traceability-and-evidence',

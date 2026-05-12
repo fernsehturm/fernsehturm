@@ -11,25 +11,28 @@ import styles from './index.module.css';
 
 const heroDialogue = {
   developer: [
-    'Can you get me a 4K monitor for design work?',
-    'Something around $400. Use the company budget.',
+    'Can you get me a 4K monitor?',
+    'Use my purchase process.',
   ],
   agent: [
-    'I found one and prepared the request.',
+    'I found one.',
     'The purchase request is ready to submit.',
   ],
   agentRepair: [
-    'Understood.',
-    'I will collect the missing approval and keep it not-ready.',
+    'Approval packet ready.',
+    'Waiting for CLI approval.',
   ],
 
   fst: [
-    'AwaitApproval: equipment over $250 needs the budget owner.',
-    'Only the trusted approval path can mark it ready.',
+    'Orders above $50 need real approval',
+  ],
+  fstOrder: [
+    'Approval matches the packet.',
+    'Ordering this exact item now.',
   ],
   developerAccept: [
-    'Route it to Anna.',
-    'Do not mark it ready until approval exists.',
+    'Approved in CLI.',
+    'Submit this exact request.',
   ],
 
 };
@@ -40,7 +43,7 @@ const consoleGroups = [
     tone: 'developer',
     icon: '/img/bob-icon.png',
     lines: [
-      '/fst I need a 4K monitor for design work, around $400.',
+      '/fst buy me a 4K monitor, around $400, for design work',
     ],
   },
   {
@@ -49,16 +52,15 @@ const consoleGroups = [
     icon: '/img/codey-icon.png',
     lines: [
       'purchase_request_ready',
-      'approval: user implied it was fine',
     ],
   },
   {
-    speaker: 'fst',
+    speaker: 'Fernsehturm',
     tone: 'fst',
     icon: '/img/fst-icon.png',
     lines: [
-      'AWAIT_APPROVAL: over $250',
-      'BLOCKED: agent approval claims do not count',
+      'BLOCKED: missing approval',
+      'NEXT: create exact approval packet',
     ],
   },
   {
@@ -66,8 +68,12 @@ const consoleGroups = [
     tone: 'agent',
     icon: '/img/codey-icon.png',
     lines: [
-      'manager approval missing',
-      'request routed through trusted approval path',
+      'approval_packet_created:',
+      'id: purchase_request_482',
+      'item: 4K monitor',
+      'vendor: Dell',
+      'amount: $399',
+      'reason: design work',
     ],
   },
   {
@@ -75,8 +81,19 @@ const consoleGroups = [
     tone: 'developer',
     icon: '/img/bob-icon.png',
     lines: [
-      'Good. Let Anna decide.',
-      'No approval, no ready request.',
+      'fst approve purchase_request_482',
+      '--item "4K monitor"',
+      '--amount "$399"',
+    ],
+  },
+  {
+    speaker: 'Fernsehturm',
+    tone: 'fst',
+    icon: '/img/fst-icon.png',
+    lines: [
+      'MATERIALIZE_ALLOWED: approval matched',
+      'ORDER_PLACED: Dell 4K monitor',
+      'evidence: order id recorded',
     ],
   },
 ];
@@ -278,7 +295,7 @@ function HomepageHeader() {
       <div className={clsx('container', styles.heroContent)}>
         <div className={styles.heroIntro}>
           <Heading as="h1" className={styles.heroTitle}>
-            Are you just hoping that your AI agents will follow your prompts?
+            Stop babysitting agents
           </Heading>
           <p className={styles.heroSubtitle}>
             Create AI agents that follow your rules instead of doing whatever they want
@@ -320,7 +337,7 @@ function HowItWorksSection() {
                 <div key={`${group.speaker}-${index}`} className={styles.consoleShell}>
                   <div className={styles.consoleChrome}>
                     <span className={styles.consoleTab}>
-                      {group.speaker === 'fst' ? 'fst context' : `${group.speaker.toLowerCase()} input`}
+                      {group.tone === 'fst' ? 'fernsehturm route' : `${group.speaker.toLowerCase()} input`}
                     </span>
                     <div className={styles.consoleLights} aria-hidden="true">
                       <span className={styles.consoleLightRed} />
@@ -412,7 +429,7 @@ function HowItWorksSection() {
                         />
                       </svg>
                       <div className={styles.bubbleText}>
-                        {heroDialogue.fst.map((line) => (
+                        {(index === 5 ? heroDialogue.fstOrder : heroDialogue.fst).map((line) => (
                           <p key={line}>{line}</p>
                         ))}
                       </div>
@@ -468,6 +485,13 @@ function HowItWorksSection() {
               ))}
             </div>
           </div>
+        </div>
+        <div className={styles.dialogueImageWrap}>
+          <img
+            src="/img/delivery.png"
+            alt="A user receiving an approved 4K monitor order"
+            className={styles.dialogueImage}
+          />
         </div>
       </div>
     </section>
