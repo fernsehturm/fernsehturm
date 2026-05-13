@@ -21,7 +21,7 @@ skill/SKILL.md
 ## Manifest
 
 The manifest declares process id, version, profile API, logic API, entrypoints,
-required capabilities, and activation requirements.
+required capabilities, generated command metadata, and approval requirements.
 
 ## Profile
 
@@ -49,10 +49,11 @@ Scenarios prove the pack behaves:
 ## Lifecycle
 
 ```bash
-fst process install process-packs/local_patch_review-0.1.0.fstpack
-fst process activate local_patch_review@0.1.0
+fst process install process-packs/local_patch_review-0.1.0.fstpack --command fst-patch-review
+fst process command list
 fst scenario run local_patch_review.happy_path
 ```
 
-Activation affects new runs only. Existing runs remain bound to their original
-profile version.
+Installation records the process in `.fst/processes/registry.json` and creates
+resolver metadata in `.fst/commands/`. Existing runs remain bound to their
+original process id, version, and profile hash.

@@ -99,39 +99,28 @@ const consoleGroups = [
 ];
 
 const features = [
-  { title: 'Local Linux runtime', description: 'Install FST locally and initialize a workspace with local_file or sqlite storage', link: '/docs/features/local-runtime' },
-  { title: 'Process packs', description: 'Install and activate process packs without compiling process-specific business logic into Core', link: '/docs/features/process-packs' },
-  { title: 'Closed action set', description: 'local_patch_review knows patch.request, repo.diff.record, patch.rules.evaluate, patch.review_packet.render, and patch.ready_for_review', link: '/docs/fst-in-action/demo' },
-  { title: 'Hooks compute facts', description: 'JS/TS or Python hooks can compute findings and summaries, but they cannot grant approval or choose final routes', link: '/docs/concepts/api' },
-  { title: 'Scenario runner', description: 'Run happy-path and blocked-path scenarios before trusting a pack with live agent work', link: '/docs/getting-started/quickstart' },
-  { title: 'Replayable evidence', description: 'Replay records the profile, store, hook hashes, artifacts, evidence, gate, and route decision', link: '/docs/features/traceability-and-evidence' },
-  { title: 'MCP control surface', description: 'Agents call FST for route decisions instead of deciding for themselves that protected work may proceed', link: '/docs/getting-started/agents' },
+  { title: 'Your process becomes executable', description: 'Turn a personal or company workflow into actions, gates, approvals, evidence, and protected outcomes.', link: '/docs/features/process-packs' },
+  { title: 'The agent gets the next valid step', description: 'Fernsehturm tells the agent what is missing, what it may do next, and when it must ask or wait.', link: '/docs/getting-started/agents' },
+  { title: 'Protected work cannot skip control', description: 'Submitting, ordering, sending, merging, or marking work complete can require approval and evidence before it counts.', link: '/docs/fst-in-action/demo' },
+  { title: 'The run is replayable', description: 'Fernsehturm keeps state, artifacts, routes, approvals, and evidence so the work can be reviewed, resumed, or audited.', link: '/docs/features/traceability-and-evidence' },
 ];
 
-const useCases = [
+const painPoints = [
   {
-    title: 'local_patch_review',
-    image: '/img/compare.png',
-    link: '/docs/fst-in-action/demo',
-    teaser: 'Control whether an AI-generated local patch can be marked ready for review.',
+    title: 'Prompting is not control',
+    description: 'A prompt can tell an agent to follow rules, but it cannot prove the rules were followed or stop a protected action when the agent skips ahead.',
   },
   {
-    title: 'Scenario matrix',
-    image: '/img/resume.png',
-    link: '/docs/getting-started/quickstart',
-    teaser: 'Run happy-path, generated-file-blocked, and secret-literal-blocked cases before relying on a process pack.',
+    title: 'Context gets lost',
+    description: 'Long tasks, restarts, handoffs, and tool calls make agents lose track of the current stage, missing facts, approvals, and required evidence.',
   },
   {
-    title: 'Evidence and replay',
-    image: '/img/fix-broken.png',
-    link: '/docs/fst-in-action/demo',
-    teaser: 'Inspect why FST returned Continue, InstructAgent, AskUser, Blocked, MaterializeMock, or Complete.',
+    title: 'Tool access becomes too much authority',
+    description: 'Once an agent can send, order, merge, delete, or change systems, "be careful" is not enough. The process has to decide when action is allowed.',
   },
   {
-    title: 'MCP agent control',
-    image: '/img/hand-off.png',
-    link: '/docs/getting-started/agents',
-    teaser: 'Put an agent-facing control surface between tool-using agents and protected outcomes.',
+    title: 'Done is self-certified',
+    description: 'Agents can say the work is complete, but users and organizations need artifacts, approvals, route decisions, and replay before they can trust it.',
   },
 ];
 
@@ -139,9 +128,12 @@ function WhatIsSection() {
   return (
     <section className={styles.whatIs}>
       <div className="container">
-        <Heading as="h2">What is FST?</Heading>
+        <Heading as="h2">What is Fernsehturm?</Heading>
         <p className={styles.whatIsIntro}>
-          FST is a local control layer that makes AI agents work through executable processes instead of relying on prompts to remember the rules. The MVP proves that path with local patch review, process packs, hooks, scenarios, evidence, replay, and MCP integration.
+          Fernsehturm is the process runtime between your agent and the work it wants to make count.
+        </p>
+        <p className={styles.whatIsIntro}>
+          You define the process: allowed actions, required facts, approvals, gates, and valid outcomes. Fernsehturm guides the agent through that process, enforces the rules, and records what happened.
         </p>
         <ul className={styles.featureList}>
           {features.map(({title, description, link}) => (
@@ -157,29 +149,45 @@ function WhatIsSection() {
         <Link className={styles.readDocs} to="/docs/intro">
           Read docs →
         </Link>
+        <p className={styles.whatIsClose}>
+          The agent does the work. Your process decides what counts.
+        </p>
       </div>
     </section>
   );
 }
 
-function UseCasesSection() {
+function PainPointsSection() {
   return (
     <section className={styles.useCases}>
       <div className="container">
         <div className={styles.useCasesIntro}>
-          <Heading as="h2">Where It Helps</Heading>
-          <p>
-            The first release is intentionally narrow: a local, Linux-first technical preview for AI coding-agent work. It proves the control pattern before extending it to broader workflows.
-          </p>
+          <Heading as="h2">Why agents still need babysitting</Heading>
+          <div className={styles.painIntroLayout}>
+            <div className={styles.painIntroText}>
+              <p>
+                Would you give a new colleague a short instruction sheet and then let her buy equipment, approve requests, change systems, or declare work complete on her own?
+              </p>
+              <p>
+                That is often how agents are used today: a prompt, tool access, and trust that the process will be followed.
+              </p>
+              <p>
+                The problem is not that agents cannot help. The problem is that real work needs process memory, authority boundaries, and proof.
+              </p>
+            </div>
+            <img
+              src="/img/new-employee.png"
+              alt="A new employee being given too much responsibility from one short instruction sheet"
+              className={styles.painIntroImage}
+            />
+          </div>
         </div>
         <div className={styles.useCaseGrid}>
-          {useCases.map(({title, image, teaser, link}) => (
-            <Link key={title} className={styles.useCaseCard} to={link}>
-              <img src={image} alt="" className={styles.useCaseImage} aria-hidden="true" />
+          {painPoints.map(({title, description}) => (
+            <div key={title} className={styles.useCaseCard}>
               <Heading as="h3">{title}</Heading>
-              <p>{teaser}</p>
-              <span className={styles.useCaseReadMore}>Read more →</span>
-            </Link>
+              <p>{description}</p>
+            </div>
           ))}
         </div>
       </div>
@@ -189,54 +197,59 @@ function UseCasesSection() {
 
 const faqs = [
   {
-    question: 'Is FST an agent?',
-    answer: 'No. FST is the control layer an agent works through. The agent requests actions; FST checks the process profile, required artifacts, gates, hooks, and evidence before returning a route.',
+    question: 'Is Fernsehturm an agent?',
+    answer: 'No. Fernsehturm is the process runtime an agent works through. The agent can request work; Fernsehturm checks the active process, required facts, gates, approvals, and evidence before returning the next route.',
     readMore: '/docs/understanding/how-it-works',
   },
   {
-    question: 'Is this a prompt library?',
-    answer: 'No. Prompts tell an agent what to do. FST decides what actions and protected outcomes the process allows, outside the model prompt.',
+    question: 'Why is this different from prompting?',
+    answer: 'A prompt can describe rules. Fernsehturm makes those rules executable. It can tell the agent what is missing, block invalid shortcuts, require approval, and record why work was allowed or stopped.',
     readMore: '/docs/concepts/api',
   },
   {
-    question: 'What ships in the local MVP?',
-    answer: 'A local Linux package, local_file and sqlite stores, fst.config.v1, process pack install and activation, hook-backed process logic, local_patch_review scenarios, local evidence, replay, and an MCP control path.',
-    readMore: '/docs/getting-started/overview',
-  },
-  {
-    question: 'Why start with patch review?',
-    answer: 'It is small, local, and easy to verify. An AI coding agent may claim a patch is ready; FST decides whether patch.ready_for_review is allowed by the configured process.',
-    readMore: '/docs/fst-in-action/demo',
-  },
-  {
-    question: 'What routes can FST return?',
-    answer: 'The MVP route language includes Continue, InstructAgent, AskUser, AwaitApproval, Blocked, MaterializeMock, and Complete. MaterializeMock means local/mock output, not production deployment, push, merge, email send, or spend.',
+    question: 'Who defines the rules?',
+    answer: 'Your process does. A process profile defines allowed actions, required facts, approval gates, protected outcomes, and what evidence must exist before work can count.',
     readMore: '/docs/concepts/api',
   },
   {
-    question: 'Can hooks decide routes?',
-    answer: 'No. Hooks compute facts, issues, normalized fields, and evidence summaries. Core owns final route authority, approval authority, materialization preflight, evidence writes, and replay.',
-    readMore: '/docs/concepts/api',
+    question: 'Can an agent approve its own work?',
+    answer: 'No. The agent can prepare an approval packet, but approval must come through the configured trusted path. In the purchase example, the order only moves forward after the user approves the exact packet in the CLI.',
+    readMore: '/docs/understanding/how-it-works',
   },
   {
-    question: 'Does FST prevent all agent breaches?',
-    answer: 'No. FST controls actions routed through FST. It prevents specific controlled effects from moving forward when the process profile blocks them or required evidence is missing.',
+    question: 'Must I approve everything?',
+    answer: 'No. Routine progress can be allowed by process conformance: the required evidence exists, artifacts validate, and gates are satisfied. Approval is for protected decisions or effects.',
     readMore: '/docs/features/traceability-and-evidence',
   },
   {
-    question: 'Are email and purchasing included?',
-    answer: 'No. They are useful examples of the same control pattern, but the launch-safe MVP ships local patch review. Production connectors, sending, spending, and team approval routing are post-MVP.',
+    question: 'Can Fernsehturm actually do the action?',
+    answer: 'Yes, when the process allows it and the materialization path exists. The important part is that acting is separate from deciding. Fernsehturm checks the route, approval, scope, and exact artifact before ordering, sending, merging, or another protected action is allowed.',
+    readMore: '/docs/concepts/api',
+  },
+  {
+    question: 'What happens when context gets lost?',
+    answer: 'Fernsehturm persists run state outside the chat. A later agent or a restarted session can ask what stage the run is in, what is missing, which approvals exist, and what the next valid step is.',
+    readMore: '/docs/features/traceability-and-evidence',
+  },
+  {
+    question: 'Is this for individuals or companies?',
+    answer: 'Both suffer from the same failure mode: agents do work they think is useful, but the work was not authorized by the process. Individuals need agents that can move forward without constant babysitting. Companies need approvals, handoff, replay, and audit before agent work can count.',
     readMore: '/docs/understanding/use-cases',
   },
   {
-    question: 'Is this enterprise-ready?',
-    answer: 'No. The MVP is a local technical preview. Hosted deployment, team approvals, enterprise identity, supported production connectors, audit integrations, and SLAs are out of scope.',
-    readMore: '/docs/understanding/comparisons',
+    question: 'Does Fernsehturm prevent every agent mistake?',
+    answer: 'No. Fernsehturm controls work routed through it. It helps prevent specific protected outcomes from moving forward when the process blocks them, approval is missing, or required evidence does not exist.',
+    readMore: '/docs/features/traceability-and-evidence',
   },
   {
-    question: 'When should I not use the MVP?',
-    answer: 'Do not present it as a hosted governance platform or a universal agent-safety product. Use it when you want to test the local control path for coding-agent patch review.',
-    readMore: '/docs/understanding/comparisons',
+    question: 'Where is Fernsehturm hosted?',
+    answer: 'Fernsehturm is hosted on your machine. It runs your process, stores your run state and evidence locally, and keeps process authority outside the agent prompt.',
+    readMore: '/docs/getting-started/overview',
+  },
+  {
+    question: 'How do I get started?',
+    answer: 'Start with one process you already babysit today. Install Fernsehturm locally, run the quickstart, and try the demo process to see how an agent request becomes a route, evidence, and a controlled outcome.',
+    readMore: '/docs/getting-started/quickstart',
   },
 ];
 
@@ -508,7 +521,7 @@ export default function Home(): ReactNode {
         <HomepageFeatures />
         <HowItWorksSection />
         <WhatIsSection />
-        <UseCasesSection />
+        <PainPointsSection />
         <FaqSection />
       </main>
     </Layout>

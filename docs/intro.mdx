@@ -11,16 +11,17 @@ allowed next by evaluating a process profile, recorded artifacts, approvals,
 and the current run state.
 
 ```text
-agent intent -> FST profile gate -> route -> evidence -> controlled effect
+agent intent -> installed process -> route -> evidence -> controlled effect
 ```
 
-The MVP is local-first:
+FST is local-first:
 
 ```text
 one fst Linux binary
 local_file or sqlite store
 versioned workspace config
-installable process packs
+installed process registry
+generated fst-* process commands
 hook-backed process logic
 scenario runner
 replayable evidence
@@ -31,7 +32,7 @@ local MCP controller
 
 FST answers these questions for an agent:
 
-- Is this action part of the active process profile?
+- Is this action part of the selected installed process?
 - Which gate applies before the action?
 - Which artifacts or approvals are missing?
 - Should the agent continue, ask, repair, wait, or stop?
@@ -42,15 +43,17 @@ The agent stays useful. It does not become the authority.
 
 ## What You Do
 
-You install `fst`, initialize a workspace, install or activate a process pack,
-run scenarios, and connect your agent through the local MCP controller.
+You install `fst`, run `fst setup`, select the processes you want in the local
+workspace, run scenarios, and connect your agent through the local MCP
+controller.
 
-For the MVP, the main process pack is `local_patch_review`: it controls when a
-local patch may be marked ready for review.
+Bundled processes include `local_patch_review` for developer patch review and
+`purchase_request_preflight` for controlled purchase packets. Each installed
+process has its own generated command and its own process contract.
 
 ## Start Here
 
-- [Getting Started](getting-started/overview.md): install and run the local MVP
+- [Getting Started](getting-started/overview.md): install and configure FST
 - [How FST Works](understanding/how-it-works.md): the runtime control loop
 - [Developing A Process](workflows/developing-a-process.md): how to create process profiles
 - [Process Builder Agent Guide](workflows/process-builder-agent.md): how an agent helps build profiles

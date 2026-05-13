@@ -8,7 +8,7 @@ FST wraps agent work in a deterministic control loop.
 
 ```text
 agent intent
-  -> active process profile
+  -> installed process profile
   -> Core gate evaluation
   -> route decision
   -> evidence record
@@ -31,7 +31,8 @@ Adapters
 
 Configuration
   .fst/config.yaml selects store, runtime protocols, profile API, and adapter
-  options.
+  options. .fst/processes/registry.json records installed processes and their
+  generated commands.
 
 Process pack
   Business-specific profile, actions, artifacts, gates, hooks, scenarios,
@@ -57,7 +58,8 @@ fst.control({
 })
 ```
 
-Core loads the active profile version, checks the action, evaluates gates
+Core resolves the process from the generated command or explicit process
+reference, loads the bound profile version, checks the action, evaluates gates
 against current run state and artifacts, and returns a route.
 
 ## Gate Types
@@ -125,12 +127,13 @@ rejects it.
 Materialization is the outside effect: write a report, create a package, mark a
 patch ready, send an email, or touch a protected system.
 
-For the MVP, materialization is local and conservative:
+Materialization is local and conservative unless the installed process and
+environment explicitly allow a stronger effect:
 
 ```text
 mock
 shadow
-approved_real, later and only when the profile and environment allow it
+approved_real
 ```
 
 Materialization preflight checks route, artifacts, approvals, scope fields, and

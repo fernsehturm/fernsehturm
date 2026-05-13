@@ -48,6 +48,8 @@ FST returns a route. The agent follows the route.
 ## Process Contract Help
 
 Agents should discover current process actions from FST, not from stale docs.
+The process is selected by a generated `fst-*` command or by an explicit
+process id/version. There is no workspace-level active process.
 
 Use the process contract action:
 
@@ -55,8 +57,8 @@ Use the process contract action:
 fst.help.process_contract
 ```
 
-The contract tells the agent the active profile id, version, actions, payload
-fields, routes, gates, required artifacts, and next allowed actions.
+The contract tells the agent the process id, version, profile hash, actions,
+payload fields, routes, gates, required artifacts, and next allowed actions.
 
 ## Agent Instructions
 

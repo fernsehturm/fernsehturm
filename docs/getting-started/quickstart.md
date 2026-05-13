@@ -4,22 +4,22 @@ sidebar_position: 2
 
 # Quickstart
 
-This quickstart follows the MVP installation path:
+The streamlined path is:
 
 ```text
-install fst -> init workspace -> install process pack -> run scenarios -> start MCP
+install fst -> run fst setup -> run a process -> inspect evidence -> start MCP
 ```
 
 ## 1. Install FST
 
-Install the latest Linux package with one command:
+Install the Linux package with one command:
 
 ```bash
 curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 fst version
 ```
 
-If your current shell does not yet see `$HOME/.local/bin`, run:
+If your current shell does not see `$HOME/.local/bin`, run:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
@@ -40,132 +40,151 @@ Raw GitHub fallback:
 curl -fsSL https://raw.githubusercontent.com/fernsehturm/fernsehturm/main/static/install.sh | bash
 ```
 
-The installer downloads the latest release asset from GitHub, verifies
+The installer downloads the release asset from GitHub, verifies
 `checksums.txt` when `sha256sum` is available, installs `fst` to
 `$HOME/.local/bin`, and installs bundled assets to
 `${XDG_DATA_HOME:-$HOME/.local/share}/fst`.
 
-The MVP package includes:
+Bundled assets include:
 
 ```text
 fst
 INSTALL.md
 licenses/
 schemas/
-process-packs/local_patch_review-0.1.0.fstpack
-process-packs/purchase_request_preflight-0.1.0.fstpack
+core-profiles/catalog.json
+process-packs/
 examples/
 ```
 
-The bundled process packs use JS hooks, so `node` must be available on `PATH`
-before running their scenarios.
+Bundled processes may use hook runtimes such as Node. `fst setup` and
+`fst doctor` report missing runtimes before process scenarios are used as
+readiness evidence.
 
-## 2. Initialize A Workspace
+## 2. Configure The Workspace
 
-Set reusable paths:
-
-```bash
-export FST_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fst"
-export FST_WORKSPACE="$HOME/fst-workspace"
-```
-
-Use SQLite for the product-shaped local path:
+Run setup:
 
 ```bash
-fst init --store sqlite --workspace "$FST_WORKSPACE"
-fst store migrate --workspace "$FST_WORKSPACE"
+fst setup
 ```
 
-Use `local_file` when you want inspectable file-backed state:
+The setup dialogue creates the workspace, selects the store, manages installed
+processes, generates one `fst-*` command per installed process, configures the
+trusted approval console, optionally installs agent skills, and validates the
+workspace.
+
+The default workspace is local and conservative. Use flags for scripted setup:
 
 ```bash
-fst init --store local_file --workspace "$FST_WORKSPACE"
+fst setup \
+  --workspace "$HOME/fst-workspace" \
+  --store sqlite \
+  --install-process local_patch_review@0.1.0 \
+  --install-process purchase_request_preflight@0.1.0
 ```
 
-Check the workspace:
+During setup, installed processes are shown as a selectable list:
 
-```bash
-fst doctor --workspace "$FST_WORKSPACE" --fst-bin "$(command -v fst)"
+```text
+Installed processes:
+  [x] local_patch_review@0.1.0 command=fst-patch-review status=installed
+  [x] purchase_request_preflight@0.1.0 command=fst-purchase status=installed
+
+Action for local_patch_review@0.1.0 [keep/deinstall/regenerate]:
 ```
 
-## 3. Install The MVP Process Pack
+There is no active-profile switch. Each installed process has its own generated
+command and each run is bound to the process id, version, and profile hash used
+for that command.
 
-Install and activate the local patch review pack:
+## 3. Run A Process Scenario
 
-```bash
-fst process install "$FST_DATA_DIR/process-packs/local_patch_review-0.1.0.fstpack" \
-  --workspace "$FST_WORKSPACE"
-
-fst process activate local_patch_review@0.1.0 \
-  --workspace "$FST_WORKSPACE"
-```
-
-Activation changes the default profile for new runs. Existing runs stay bound
-to the profile version they started with.
-
-## 4. Run A Scenario
-
-Run the happy path:
+Run the local patch review happy path:
 
 ```bash
 fst scenario run local_patch_review.happy_path \
-  --workspace "$FST_WORKSPACE"
+  --workspace "$HOME/fst-workspace"
 ```
 
-Run blocked examples as well:
+Run blocked examples:
 
 ```bash
 fst scenario run local_patch_review.generated_file_blocked \
-  --workspace "$FST_WORKSPACE"
+  --workspace "$HOME/fst-workspace"
 
 fst scenario run local_patch_review.secret_literal_blocked \
-  --workspace "$FST_WORKSPACE"
+  --workspace "$HOME/fst-workspace"
 ```
 
-Scenarios prove that the active profile, hook logic, gates, routes, artifacts,
-and evidence behave as expected.
+Run the purchase request preflight example:
+
+```bash
+fst scenario run purchase_request_preflight.happy_path_no_approval \
+  --workspace "$HOME/fst-workspace"
+```
+
+Scenarios prove that the installed process registry, profile hash, hook logic,
+gates, routes, artifacts, and evidence behave as expected.
+
+## 4. Use A Generated Process Command
+
+Setup records generated process commands in `.fst/commands/` and in the process
+registry. Typical commands are:
+
+```text
+fst-patch-review
+fst-purchase
+```
+
+List generated commands:
+
+```bash
+fst process command list --workspace "$HOME/fst-workspace"
+```
+
+Regenerate a command after changing the command name or reinstalling a process:
+
+```bash
+fst process command regenerate local_patch_review@0.1.0 \
+  --workspace "$HOME/fst-workspace"
+```
 
 ## 5. Inspect Replay Evidence
 
 Show the latest run:
 
 ```bash
-fst replay show --latest --workspace "$FST_WORKSPACE"
+fst replay show --latest --workspace "$HOME/fst-workspace"
 ```
 
-Replay should show which profile version ran, which action was requested, which
-gate fired, which route was returned, and which evidence was recorded.
+Replay shows which process/profile version ran, which action was requested,
+which gate fired, which route was returned, and which evidence was recorded.
 
 ## 6. Start The Agent Controller
 
 Start the local MCP server:
 
 ```bash
-fst mcp start --workspace "$FST_WORKSPACE"
+fst mcp start --workspace "$HOME/fst-workspace"
 ```
 
 Your agent should call the `fst.control` tool before controlled actions. It
 should follow returned routes and stop on `AwaitApproval` or `Blocked`.
 
-## 7. Expected MVP Smoke
-
-A complete local smoke looks like:
+## Complete Local Check
 
 ```bash
 tmpdir="$(mktemp -d)"
-export FST_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fst"
-fst version
-fst init --store sqlite --workspace "$tmpdir/sqlite"
-fst store migrate --workspace "$tmpdir/sqlite"
-fst doctor --workspace "$tmpdir/sqlite" --fst-bin "$(command -v fst)"
-fst process install "$FST_DATA_DIR/process-packs/local_patch_review-0.1.0.fstpack" --workspace "$tmpdir/sqlite"
-fst process activate local_patch_review@0.1.0 --workspace "$tmpdir/sqlite"
-fst scenario run local_patch_review.happy_path --workspace "$tmpdir/sqlite"
-fst replay show --latest --workspace "$tmpdir/sqlite"
+fst setup --workspace "$tmpdir/workspace" --store sqlite --no-password
+fst process list --workspace "$tmpdir/workspace"
+fst process command list --workspace "$tmpdir/workspace"
+fst scenario run local_patch_review.happy_path --workspace "$tmpdir/workspace"
+fst replay show --latest --workspace "$tmpdir/workspace"
 ```
 
 ## Next
 
 Read [Agent Setup](agents.md) to connect an agent, or read
-[Local Patch Review](../fst-in-action/demo.md) to see what the MVP process
-controls.
+[Local Patch Review](../fst-in-action/demo.md) to see how an installed process
+controls a protected outcome.

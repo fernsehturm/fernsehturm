@@ -4,13 +4,14 @@ sidebar_position: 3
 
 # Local Runtime
 
-The MVP runs locally.
+FST runs locally.
 
 ```text
 fst binary
 .fst/config.yaml
 local_file or sqlite store
-installed process packs
+installed process registry
+generated process commands
 local MCP controller
 scenario runner
 replay evidence
@@ -21,14 +22,13 @@ replay evidence
 Use `local_file` when transparency matters:
 
 ```bash
-fst init --store local_file
+fst setup --store local_file
 ```
 
 Use `sqlite` for the product-shaped local path:
 
 ```bash
-fst init --store sqlite
-fst store migrate
+fst setup --store sqlite
 ```
 
 Both stores should provide the same Core semantics. Changing the store must not
@@ -55,4 +55,5 @@ fst doctor
 ```
 
 Doctor should report config health, selected store provider, store path/schema,
-active profile, and runtime adapter availability.
+installed process registry health, generated command health, and runtime
+adapter availability.

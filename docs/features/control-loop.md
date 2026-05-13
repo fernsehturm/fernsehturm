@@ -21,7 +21,7 @@ FST evaluates:
 - approval gates
 - process-conformance gates
 
-Each gate belongs to the active process profile.
+Each gate belongs to the process profile bound to the run.
 
 ## Routes
 
