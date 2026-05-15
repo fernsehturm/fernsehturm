@@ -10,6 +10,12 @@ claudric:
   image_url: /img/claudric-icon.png
   page: true
 
+clauderick:
+  name: Clauderick
+  title: I love to extend the brief
+  image_url: /img/claudric-icon.png
+  page: true
+
 colbert:
   name: Colbert
   title: I simply guess what is real and what isn't

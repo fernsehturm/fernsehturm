@@ -32,6 +32,9 @@ type AuthorityStep = {
   description: string;
 };
 
+const COMING_SOON = 'Coming Soon';
+const GITHUB_URL = 'https://github.com/fernsehturm/fernsehturm';
+
 const tiers: Tier[] = [
   {
     id: 'personal-free',
@@ -41,8 +44,7 @@ const tiers: Tier[] = [
       'Individual agent users who want process control around their own local agent work.',
     buyReason:
       'you need the agent to follow a real process, ask for local approval, and leave replayable evidence before work counts.',
-    price: 'Free',
-    priceLabel: 'forever',
+    price: COMING_SOON,
     priceNote: 'Core enforcement, evidence, preflight, and replay stay available here.',
     benefits: [
       'Run FST locally inside one agent session',
@@ -52,8 +54,7 @@ const tiers: Tier[] = [
       'Approve through the local CLI and replay the run afterward',
       'Build local process profiles without setting up infrastructure',
     ],
-    cta: 'Start Free',
-    ctaTo: '/docs/getting-started/quickstart',
+    cta: COMING_SOON,
     details: [
       {
         title: 'Authority boundary',
@@ -87,8 +88,7 @@ const tiers: Tier[] = [
       'Power users and solo operators who want local FST connected to email, webhooks, workflow tools, tickets, files, or chat gateways.',
     buyReason:
       'work should begin from the outside world, but approval and protected effects still need to stay under your local authority.',
-    price: '€29',
-    priceLabel: '/mo',
+    price: COMING_SOON,
     priceNote: 'For one local user adding receivers, adapters, and controlled event intake.',
     badge: 'Personal automation',
     highlighted: true,
@@ -100,8 +100,7 @@ const tiers: Tier[] = [
       'Deduplicate events and validate allowed or signed sources',
       'Keep event received separate from approval granted',
     ],
-    cta: 'Start Pro trial',
-    ctaTo: '/docs/intro',
+    cta: COMING_SOON,
     details: [
       {
         title: 'Authority boundary',
@@ -136,7 +135,7 @@ const tiers: Tier[] = [
       'Engineering, operations, support, and compliance teams that need multiple people and agents working from the same controlled process.',
     buyReason:
       'requesters, operators, reviewers, approvers, profile authors, and admins must be distinct roles instead of one local user.',
-    price: 'Coming soon',
+    price: COMING_SOON,
     priceNote: 'For shared authority, shared evidence, and self-hosted team operation.',
     benefits: [
       'Run shared controlled work in a self-hosted FST service',
@@ -146,7 +145,7 @@ const tiers: Tier[] = [
       'Share run state, adapters, evidence, and handoffs',
       'Export audits from one team evidence trail',
     ],
-    cta: 'Coming soon',
+    cta: COMING_SOON,
     details: [
       {
         title: 'Authority boundary',
@@ -181,7 +180,7 @@ const tiers: Tier[] = [
       'Organizations that need FST inside their identity, policy, audit, retention, deployment, and compliance controls.',
     buyReason:
       'FST must become part of the organization control plane across teams, identities, systems, and environments.',
-    price: 'Talk to us',
+    price: COMING_SOON,
     priceNote: 'For governed deployment, supported connectors, compliance, and SLA.',
     benefits: [
       'Bind FST authority to SSO, IAM, directory groups, and policy',
@@ -191,7 +190,7 @@ const tiers: Tier[] = [
       'Retain evidence with custom retention and legal hold',
       'Run with private deployment, HA, backup, support, and SLA',
     ],
-    cta: 'Talk to us',
+    cta: COMING_SOON,
     details: [
       {
         title: 'Authority boundary',
@@ -310,6 +309,18 @@ export default function Pricing(): ReactNode {
       title="Pricing"
       description="Choose a Fernsehturm tier by who or what can influence official process state: one local user, external events, a team, or the organization.">
       <main>
+        <section className={styles.interestBanner}>
+          <div className="container">
+            <p>
+              Are you interested in this? Help me with a{' '}
+              <a href={GITHUB_URL} target="_blank" rel="noreferrer">
+                star on GitHub
+              </a>
+              .
+            </p>
+          </div>
+        </section>
+
         <section className={styles.hero}>
           <div className="container">
             <Heading as="h1">Pricing</Heading>
@@ -355,8 +366,8 @@ export default function Pricing(): ReactNode {
             <p className={styles.ctaText}>
               <strong>Safety is never paywalled.</strong> Personal Free proves
               the core model locally: the agent proposes, FST checks, the user
-              approves, and the run records evidence. Buy Pro when outside
-              systems should start controlled work. Buy Team or Enterprise when
+              approves, and the run records evidence. Pro is for when outside
+              systems should start controlled work. Team and Enterprise are for when
               authority must be shared, governed, audited, or tied to identity.
             </p>
             <Link className={styles.ctaButton} to="/docs/getting-started/quickstart">

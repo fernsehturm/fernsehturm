@@ -30,6 +30,10 @@ decides whether the process is satisfied.
 
 ## 1. Install FST
 
+:::note Coming soon
+The public installer is not available yet.
+:::
+
 ```bash
 curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 export PATH="$HOME/.local/bin:$PATH"
