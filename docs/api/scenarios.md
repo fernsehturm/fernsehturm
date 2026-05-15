@@ -98,7 +98,7 @@ incomplete_process_model_asks_user
 unsafe_hook_authority_blocked
 missing_scenario_suite_instructs_agent
 invalid_profile_schema_blocked
-activation_requires_approval
+approval_for_use_requires_approval
 ```
 
 ## Happy Path Example
@@ -187,4 +187,4 @@ The runner should record:
 - materialization plans/results
 - evidence refs
 
-Scenario results become evidence for review and activation.
+Scenario results become evidence for review and approval for use.

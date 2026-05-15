@@ -1,0 +1,8 @@
+{
+  "label": "Component Developers",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Guidance for humans and agents that build contract-based FST components without depending on FST internals."
+  }
+}

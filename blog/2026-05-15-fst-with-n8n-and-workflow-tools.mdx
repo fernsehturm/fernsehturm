@@ -1,0 +1,142 @@
+---
+slug: fst-with-n8n-and-workflow-tools
+title: FST With n8n And Workflow Tools
+authors: [codey]
+---
+
+n8n and workflow tools move work between systems. FST does not compete on triggers or integrations. It controls whether agent work is ready before the workflow takes a protected action.
+
+{/* truncate */}
+
+# FST With n8n And Workflow Tools
+
+Workflow tools are excellent at moving work. They listen for triggers, pass data between systems, call APIs, send notifications, update tickets, and execute app actions.
+
+FST is not trying to be a better workflow builder.
+
+The useful split is:
+
+```text
+Workflow tool:
+  What runs next?
+
+FST:
+  What must be true before progress counts?
+```
+
+That makes FST a complement to n8n, Zapier, Make, internal workflow engines, and similar automation systems.
+
+## What Workflow Tools Do Well
+
+Workflow tools are strong at:
+
+- triggers and webhooks
+- app integrations
+- low-code automation
+- routing between systems
+- notifications and handoffs
+- scheduled jobs
+- API calls
+- moving data from one service to another
+
+FST should not compete on the number of integrations or generic automation templates. Those tools already own that layer.
+
+## Where Workflow Tools Need Help
+
+Agentic workflows often include a step where an agent creates or interprets something:
+
+- draft a customer response
+- classify a ticket
+- prepare a purchase request
+- summarize a compliance case
+- produce a patch review packet
+- propose an access grant
+- decide whether an external action is ready
+
+The workflow can move the data. It should not automatically treat the agent output as process authority.
+
+Before the workflow performs a protected action, a stronger check is needed:
+
+- Did the agent work inside the correct process?
+- Which profile version controlled the run?
+- Are required artifacts present and valid?
+- Does the approval match the requested action and scope?
+- Did the materialization preflight pass?
+
+That is FST's job.
+
+## How FST Fits Into n8n
+
+An n8n workflow can call FST when process authority matters:
+
+```text
+n8n receives ticket
+-> calls FST to start a controlled run
+-> agent produces candidate artifacts
+-> n8n submits evidence to FST
+-> FST returns a route
+-> n8n sends approval request if required
+-> approver decides through the trusted path
+-> n8n submits approval candidate to FST
+-> FST returns MaterializeAllowed
+-> n8n executes the app action
+-> n8n records the materialization result with FST
+```
+
+n8n remains the automation surface. FST becomes the authority layer for the process-sensitive parts.
+
+## Example
+
+A support workflow receives a request to query production customer data.
+
+Without FST, the workflow might:
+
+```text
+receive ticket
+-> ask agent to classify request
+-> run query action
+-> send result
+```
+
+With FST:
+
+```text
+receive ticket
+-> start FST run under Customer Data Query profile
+-> agent drafts scope and purpose
+-> FST checks data scope and policy evidence
+-> FST waits for approval if PII is involved
+-> workflow runs query only after allowed preflight
+-> materialization result is recorded
+```
+
+The workflow still moves the work. FST decides whether the work is ready to move.
+
+## What Gets More Trustworthy
+
+FST makes workflow tools stronger by adding:
+
+- controlled run state
+- process profile versions
+- evidence admission
+- approval validation
+- route decisions
+- materialization preflight
+- replayable process records
+
+That matters because logs alone do not answer whether the workflow should have executed an action before it executed it.
+
+## The Boundary
+
+The clean split is:
+
+```text
+n8n and workflow tools:
+  triggers, integrations, handoffs, app actions
+
+FST:
+  gates, evidence, approvals, scopes, preflight,
+  official process progress
+```
+
+Use the workflow tool to move work. Use FST to decide what must be true before agent work counts.

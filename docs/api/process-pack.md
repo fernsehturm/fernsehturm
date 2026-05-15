@@ -41,7 +41,7 @@ requires:
 
 forbidden:
   capabilities:
-    - modify_kernel
+    - modify_fst_authority_rules
     - modify_environment_permissions
   hook_outputs:
     - route
@@ -146,9 +146,9 @@ Use `forbidden` to make authority boundaries explicit:
 ```yaml
 forbidden:
   capabilities:
-    - auto_activate_profile
+    - auto_approve_profile_for_use
     - auto_publish_profile
-    - modify_kernel
+    - modify_fst_authority_rules
     - modify_environment_permissions
   hook_outputs:
     - route
@@ -160,21 +160,22 @@ forbidden:
 Validation should reject packs that request forbidden capabilities or hooks that
 return forbidden authority fields.
 
-## `activation`
+## `approval_for_use`
 
-Packs that can install or activate generated processes should declare approval:
+Packs that can install generated processes or approve them for use should
+declare approval:
 
 ```yaml
-activation:
+approval_for_use:
   install_action: profile_builder.install.request
-  activate_action: profile_builder.activate.request
+  approve_use_action: profile_builder.approve_use.request
   required_approval:
     role: workspace_admin
-    scope: activate_process_profile
+    scope: approve_process_profile_for_use
 ```
 
-Installation and activation are authority decisions. Do not infer them from
-chat.
+Installation and approval for use are authority decisions. Do not infer them
+from chat.
 
 ## Install Contract
 

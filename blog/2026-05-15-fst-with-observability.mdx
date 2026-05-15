@@ -1,0 +1,133 @@
+---
+slug: fst-with-observability
+title: FST With Observability
+authors: [codey]
+---
+
+Observability helps teams understand what happened. FST complements it by deciding what is allowed before protected work happens, then producing process evidence for inspection afterward.
+
+{/* truncate */}
+
+# FST With Observability
+
+Observability is essential. Logs, traces, metrics, spans, run inspection, dashboards, and alerts help teams understand how systems behaved.
+
+FST is not a replacement for observability.
+
+The difference is timing and authority:
+
+```text
+Observability asks:
+  What happened?
+
+FST asks:
+  Was this allowed before it happened?
+```
+
+Both questions matter. They belong to different layers.
+
+## What Observability Does Well
+
+Observability tools are strong at:
+
+- recording system behavior
+- tracing requests across services
+- showing latency and errors
+- debugging incidents
+- inspecting agent or workflow runs
+- monitoring production systems
+- creating operational dashboards
+
+Those tools remain valuable with FST.
+
+## What Observability Does Not Decide
+
+A log can show that an agent called a tool. It does not prove the tool call was authorized under the active process.
+
+A trace can show that a workflow executed an action. It does not prove that the required approval was valid.
+
+A dashboard can show that a deployment happened. It does not prove that the evidence for deployment readiness was admitted before the effect.
+
+Observability can explain behavior after the fact. It should not be the only place a team discovers that the process was skipped.
+
+## How FST Complements Observability
+
+FST controls the run before protected effects proceed:
+
+```text
+agent requests action
+-> FST checks active profile
+-> FST evaluates gates, scope, artifacts, approvals
+-> FST returns route
+-> protected effect waits, blocks, or proceeds
+-> evidence and decision record are written
+```
+
+Observability can then ingest or link to the FST evidence:
+
+```text
+trace id
+run id
+profile version
+route
+gate id
+approval ref
+materialization preflight result
+```
+
+That gives operators both system behavior and process context.
+
+## Example
+
+An agent-assisted workflow updates a customer's account settings.
+
+Observability can tell you:
+
+```text
+the workflow ran
+the API call succeeded
+the request took 420ms
+the actor was assistant-worker-7
+```
+
+FST can tell you:
+
+```text
+the run used Customer Account Change profile v3
+the requested action was account.setting.update
+the approval matched customer_id and setting_id
+the agent-submitted approval candidate was rejected once
+the final approval came from a trusted approver
+the materialization preflight passed
+```
+
+Those are different kinds of evidence. The second set is what explains why the action was allowed to happen.
+
+## What Gets More Trustworthy
+
+FST makes observability more useful by adding process facts:
+
+- the controlling profile version
+- gate evaluations
+- admitted and rejected evidence
+- route decisions
+- approval provenance
+- preflight records
+- replayable process state
+
+Observability can then show not only that work happened, but how the process controlled it.
+
+## The Boundary
+
+The clean split is:
+
+```text
+Observability:
+  inspect system behavior, performance, failures, and traces
+
+FST:
+  control official process progress before protected effects,
+  then produce process evidence for replay and audit
+```
+
+FST does not make observability unnecessary. It gives observability stronger process facts to show.

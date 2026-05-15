@@ -44,7 +44,7 @@ The builder must:
 - reject hooks that return authority
 - generate and run scenarios
 - render a review packet
-- stop before install or activation
+- stop before install or approval for use
 
 ## Boundary
 
@@ -53,7 +53,7 @@ The builder may draft process authority. It may not publish it.
 ```text
 No docs source, no profile generation.
 No validated pack, no install.
-No passed scenarios, no activation.
+No passed scenarios, no approval for use.
 No trusted approval, no publication.
 ```
 

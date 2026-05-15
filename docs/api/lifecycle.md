@@ -4,8 +4,8 @@ sidebar_position: 8
 
 # Lifecycle And Validation
 
-This page defines the expected lifecycle for process packs from draft to active
-profile.
+This page defines the expected lifecycle for process packs from draft to
+installed, approved use.
 
 ## Lifecycle States
 
@@ -23,14 +23,16 @@ reviewed
   Review packet was rendered and accepted by the reviewer.
 
 installed
-  Pack is imported into the workspace profile registry.
+  Pack is imported into the workspace process registry.
 
-active
-  New runs use this profile version by default.
+approved_for_use
+  New runs may use this process version through its generated command or
+  explicit process reference.
 ```
 
-Activation is not the same as installation. Installation imports a pack.
-Activation changes the default profile for new runs.
+Approval for use is not the same as installation. Installation imports a pack.
+Approval determines whether that installed process version may be used for new
+controlled runs.
 
 ## Commands
 
@@ -39,10 +41,13 @@ Expected MVP commands:
 ```bash
 fst process inspect process-packs/local_patch_review
 fst process install process-packs/local_patch_review-0.1.0.fstpack
-fst process activate local_patch_review@0.1.0
 fst scenario run local_patch_review.happy_path
 fst replay show --latest
 ```
+
+If a process profile requires approval before use, that approval must be
+recorded through the configured trusted approval path. Do not infer it from the
+install command or from chat.
 
 Workspace-aware form:
 
@@ -67,7 +72,7 @@ Validate in this order:
 10. Artifact schemas.
 11. Scenario presence and coverage.
 12. Materialization scope fields.
-13. Approval requirements for install/activation.
+13. Approval requirements for install and approval for use.
 
 Stop on safety or authority violations.
 
@@ -98,7 +103,7 @@ pack.
 
 ## Review Packet
 
-Before install or activation, render a review packet with:
+Before install or approval for use, render a review packet with:
 
 - process id, version, and purpose
 - docs source/hash used
@@ -137,22 +142,21 @@ Install should record:
 
 ## Activation Rules
 
-Activation requires:
+Approval for use requires:
 
 - installed process version
 - valid profile hash
 - passed scenario evidence, when required by policy
-- trusted approval when the profile declares activation approval
+- trusted approval when the profile declares approval-for-use requirements
 
-Activation should write an active-profile pointer atomically.
-
-Existing runs must continue with the profile version they started with.
+Existing runs must continue with the process id, version, and profile hash they
+started with.
 
 ## Failure Modes
 
 Fail closed when:
 
-- active profile cannot be loaded
+- selected process/profile cannot be loaded
 - profile version hash does not match stored hash
 - action is unknown
 - route cannot be produced
@@ -183,9 +187,9 @@ Agents must not:
 - move approval into chat
 - make hooks return authority
 
-## Activation Boundary
+## Approval Boundary
 
 The process-building agent may draft process authority.
 
-Only FST validation plus trusted approval may publish or activate that
-authority.
+Only FST validation plus trusted approval may make that authority available for
+new controlled runs.

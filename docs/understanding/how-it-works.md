@@ -4,46 +4,38 @@ sidebar_position: 2
 
 # How FST Works
 
-FST wraps agent work in a deterministic control loop.
+FST wraps process-sensitive agent work in a control loop.
 
 ```text
-agent intent
-  -> installed process profile
-  -> Core gate evaluation
-  -> route decision
-  -> evidence record
-  -> controlled materialization
+actor or agent intent
+-> FST command
+-> controlled run state
+-> process profile rules
+-> route
+-> evidence
+-> preflight before protected effects
 ```
 
 The agent still reasons and does useful work. FST decides whether the next
 controlled boundary may be crossed.
 
-## The Runtime Pieces
+## The Public Runtime Pieces
 
-```text
-Kernel
-  Core semantics, profile validation, gate evaluation, artifact acceptance,
-  route selection, evidence, replay, materialization preflight, store contract.
+You can understand FST through four public pieces:
 
-Adapters
-  local_file store, sqlite store, trace store, local report materializer,
-  hook runtime host.
+| Piece | Purpose |
+| --- | --- |
+| Interface | CLI, MCP, REST, SDK, or UI surface that sends FST commands |
+| Host runtime | Local or hosted runtime that wires config, receivers, plugins, and components |
+| Controlled run | Persistent official state for one execution of one process profile |
+| Contract-based components | Stores, adapters, validators, authorization providers, process packs, and exports |
 
-Configuration
-  .fst/config.yaml selects store, runtime protocols, profile API, and adapter
-  options. .fst/processes/registry.json records installed processes and their
-  generated commands.
-
-Process pack
-  Business-specific profile, actions, artifacts, gates, hooks, scenarios,
-  templates, and skill instructions.
-```
-
-The process pack owns business logic. Core owns control semantics.
+The internal implementation of the FST authority layer is not a public
+extension point. Components interact through contracts.
 
 ## The Control Request
 
-An agent submits a closed action name and payload:
+An agent submits an intended controlled action through an interface:
 
 ```ts
 fst.control({
@@ -58,31 +50,33 @@ fst.control({
 })
 ```
 
-Core resolves the process from the generated command or explicit process
-reference, loads the bound profile version, checks the action, evaluates gates
-against current run state and artifacts, and returns a route.
+FST evaluates the request against the active run and process profile, then
+returns a route. The route is the boundary the agent must follow.
 
-## Gate Types
+## Gates
 
-FST uses three gate types:
+A gate is a condition that must be satisfied before progress counts.
+
+Common gate classes are:
 
 ```text
-Decision gate
-  Missing facts, branching, classification, or hard rules.
+decision gate
+  missing facts, branching, classification, or hard rules
 
-Approval gate
-  Authority increases or risky work that requires a trusted human decision.
+approval gate
+  authority increases or risky work that requires trusted approval
 
-Process-conformance gate
-  Required valid artifacts before the action can proceed.
+process-conformance gate
+  required valid artifacts before the run can advance
 ```
 
-Gate evaluation is deterministic for the same profile version, run state,
-payload, artifacts, approvals, and idempotency key.
+The process profile defines the gates. The agent can submit candidate
+artifacts, ask for facts, or request approval. It cannot declare a gate
+satisfied by narration.
 
 ## Routes
 
-FST returns one fixed route vocabulary:
+FST returns a fixed route vocabulary:
 
 ```text
 Continue
@@ -95,46 +89,80 @@ MaterializeAllowed
 Complete
 ```
 
-The route is the boundary. It tells the agent, CLI, orchestrator, and scenario
-runner what may happen next.
+The route tells the agent, CLI, workflow, scenario runner, or UI what is valid
+next. It can also explain why work is missing, blocked, waiting, or complete.
 
 ## Evidence And Replay
 
-Every meaningful decision records evidence:
+Every meaningful process decision should leave evidence:
 
 - profile id, version, and hash
 - run id and action
 - actor and idempotency key
-- gate id and type
-- route and reason
+- gate or route reason
 - missing artifacts or required approval
-- created artifacts and evidence refs
-- hook input/output hashes when hooks run
+- submitted candidates and accepted evidence refs
+- materialization preflight decisions
+- scenario and validation results where relevant
 
-Replay uses stored evidence and run state to explain why FST returned a route.
+Replay explains why FST returned a route using recorded process state and
+evidence. Replay is not a transcript of agent thoughts. It is the official
+process record.
 
-## Hooks
+## External Events And Adapters
 
-Process packs may include hook logic. Hooks compute facts, validate artifacts,
-or render templates.
+Adapters can bring outside events into FST:
 
-Hooks do not decide routes and do not grant authority. If hook output tries to
-return a route, approval record, publication, or materialization permission, FST
-rejects it.
+```text
+email received
+ticket updated
+GitHub event received
+webhook received
+workflow trigger fired
+file appeared
+```
+
+An event can become an input, artifact candidate, or run trigger. It is not
+authority by default.
+
+For example, an email saying "approved" should not automatically become an
+approval unless the configured process validates the sender, authentication,
+scope, expiry, and relation to the run.
 
 ## Materialization
 
-Materialization is the outside effect: write a report, create a package, mark a
-patch ready, send an email, or touch a protected system.
+Materialization is a protected effect: something changes outside the controlled
+run.
 
-Materialization is local and conservative unless the installed process and
-environment explicitly allow a stronger effect:
+Examples:
+
+- send an email
+- write a report
+- create a ticket
+- grant access
+- query sensitive data
+- merge a pull request
+- deploy a service
+- create a purchase order
+
+Before a protected effect, FST performs materialization preflight. The question
+is:
 
 ```text
-mock
-shadow
-approved_real
+Is this exact effect allowed in this run,
+under this profile version,
+for this actor,
+with this scope,
+with this evidence,
+and with this approval path?
 ```
 
-Materialization preflight checks route, artifacts, approvals, scope fields, and
-idempotency before any effect.
+If the answer is no, the effect should not happen.
+
+## Why This Matters
+
+Without FST, an agent can be asked to follow a process and then self-report
+that it did. With FST, the process has persistent state, gates, evidence,
+approvals, and preflight.
+
+That gives agents more useful access without giving them unchecked authority.

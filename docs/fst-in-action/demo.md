@@ -19,7 +19,7 @@ Protected outcome:
 patch.ready_for_review
 ```
 
-Only FST should issue that outcome after gates pass.
+Only FST should count that outcome after gates pass.
 
 ## Setup
 
@@ -27,7 +27,6 @@ Only FST should issue that outcome after gates pass.
 fst init --store sqlite --workspace "$HOME/fst-workspace"
 fst store migrate --workspace "$HOME/fst-workspace"
 fst process install process-packs/local_patch_review-0.1.0.fstpack --workspace "$HOME/fst-workspace"
-fst process activate local_patch_review@0.1.0 --workspace "$HOME/fst-workspace"
 fst doctor --workspace "$HOME/fst-workspace"
 ```
 
@@ -92,4 +91,5 @@ fst replay show --latest --workspace "$HOME/fst-workspace"
 ## What This Shows
 
 The patch is not ready because the agent says so. It is ready only when the
-active profile, artifacts, hooks, gates, and scenario-backed process allow it.
+selected process profile, artifacts, hooks, gates, and scenario-backed process
+allow it.

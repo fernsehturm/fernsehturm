@@ -4,57 +4,80 @@ sidebar_position: 1
 
 # Introduction
 
-Fernsehturm (FST) is a local control layer for agent work.
+Fernsehturm (FST) helps agents do useful work without letting the agent decide
+what is approved, complete, or safe to change.
 
-Agents can inspect, draft, run tools, and propose effects. FST decides what is
-allowed next by evaluating a process profile, recorded artifacts, approvals,
-and the current run state.
-
-```text
-agent intent -> installed process -> route -> evidence -> controlled effect
-```
-
-FST is local-first:
+The short version:
 
 ```text
-one fst Linux binary
-local_file or sqlite store
-versioned workspace config
-installed process registry
-generated fst-* process commands
-hook-backed process logic
-scenario runner
-replayable evidence
-local MCP controller
+Agents do the work. FST controls what counts.
 ```
 
-## What FST Controls
+For example, an agent can prepare a purchase request. FST can check that the
+request follows the process, records the right evidence, and stops before a real
+purchase unless the required approval exists.
 
-FST answers these questions for an agent:
+## The First Thing To Try
 
-- Is this action part of the selected installed process?
-- Which gate applies before the action?
-- Which artifacts or approvals are missing?
-- Should the agent continue, ask, repair, wait, or stop?
-- May this effect be mocked, shadowed, or materialized?
-- What evidence should be recorded for replay?
+Start with the purchase quickstart. You install FST, start the local agent
+interface, ask your agent for a purchase, and watch FST decide whether the
+process can continue.
+
+```bash
+curl -fsSL https://www.fernsehturm.dev/install.sh | bash
+export PATH="$HOME/.local/bin:$PATH"
+
+fst setup \
+  --workspace "$HOME/fst-workspace" \
+  --store sqlite \
+  --install-process purchase_request_preflight@0.1.0 \
+  --no-password
+
+fst mcp start --workspace "$HOME/fst-workspace"
+```
+
+Then start your agent and ask:
+
+```text
+Buy me a 4K monitor, around $400, for design work.
+Use my purchase process.
+```
+
+The first run should show the basic loop:
+
+```text
+user request
+-> agent prepares the purchase packet
+-> FST checks the purchase process
+-> FST records the route and evidence
+-> agent stops when approval is missing
+```
+
+It does not place a real order. It shows how FST keeps an agent inside a
+controlled purchase process while the agent still does useful work.
+
+## What FST Adds
+
+Without FST, an agent can say:
+
+```text
+I prepared the purchase request and it looks approved.
+```
+
+With FST, the process can require:
+
+- a specific process profile
+- a controlled run
+- typed request details
+- required evidence
+- an approval path when money or authority is involved
+- replay showing why the work was allowed or blocked
 
 The agent stays useful. It does not become the authority.
 
-## What You Do
-
-You install `fst`, run `fst setup`, select the processes you want in the local
-workspace, run scenarios, and connect your agent through the local MCP
-controller.
-
-Bundled processes include `local_patch_review` for developer patch review and
-`purchase_request_preflight` for controlled purchase packets. Each installed
-process has its own generated command and its own process contract.
-
 ## Start Here
 
-- [Getting Started](getting-started/overview.md): install and configure FST
-- [How FST Works](understanding/how-it-works.md): the runtime control loop
-- [Developing A Process](workflows/developing-a-process.md): how to create process profiles
-- [Process Builder Agent Guide](workflows/process-builder-agent.md): how an agent helps build profiles
-- [API Reference](concepts/04_api.md): `fst.control` request and response shape
+- [Quickstart](/docs/getting-started/quickstart): install FST and try the agent-driven purchase example
+- [Create Your First Custom Process](/docs/getting-started/first-custom-process): turn a plain-language process into a versioned control surface
+- [How FST Works](/docs/understanding/how-it-works): understand routes, gates, evidence, and preflight
+- [Component Developers](/docs/developers/overview): build FST components against contracts

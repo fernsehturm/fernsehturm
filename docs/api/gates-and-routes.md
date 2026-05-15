@@ -23,7 +23,7 @@ gates:
       - artifact_type_id
     required_approval:
       role: workspace_admin
-      scope: activate_process_profile
+      scope: approve_process_profile_for_use
     next_allowed_actions:
       - action_id
 ```
@@ -127,7 +127,7 @@ run and profile version.
 ```yaml
 required_approval:
   role: workspace_admin
-  scope: activate_process_profile
+  scope: approve_process_profile_for_use
 ```
 
 Approval gates route to `AwaitApproval` until a trusted approval record exists.
@@ -186,16 +186,16 @@ Do not model approval as a normal task-user answer.
 ### Approval
 
 ```yaml
-- id: activation_requires_workspace_admin_approval
+- id: approval_for_use_requires_workspace_admin_approval
   type: approval
-  before_action: profile_builder.activate.request
+  before_action: profile_builder.approve_use.request
   condition:
     always: true
   route: AwaitApproval
-  reason: Generated process activation requires workspace-admin approval.
+  reason: Generated process use requires workspace-admin approval.
   required_approval:
     role: workspace_admin
-    scope: activate_process_profile
+    scope: approve_process_profile_for_use
 ```
 
 ## Validation Checklist

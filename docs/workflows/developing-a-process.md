@@ -107,7 +107,7 @@ Manual process development is direct but requires technical care.
 10. Write scenarios for happy path, missing facts, blocked cases, approvals, and idempotency.
 11. Validate the profile.
 12. Run scenarios and inspect evidence.
-13. Install and activate only after review.
+13. Install and approve for use only after review.
 
 Manual development is useful when the team already understands FST profile
 shape, hook contracts, and scenario format.
@@ -136,7 +136,7 @@ The builder agent then works through the controlled builder process:
 7. Runs the generated scenario suite.
 8. Packages a local draft.
 9. Renders a review packet.
-10. Stops at install or activation until trusted approval exists.
+10. Stops at install or approval for use until trusted approval exists.
 
 The builder agent can draft process authority. It cannot publish that authority.
 
@@ -161,7 +161,7 @@ to inspect or edit the draft directly.
 
 ## Review Before Activation
 
-Before a generated process is activated, a reviewer should see:
+Before a generated process is approved for use, a reviewer should see:
 
 - process name and purpose
 - what the agent may do
@@ -174,8 +174,8 @@ Before a generated process is activated, a reviewer should see:
 - remaining risks
 - required approval
 
-Activation changes what future agents may do. Treat it as an authority decision,
-not as a normal file write.
+Approval for use changes what future agents may do. Treat it as an authority
+decision, not as a normal file write.
 
 ## Rules Of Thumb
 
@@ -186,4 +186,4 @@ not as a normal file write.
 - Keep approvals on trusted surfaces.
 - Use scenarios to prove both allowed and blocked behavior.
 - Do not let hooks grant authority.
-- Do not activate profiles that have not passed validation and scenarios.
+- Do not approve profiles for use unless they have passed validation and scenarios.

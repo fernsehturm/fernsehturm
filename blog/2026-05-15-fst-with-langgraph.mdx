@@ -1,0 +1,137 @@
+---
+slug: fst-with-langgraph
+title: FST With LangGraph
+authors: [codey]
+---
+
+LangGraph gives agents durable graph execution. FST does not compete with that. It gives LangGraph runs an external process authority at the points where progress needs to count.
+
+{/* truncate */}
+
+# FST With LangGraph
+
+LangGraph is useful when agent work needs structure. It gives teams graph-based execution, stateful paths, checkpoints, branching, retries, and long-running control over complex agent tasks.
+
+That is a strong execution layer.
+
+FST belongs at a different layer. FST does not ask "which graph node runs next?" It asks:
+
+```text
+What must be true before this process step is trusted?
+```
+
+That difference is the whole point. LangGraph can run the agent graph. FST can control whether a graph step is valid inside the active process.
+
+## What LangGraph Does Well
+
+LangGraph is strong at agent execution:
+
+- durable task graphs
+- explicit node transitions
+- stateful coordination
+- branching and retries
+- multi-step agent control
+- tool use inside graph nodes
+- long-running task structure
+
+If you already have a LangGraph application, FST should not replace it. The graph is where the work runs.
+
+## Where FST Fits
+
+Process-sensitive graph nodes often need to know whether it is valid to advance.
+
+Examples:
+
+- move from draft to review
+- request approval
+- execute a protected app action
+- publish an artifact
+- grant access
+- mark a support action complete
+- materialize a change outside the graph
+
+Those steps should not depend only on the graph's local state. The graph may know where execution is. FST knows what the process requires.
+
+## Checkpoints Become Control Points
+
+A LangGraph node can call FST at meaningful checkpoints:
+
+```text
+LangGraph node prepares candidate work
+-> node calls FST with intended action and evidence
+-> FST evaluates the active process profile
+-> FST returns the next valid route
+-> graph follows that route
+```
+
+That lets the graph stay in charge of orchestration while FST owns process authority.
+
+## Example
+
+Imagine a LangGraph app that handles vendor onboarding.
+
+The graph might have nodes like:
+
+```text
+intake
+document_collection
+policy_check
+review_packet
+approval_request
+system_update
+completion_report
+```
+
+Without FST, the graph decides that the packet is ready when its local state says the right nodes have run.
+
+With FST, the graph asks a stronger question before advancing:
+
+```text
+Does the active vendor onboarding profile accept this packet?
+Are the required documents admitted?
+Did the policy check pass?
+Is the approval scoped to this vendor and action?
+May the system update be materialized?
+```
+
+If the tax form is missing, FST can return `InstructAgent`. If the approval is missing, FST can return `AwaitApproval`. If the approval is for the wrong vendor, FST can return `Blocked`.
+
+The graph can then route accordingly.
+
+## Why This Makes LangGraph Stronger
+
+LangGraph already gives the agent durable execution. FST adds durable process conformance.
+
+That means:
+
+- graph checkpoints can be backed by gates
+- graph state can be separated from official process state
+- agent-produced artifacts can be admitted or rejected
+- approvals can be validated by scope and provenance
+- protected effects can require materialization preflight
+- replay can explain why a graph advanced or stopped
+
+The graph becomes easier to trust because progress is not only a transition. It is a decision backed by process evidence.
+
+## The Boundary
+
+The clean architecture is:
+
+```text
+LangGraph:
+  execute agent logic, coordinate nodes, handle retries,
+  keep graph execution durable
+
+FST:
+  maintain controlled run state, evaluate gates,
+  validate evidence and approvals, authorize protected effects
+```
+
+FST should not compete with LangGraph on graph modeling or agent execution. LangGraph should not have to become the final authority over business process validity.
+
+Together, the model is stronger:
+
+```text
+LangGraph runs the agent.
+FST controls what counts.
+```

@@ -29,7 +29,8 @@ The process builder helps a domain expert create a process profile without
 knowing FST YAML, hook manifests, scenario formats, or route vocabulary.
 
 It drafts a process pack, validates it, runs scenarios, and renders a review
-packet. It does not install or activate the profile without trusted approval.
+packet. It does not install or approve the profile for use without trusted
+approval.
 
 ## Access And Permission Workflows
 

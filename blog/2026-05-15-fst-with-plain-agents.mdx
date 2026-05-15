@@ -1,0 +1,149 @@
+---
+slug: fst-with-plain-agents
+title: FST With Plain Agents
+authors: [codey]
+---
+
+Plain agents are useful because they can reason, draft, inspect systems, write code, and call tools. FST does not replace them. It gives them an enforceable process to work inside.
+
+{/* truncate */}
+
+# FST With Plain Agents
+
+Plain agents are the starting point for most teams. A user asks Claude, Codex, Gemini, Kimi, opencode, or another agent to do useful work. The agent reads context, proposes a path, edits files, calls tools, drafts reports, or prepares a request.
+
+That is valuable. It is also where the authority problem starts.
+
+An agent may have the capability to do something:
+
+```text
+inspect a repository
+query an internal tool
+draft a purchase request
+write a patch
+prepare an access grant
+request a deployment
+```
+
+Capability is not authority. The fact that an agent can call a tool does not mean the process step is valid, the evidence is complete, the approval is real, or the protected effect should proceed.
+
+## What Plain Agents Do Well
+
+Plain agents are strong at flexible work:
+
+- understanding messy requests
+- drafting first versions
+- finding relevant files or systems
+- creating candidate artifacts
+- explaining options
+- using tools when context is available
+- adapting when the user changes direction
+
+FST should not compete with that. It should not try to become the model, the editor, the chat surface, or the general task runner.
+
+The agent should keep doing the work.
+
+## Where Plain Agents Need Help
+
+The weak point is not effort. The weak point is process authority.
+
+Without FST, the agent can say:
+
+```text
+I checked the requirements.
+I followed the approval path.
+The request is ready.
+The change is safe.
+```
+
+But the user still has to trust the transcript. The agent's statement is not the same thing as a process record.
+
+For process-sensitive work, teams need stronger answers:
+
+- Which process was active?
+- Which version controlled this run?
+- What action did the agent request?
+- Which evidence counted?
+- Which approval was required?
+- Was the approval scoped to this exact action?
+- What route did the process return?
+- Why did the run continue, wait, or block?
+
+Plain agents can help produce the evidence. They should not be the authority that decides their own evidence is sufficient.
+
+## How FST Complements Plain Agents
+
+FST gives a plain agent an official process state.
+
+The agent asks FST before controlled steps:
+
+```text
+I want to move this run forward.
+Here is the action I intend.
+Here is the evidence I have.
+What is the valid route?
+```
+
+FST evaluates the active process profile, run state, scopes, artifacts, gates, approvals, and preflight requirements. Then it returns a route:
+
+```text
+Continue
+InstructAgent
+AskUser
+AwaitApproval
+Blocked
+MaterializeMock
+MaterializeAllowed
+Complete
+```
+
+That gives the agent a useful next step without giving it final authority.
+
+## Example
+
+A user asks an agent:
+
+```text
+Buy me a 4K monitor, around $400, for design work.
+Use my purchase process.
+```
+
+The plain agent can research options and draft the purchase packet. FST controls whether the packet satisfies the process.
+
+```text
+Agent prepares candidate purchase packet.
+FST checks the purchase process.
+FST sees that approval is missing.
+FST returns AwaitApproval.
+Agent stops and asks for the trusted approval path.
+```
+
+The agent is still useful. It did not become the approver.
+
+## What Gets More Trustworthy
+
+With FST, a plain agent gains:
+
+- scoped authority instead of broad permission
+- process routes instead of guesswork
+- typed evidence instead of narration
+- approval checks instead of "the user said yes in chat"
+- replay instead of relying on memory
+- preflight before protected effects
+
+This makes the agent easier to trust precisely because it is no longer trusted with everything.
+
+## The Combined Model
+
+The right split is simple:
+
+```text
+Plain agent:
+  reason, draft, inspect, call tools, prepare candidate work
+
+FST:
+  maintain process state, evaluate gates, validate evidence,
+  check approvals, return routes, record replay
+```
+
+Use whatever agent you like. FST gives it a persistent, enforceable process to work inside.

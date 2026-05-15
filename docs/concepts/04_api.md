@@ -5,7 +5,8 @@ sidebar_label: "API Reference"
 
 # API Reference: `fst.control`
 
-FST exposes one agent-facing control surface:
+FST exposes one common agent-facing control action through supported
+interfaces:
 
 ```text
 fst.control

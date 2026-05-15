@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Profile Model
 
-`profile.yaml` is the process contract Core evaluates at runtime.
+`profile.yaml` is the process contract FST evaluates at runtime.
 
 It defines the closed action set, artifact types, gates, routes, approval
 requirements, materialization modes, and completion behavior for one process.
@@ -102,7 +102,7 @@ artifact_types:
 ```
 
 Required fields are evaluated against artifact payloads. `allowed_sources`
-limits which component can create an artifact that satisfies gates.
+limits which component may submit an artifact candidate for gate satisfaction.
 
 ## Actions
 

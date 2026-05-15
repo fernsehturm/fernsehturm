@@ -7,24 +7,25 @@ sidebar_position: 2
 This page is for agents helping a user create or adapt an FST process profile.
 
 Your job is to help the user express a real process, then draft a controlled
-process pack. You are not the authority that installs, activates, publishes, or
-weakens the resulting profile.
+process pack. You are not the authority that installs, approves for use,
+publishes, or weakens the resulting profile.
 
 ## Operating Rule
 
 Use the process builder when the user wants to turn a domain workflow into an
 FST process profile.
 
-The core boundary is:
+The authority boundary is:
 
 ```text
 agent drafts process files
 FST validates and gates them
-trusted human approves install or activation
+trusted human approves install or use
 ```
 
-Do not treat conversation as approval. Do not activate a generated profile
-because the user said "yes" in chat unless the trusted approval path records it.
+Do not treat conversation as approval. Do not approve a generated profile for
+use because the user said "yes" in chat unless the trusted approval path
+records it.
 
 ## Required Inputs
 
@@ -91,7 +92,7 @@ No docs source, no profile generation.
 7. Create or repair scenarios.
 8. Run scenarios.
 9. Render a review packet.
-10. Stop before install or activation unless approval is recorded through the trusted path.
+10. Stop before install or approval for use unless approval is recorded through the trusted path.
 
 Do not start by writing YAML. First make the process model explicit.
 
@@ -107,7 +108,7 @@ Good questions:
 - Which effects are always forbidden?
 - Which effects need approval?
 - Who may approve?
-- What may the agent draft but not send, publish, grant, or activate?
+- What may the agent draft but not send, publish, grant, or approve for use?
 - What is a passing example?
 - What is a blocked example?
 - What is an example where the user must provide more information?
@@ -164,9 +165,10 @@ Before packaging or review, verify:
 - hooks do not return authority
 - scenarios exist
 - materialization modes are explicit
-- install and activation are approval-gated
+- install and approval for use are approval-gated
 
-If validation fails, route the work back to repair. Do not package or activate.
+If validation fails, route the work back to repair. Do not package or approve
+for use.
 
 ## Scenario Checklist
 
@@ -183,8 +185,8 @@ A generated profile needs scenarios that prove both ordinary and unsafe paths:
 - materialization preflight
 - idempotency replay
 
-Scenarios are not documentation only. They are evidence that the profile and
-Core behavior match the intended process.
+Scenarios are not documentation only. They are evidence that the profile
+matches the intended process at the public route and evidence boundary.
 
 ## Hook Boundary
 
@@ -237,7 +239,7 @@ should include:
 - validation diagnostics
 - materialization modes
 - known limitations
-- activation approval requirement
+- approval-for-use requirement
 
 The review packet should not hide risk behind implementation detail.
 
@@ -250,9 +252,9 @@ Stop and ask for guidance or approval when:
 - the user asks to bypass validation
 - the user asks to skip scenarios
 - generated hooks try to return authority
-- the profile would weaken kernel rules
+- the profile would weaken FST authority rules
 - the profile needs new environment permissions
-- install or activation is requested
+- install or approval for use is requested
 
 The builder can help draft process authority. Only FST validation plus trusted
 approval may publish process authority.

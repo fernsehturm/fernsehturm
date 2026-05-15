@@ -107,6 +107,7 @@ const config: Config = {
           label: 'Docs',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/compare', label: 'Compare', position: 'left'},
         {to: '/pricing', label: 'Pricing', position: 'left'},
         {
           href: 'https://github.com/fernsehturm/fernsehturm',
@@ -133,6 +134,10 @@ const config: Config = {
             {
               label: 'Blog',
               to: '/blog',
+            },
+            {
+              label: 'Compare',
+              to: '/compare',
             },
             {
               label: 'GitHub',

@@ -84,7 +84,7 @@ Runtime hosts should call hooks with JSON records:
   "profile_version": "0.1.0",
   "input_artifact_type": "scenario_suite_artifact",
   "payload": {
-    "scenario_ids": ["happy_path", "activation_requires_approval"]
+    "scenario_ids": ["happy_path", "approval_for_use_requires_approval"]
   }
 }
 ```
@@ -143,8 +143,8 @@ profile_publication
 ```
 
 If a hook returns any forbidden authority field, FST should reject the hook
-result and route according to the active profile, usually `Blocked` or
-`InstructAgent`.
+result and route according to the selected process profile, usually `Blocked`
+or `InstructAgent`.
 
 ## Stdio Protocol
 

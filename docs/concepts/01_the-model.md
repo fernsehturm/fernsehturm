@@ -5,29 +5,39 @@ sidebar_label: "The Model"
 
 # The FST Model
 
-FST separates agent capability from agent authority.
+FST separates agent capability from process authority.
 
 An agent may be capable of reading files, drafting code, running tests, calling
-tools, or preparing packets. FST decides whether the active process profile
-allows the next controlled action.
+tools, or preparing packets. FST decides whether the active controlled run
+allows the next process step to count.
 
-## Core Split
+## Public Concepts
 
 ```text
-FST Kernel
-  Reusable control engine.
-
-Environment
-  Where FST runs and what adapters/connectors are available.
-
 Process profile
-  Versioned process contract for one workflow.
+  Versioned rules for one process.
 
-Run state
-  Durable record of one controlled execution.
+Controlled run
+  One execution of one process profile.
+
+Gate
+  A required condition before progress counts.
+
+Artifact
+  Typed evidence submitted for a run.
+
+Approval
+  Authority from a trusted person, system, or policy path.
+
+Scope
+  Run-bound permission for specific data, tools, targets, or effects.
+
+Route
+  FST's answer for what may happen next.
+
+Materialization preflight
+  Final check before a protected effect changes the outside world.
 ```
-
-The kernel is stable. The process profile changes per workflow.
 
 ## Process Profile
 
@@ -47,16 +57,51 @@ A process profile defines:
 Every run binds to a profile id, version, and hash so replay can explain which
 rules controlled the agent.
 
+## Controlled Run
+
+A controlled run is the official process state for one execution.
+
+It records:
+
+- which profile version applies
+- what the current route is
+- which gates are missing or satisfied
+- which artifacts and approvals were submitted
+- which evidence was accepted
+- which scopes exist
+- which protected effects were allowed, blocked, or attempted
+- how the run can be replayed
+
+The run should not depend on one agent session. One agent can start the work,
+another can resume it, and FST remains the process authority because the state
+lives in the controlled run.
+
+## Contracts And Components
+
+FST components communicate through contracts.
+
+```text
+interfaces submit commands
+adapters submit events, artifacts, or materialization results
+validators submit check results
+authorization providers submit identity or approval candidates
+stores persist official records
+process packs define process rules
+```
+
+Components do not decide what becomes official FST state. They submit
+contract-shaped data. FST accepts or rejects it for the active run.
+
 ## Gates
 
-FST uses three gate types:
+Common gate classes are:
 
 ```text
 Decision gate
   Guides missing facts, branching, classification, or hard blocks.
 
 Approval gate
-  Requires trusted human authority before risky work.
+  Requires trusted authority before risky work.
 
 Process-conformance gate
   Requires valid artifacts before the run can advance.
@@ -79,8 +124,7 @@ MaterializeAllowed
 Complete
 ```
 
-The profile maps gate results to these routes. The route tells the agent and
-runtime what may happen next.
+The route tells the agent and runtime what may happen next.
 
 ## Evidence
 
@@ -93,13 +137,13 @@ evaluation and replay.
 ## The Smallest Useful Loop
 
 ```text
-1. Agent submits intended action.
-2. Core loads active profile version.
-3. Core validates action and payload.
-4. Core evaluates gates against run state.
-5. Core returns a route.
-6. Core records evidence.
-7. Agent follows the route.
+1. An actor or agent submits intended action.
+2. FST evaluates the active controlled run and process profile.
+3. FST returns the next valid route.
+4. The agent or workflow follows the route.
+5. Candidate artifacts, approvals, or results are submitted.
+6. FST accepts or rejects what counts.
+7. Evidence is recorded for replay.
 ```
 
 That loop is the product.

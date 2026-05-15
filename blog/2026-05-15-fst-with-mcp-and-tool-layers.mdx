@@ -1,0 +1,154 @@
+---
+slug: fst-with-mcp-and-tool-layers
+title: FST With MCP And Tool Layers
+authors: [codey]
+---
+
+MCP exposes tools, resources, and prompts. FST can use MCP, but it is not just an MCP wrapper. FST controls whether tool use counts inside a controlled run.
+
+{/* truncate */}
+
+# FST With MCP And Tool Layers
+
+MCP is an important adoption surface for agent systems. It gives agents a common way to discover and call tools, read resources, and use prompts.
+
+FST can expose MCP tools. That does not make FST an MCP wrapper.
+
+The useful distinction is:
+
+```text
+MCP asks:
+  What tools are available?
+
+FST asks:
+  Is this tool use authorized in this run?
+```
+
+MCP is an interface. FST is the process-control runtime behind an interface.
+
+## What MCP Does Well
+
+MCP is strong at:
+
+- standard tool exposure
+- resource discovery
+- prompt and context delivery
+- connecting agents to local or remote capabilities
+- reducing custom integration work
+- giving different agents a common tool interface
+
+FST should use that surface where it helps adoption.
+
+## The Missing Layer
+
+A tool being available is not the same as a process step being valid.
+
+An agent may see a tool that can:
+
+```text
+read a ticket
+query a database
+open a pull request
+send an email
+grant access
+charge a card
+write to an external system
+```
+
+But the process question is different:
+
+- Is this action allowed under the active profile?
+- Does the run have the required scope?
+- Which artifacts prove readiness?
+- Is approval present and valid?
+- Does this protected effect pass preflight?
+- What evidence should be recorded?
+
+Those are FST questions.
+
+## How FST Uses MCP
+
+FST can expose agent-facing tools through MCP, such as:
+
+```text
+fst.start_run
+fst.get_next
+fst.submit_artifact_candidate
+fst.submit_relation_candidate
+fst.request_scope
+fst.request_approval
+fst.submit_approval_candidate
+fst.check_route
+fst.materialization_preflight
+fst.get_evidence
+fst.replay_run
+```
+
+The agent calls those tools through MCP. FST evaluates the process behind them.
+
+The defensible value is not the existence of a tool endpoint. It is the state and decision model behind that endpoint:
+
+- profile lookup
+- run-state persistence
+- gate evaluation
+- scope authorization
+- artifact validation
+- approval validation
+- route selection
+- evidence write
+- replay
+
+## Example
+
+An agent has an MCP tool that can send an email.
+
+Without FST, the agent may call it whenever the tool is available and the prompt appears to permit it.
+
+With FST, the agent first asks:
+
+```text
+I intend to send this customer email.
+Here is the draft.
+Here is the approval candidate.
+Is this action allowed in this run?
+```
+
+FST can return:
+
+```text
+AwaitApproval
+```
+
+or:
+
+```text
+Blocked because the approval is for a different customer account.
+```
+
+or:
+
+```text
+MaterializeAllowed after preflight passes.
+```
+
+MCP exposes the tool. FST decides whether the tool use counts as an allowed process step.
+
+## The Boundary
+
+The clean split is:
+
+```text
+MCP:
+  expose tools, resources, prompts, and adapters
+
+FST:
+  control run state, evidence, gates, approvals,
+  routes, and protected effects
+```
+
+FST should not be sold as "an MCP wrapper." That makes it look like a thin integration layer. The stronger and more accurate positioning is:
+
+```text
+FST is a process-control runtime.
+MCP is one protocol through which agents access it.
+```

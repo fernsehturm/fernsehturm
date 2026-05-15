@@ -93,7 +93,7 @@ Runtime artifacts should have this minimum shape:
 }
 ```
 
-Core should accept an artifact for conformance only when:
+FST should accept an artifact for conformance only when:
 
 - `type` matches the requirement
 - required fields exist in `payload`
@@ -117,7 +117,7 @@ Approval artifacts are special because they grant authority:
   "created_via": "fst_cli",
   "decision": "approved",
   "scope": {
-    "action": "profile_builder.activate.request",
+    "action": "profile_builder.approve_use.request",
     "process_id": "vendor_onboarding",
     "process_version": "0.1.0"
   },

@@ -1,0 +1,138 @@
+---
+slug: fst-with-chat-gateways
+title: FST With Chat Gateways
+authors: [codey]
+---
+
+Chat gateways connect users to assistants. FST complements them by making sure a chat message does not automatically become process authority.
+
+{/* truncate */}
+
+# FST With Chat Gateways
+
+Chat gateways make agents reachable. A user can ask for help from Slack, Teams, Telegram, WhatsApp, a support portal, or a custom assistant surface such as OpenClaw.
+
+That is valuable because real work often starts in conversation.
+
+FST does not replace the chat gateway. It sits behind it as the process-control runtime.
+
+The gateway connects the user to the assistant. FST decides what counts.
+
+## What Chat Gateways Do Well
+
+Chat gateways are strong at:
+
+- giving users a familiar interface
+- routing requests from many channels
+- collecting user context
+- sending notifications
+- presenting approvals or status
+- keeping assistants close to where work starts
+
+That layer should remain channel-focused.
+
+## The Chat Authority Trap
+
+The risk is treating a chat message as authority.
+
+A user might type:
+
+```text
+Looks good, go ahead.
+```
+
+That message may be useful context. It is not automatically a valid approval.
+
+For process-sensitive work, approval usually needs more structure:
+
+- who approved
+- what action was approved
+- which target was approved
+- what scope was approved
+- when the approval expires
+- which process and run it belongs to
+- whether the approval came through a trusted surface
+
+FST prevents chat from becoming accidental authority.
+
+## How FST Complements Chat Gateways
+
+A chat gateway can start or continue controlled work:
+
+```text
+user sends request in chat
+-> gateway passes request to agent
+-> agent starts or updates an FST run
+-> FST returns route
+-> gateway shows the user what is missing, blocked, or waiting
+-> trusted approval is captured when required
+-> FST records evidence and replay
+```
+
+The chat remains the user-facing channel. FST owns the process state.
+
+## Example
+
+A manager writes in Slack:
+
+```text
+Give Alice temporary admin access to billing for today.
+```
+
+The assistant can parse the request and prepare the access packet. FST checks the process:
+
+```text
+requester exists
+target system exists
+requested role exists
+expiry exists
+policy check exists
+trusted approval missing
+```
+
+FST returns `AwaitApproval`.
+
+The gateway can show an approval card, but the approval must become a structured approval candidate:
+
+```text
+approver identity
+action
+target system
+role
+scope
+expiry
+run id
+reason
+```
+
+FST then validates whether that approval satisfies the process. If the approval is for the wrong system, expired, or submitted by someone without authority, FST blocks it.
+
+## What Gets More Trustworthy
+
+FST makes chat gateways stronger by adding:
+
+- controlled runs behind conversations
+- structured approval candidates
+- route decisions that explain next steps
+- evidence instead of chat-only memory
+- scope validation
+- materialization preflight
+- replay for audits and handoffs
+
+This lets teams keep the convenience of chat without letting conversational convenience weaken authority.
+
+## The Boundary
+
+The clean split is:
+
+```text
+Chat gateway:
+  receive messages, present assistant responses,
+  collect user input, show status and approvals
+
+FST:
+  evaluate process rules, validate approvals,
+  enforce scopes, record evidence, authorize effects
+```
+
+Use chat for access. Use FST for authority.

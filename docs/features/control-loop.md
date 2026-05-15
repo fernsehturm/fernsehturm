@@ -7,11 +7,12 @@ sidebar_position: 1
 FST controls boundary crossings in agent work.
 
 ```text
-agent intent -> gate evaluation -> route -> evidence -> next action
+agent intent -> FST command -> controlled run -> route -> evidence -> next action
 ```
 
 The agent can reason freely inside the allowed boundary. FST decides when the
-work may cross into a controlled action, approval, package, report, or effect.
+work may cross into a controlled action, approval, package, report, or protected
+effect.
 
 ## Gates
 
@@ -22,6 +23,9 @@ FST evaluates:
 - process-conformance gates
 
 Each gate belongs to the process profile bound to the run.
+
+Agents and adapters can submit candidate artifacts, facts, or approval
+requests. FST decides whether those candidates satisfy the gate.
 
 ## Routes
 

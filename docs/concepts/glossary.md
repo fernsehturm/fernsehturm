@@ -24,11 +24,12 @@ increase may proceed.
 A trusted record that grants or denies a specific approval scope. Agents may not
 create approval records through ordinary chat.
 
-## Core
+## FST Authority Layer
 
-The deterministic FST engine that validates profiles, evaluates gates, selects
-routes, accepts artifacts, records evidence, runs scenarios, and supports
-replay.
+The part of FST that owns official process decisions: route selection, evidence
+admission, approval acceptance, scope grants, protected-effect preflight, and
+replayable decision records. Public components interact with it through
+contracts, not internals.
 
 ## Decision Gate
 
@@ -47,7 +48,7 @@ materialization authority.
 
 ## LocalFile Store
 
-The transparent local store adapter that keeps Core records in inspectable
+The transparent local store component that keeps FST records in inspectable
 workspace files.
 
 ## Materialization
@@ -101,9 +102,9 @@ Scenarios prove that process behavior matches intent.
 
 ## SQLite Store
 
-The single-file local database store adapter for the MVP product path.
+The single-file local database store component for the local product path.
 
 ## Workspace
 
-The local directory initialized by `fst init`. It contains `.fst/config.yaml`,
-state, profiles, trace records, and store data.
+The local directory initialized by FST. It contains `.fst/config.yaml`, state,
+installed process metadata, evidence, trace records, and store data.

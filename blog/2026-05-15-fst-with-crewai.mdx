@@ -1,0 +1,140 @@
+---
+slug: fst-with-crewai
+title: FST With CrewAI
+authors: [codey]
+---
+
+CrewAI helps multiple agents collaborate. FST complements that collaboration by giving the crew shared process state, gates, scoped authority, and evidence.
+
+{/* truncate */}
+
+# FST With CrewAI
+
+CrewAI is useful when a task is better handled by multiple agents with different roles. One agent may research. Another may draft. Another may review. Another may coordinate a flow.
+
+That can make agent work more capable. It can also make authority harder to reason about.
+
+When several agents participate, the key question is not only:
+
+```text
+Did the crew complete its tasks?
+```
+
+The stronger question is:
+
+```text
+Which evidence proves the process was satisfied,
+and which agent was allowed to produce or approve it?
+```
+
+That is where FST fits.
+
+## What CrewAI Does Well
+
+CrewAI is strong at organizing agent collaboration:
+
+- role-based agents
+- delegated tasks
+- multi-agent flows
+- structured collaboration
+- task handoffs
+- agent specialization
+
+FST should not replace that. Crews should keep doing the work they are good at.
+
+## The Authority Problem In Multi-Agent Work
+
+Multi-agent systems make it tempting to treat internal agreement as approval.
+
+For example:
+
+```text
+Researcher agent found the options.
+Reviewer agent said the packet looks good.
+Coordinator agent marked the task complete.
+```
+
+That may be useful internal work. It is not necessarily process authority.
+
+A reviewer agent is still an agent. Its approval should not count as a trusted approval unless the active process explicitly accepts that source for that scope.
+
+For risky work, teams need to separate:
+
+- who produced an artifact
+- who reviewed it
+- who has authority to approve it
+- which evidence FST admitted
+- which gate the evidence satisfied
+- whether a protected effect may proceed
+
+## How FST Complements CrewAI
+
+FST gives the crew a shared process runtime.
+
+Each agent can still do its work, but process progress goes through FST:
+
+```text
+Crew agent produces candidate artifact
+-> FST validates whether it can count
+-> another agent repairs or adds missing evidence
+-> FST checks the gate again
+-> approval waits for a trusted path when required
+```
+
+The result is not "the crew agreed." The result is a run record showing which process version controlled the work and why FST returned the route it did.
+
+## Example
+
+A CrewAI system helps with temporary admin access.
+
+The crew may include:
+
+```text
+intake agent
+policy-check agent
+risk-summary agent
+approval-packet agent
+coordinator agent
+```
+
+The crew can prepare the request. FST controls whether the request may proceed.
+
+```text
+intake agent records the requester and target system
+policy-check agent produces a policy result
+risk-summary agent drafts the risk packet
+FST checks the admin access profile
+FST sees no trusted approval record
+FST returns AwaitApproval
+coordinator agent stops and asks for approval through the trusted path
+```
+
+The crew remains productive. It does not approve its own authority.
+
+## What Gets More Trustworthy
+
+FST makes CrewAI stronger by adding:
+
+- shared process state across agents
+- typed artifacts that can be admitted or rejected
+- gates that define what each process step requires
+- approval boundaries that agents cannot satisfy by consensus
+- route decisions that tell the crew what to do next
+- replay that explains why the crew advanced or stopped
+
+This is especially important when the crew has many specialized agents. FST gives them one process authority rather than many local interpretations.
+
+## The Boundary
+
+The clean split is:
+
+```text
+CrewAI:
+  coordinate agents, roles, tasks, collaboration, and flows
+
+FST:
+  maintain official process state, validate evidence,
+  enforce approvals, return routes, control protected effects
+```
+
+CrewAI helps agents collaborate. FST makes the collaboration accountable to a process.

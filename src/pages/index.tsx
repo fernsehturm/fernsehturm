@@ -100,7 +100,7 @@ const consoleGroups = [
 
 const features = [
   { title: 'Your process becomes executable', description: 'Turn a personal or company workflow into actions, gates, approvals, evidence, and protected outcomes.', link: '/docs/features/process-packs' },
-  { title: 'The agent gets the next valid step', description: 'Fernsehturm tells the agent what is missing, what it may do next, and when it must ask or wait.', link: '/docs/getting-started/agents' },
+  { title: 'The agent gets the next valid step', description: 'Fernsehturm tells the agent what is missing, what it may do next, and when it must ask or wait.', link: '/docs/getting-started/quickstart' },
   { title: 'Protected work cannot skip control', description: 'Submitting, ordering, sending, merging, or marking work complete can require approval and evidence before it counts.', link: '/docs/fst-in-action/demo' },
   { title: 'The run is replayable', description: 'Fernsehturm keeps state, artifacts, routes, approvals, and evidence so the work can be reviewed, resumed, or audited.', link: '/docs/features/traceability-and-evidence' },
 ];
@@ -244,7 +244,7 @@ const faqs = [
   {
     question: 'Where is Fernsehturm hosted?',
     answer: 'Fernsehturm is hosted on your machine. It runs your process, stores your run state and evidence locally, and keeps process authority outside the agent prompt.',
-    readMore: '/docs/getting-started/overview',
+    readMore: '/docs/getting-started/quickstart',
   },
   {
     question: 'How do I get started?',

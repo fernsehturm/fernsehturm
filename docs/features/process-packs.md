@@ -18,6 +18,9 @@ templates/
 skill/SKILL.md
 ```
 
+Process packs are contract-based components. They define process knowledge for
+FST, but they do not change FST authority rules.
+
 ## Manifest
 
 The manifest declares process id, version, profile API, logic API, entrypoints,

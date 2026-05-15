@@ -1,0 +1,135 @@
+---
+slug: fst-with-memory-systems
+title: FST With Memory Systems
+authors: [codey]
+---
+
+Memory systems help agents remember context. FST complements memory by maintaining official process state: active profile, gates, evidence, approvals, routes, and next allowed action.
+
+{/* truncate */}
+
+# FST With Memory Systems
+
+Agent memory is useful. It can help an agent remember project conventions, user preferences, previous decisions, long-running task context, and facts that would otherwise be repeated.
+
+FST is not memory.
+
+The distinction is:
+
+```text
+Memory remembers context.
+FST maintains official process state.
+```
+
+Both can help an agent work. Only one should decide whether the process has advanced.
+
+## What Memory Systems Do Well
+
+Memory systems are strong at:
+
+- retaining user preferences
+- recalling prior conversations
+- summarizing long tasks
+- preserving project conventions
+- helping agents avoid repeated discovery
+- improving continuity across sessions
+
+That makes the agent more effective.
+
+## Where Memory Falls Short
+
+Memory is informational. It can tell an agent:
+
+```text
+The team usually requires review before deployment.
+The user prefers small patches.
+This project has a security checklist.
+```
+
+But the agent can still misunderstand, override, forget, or narrate compliance without producing process evidence.
+
+Memory also changes over time. A remembered fact may be stale. A summary may omit an important exception. A user preference may conflict with an approval requirement.
+
+For controlled work, memory is not enough.
+
+## What FST Maintains Instead
+
+FST remembers the controlled work state:
+
+- what process is active
+- which profile version controls the run
+- where the run is
+- what action was requested
+- what evidence has been admitted
+- what evidence was rejected
+- which gates are satisfied
+- which approvals are pending
+- which data scopes are active
+- what route was returned
+- what the next allowed action is
+
+That is not general context. It is official process state.
+
+## How FST Complements Memory
+
+Memory can help the agent do the work. FST controls whether the work counts.
+
+```text
+memory:
+  The project uses a security checklist.
+
+agent:
+  I will prepare the security checklist artifact.
+
+FST:
+  This checklist artifact is valid, admitted for this run,
+  and satisfies gate security_check_exists.
+```
+
+The memory helps the agent know what to produce. FST decides whether the produced artifact satisfies the process.
+
+## Example
+
+An agent remembers that a team requires a deployment approval.
+
+That is useful. It may cause the agent to ask for approval.
+
+But FST checks the approval:
+
+```text
+Is the approver authorized?
+Does the approval match the deployment target?
+Does it match the environment?
+Does it expire before use?
+Is it bound to this run?
+Was it captured through a trusted path?
+```
+
+The memory helped the agent remember a rule. FST enforces the rule.
+
+## What Gets More Trustworthy
+
+FST makes memory-backed agents safer by adding:
+
+- process state separate from conversation state
+- evidence that can be admitted or rejected
+- gates that cannot be satisfied by recollection alone
+- approval checks that require provenance and scope
+- replay that survives session summaries
+- routes that tell the agent what to do next
+
+This matters most for long-running work. A memory summary can keep the agent oriented. FST keeps the process anchored.
+
+## The Boundary
+
+The clean split is:
+
+```text
+Memory:
+  helpful context for the agent
+
+FST:
+  official process state and authority for the run
+```
+
+Use memory to help the agent remember. Use FST to decide what counts.

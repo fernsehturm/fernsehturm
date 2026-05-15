@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Process Development API
+# Process Pack API
 
 This API section is the technical reference for developing FST process packs.
 It is written for humans and agents that generate, review, or maintain process
@@ -27,18 +27,21 @@ skill/SKILL.md
 README.md
 ```
 
-## Core Invariants
+For stores, adapters, interfaces, validators, authorization providers, and
+other replaceable components, start with [Component Developers](/docs/developers/overview).
+
+## Runtime Invariants
 
 These invariants are not style preferences. A process pack that violates them
 should fail validation or review.
 
 ```text
-Core owns route decisions.
+FST owns route decisions.
 Process packs own business-specific policy.
 Hooks compute facts; hooks do not grant authority.
-Artifacts satisfy gates only when typed, valid, and bound to the run/profile.
+Artifacts satisfy gates only when typed, valid, and admitted for the run.
 Approvals enter through trusted approval surfaces, not agent narration.
-Materialization happens only after the active profile returns an allowed route.
+Materialization happens only after FST preflight allows the exact effect.
 Scenarios are required evidence that the profile behaves as intended.
 ```
 
@@ -84,7 +87,7 @@ Create a process pack in this order:
 10. Validate the pack.
 11. Run scenarios.
 12. Render a review packet.
-13. Install and activate only after approval.
+13. Install and approve for use only after approval.
 
 ## Required Pack Layout
 
@@ -164,9 +167,10 @@ Unknown routes are invalid.
 
 ## Runtime Boundary
 
-The process pack is not the kernel. It may define actions, artifacts, gates,
-hooks, scenarios, templates, and skills. It may not modify Core semantics,
-environment permissions, store behavior, or approval authority.
+The process pack is not the FST authority layer. It may define actions,
+artifacts, gates, hooks, scenarios, templates, and skills. It may not modify
+route semantics, store behavior, environment permissions, approval authority,
+or materialization preflight.
 
 ## Reference Pages
 
