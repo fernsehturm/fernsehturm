@@ -26,7 +26,6 @@ Environment:
   FST_INSTALL_BIN_DIR       target command directory; default $HOME/.local/bin
   FST_INSTALL_DATA_DIR      target asset directory; default $XDG_DATA_HOME/fst or $HOME/.local/share/fst
   FST_INSTALL_UPDATE_SHELL  set to 0 to avoid adding the bin directory to a shell profile
-  FST_INSTALL_SKIP_SETUP    set to 1 to install without running fst setup
   FST_INSTALL_SKIP_CHECKSUM set to 1 to skip checksum verification
 EOF
 }
@@ -56,6 +55,41 @@ download() {
   fi
 
   die "curl or wget is required"
+}
+
+verify_full_toolset() {
+  local bin_dir="${FST_INSTALL_BIN_DIR:-$HOME/.local/bin}"
+  local fst_bin="$bin_dir/fst"
+  local help
+  local command
+  local missing=()
+  local required=(
+    init
+    process
+    install-skill
+    mcp
+    agent-poc
+    console
+    evidence
+    replay
+    scenario
+  )
+
+  [[ -x "$fst_bin" ]] || die "installed fst command not found at $fst_bin"
+
+  help="$("$fst_bin" --help 2>&1)" || die "installed fst command failed --help"
+
+  for command in "${required[@]}"; do
+    if ! printf '%s\n' "$help" | grep -F "$command" >/dev/null; then
+      missing+=("$command")
+    fi
+  done
+
+  if [[ "${#missing[@]}" -gt 0 ]]; then
+    die "installed fst is missing full toolset commands: ${missing[*]}"
+  fi
+
+  info "verified full FST toolset command surface"
 }
 
 detect_os() {
@@ -125,3 +159,4 @@ tar -xzf "$archive" -C "$extract_dir"
 
 info "running package installer"
 "$extract_dir/install.sh"
+verify_full_toolset
