@@ -15,16 +15,18 @@ usage() {
 Install the latest FST Linux package from GitHub Releases.
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/fernsehturm/fernsehturm/main/static/install.sh | bash
+  curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 
 Environment:
   FST_GITHUB_REPO           GitHub repo; default fernsehturm/fernsehturm
   FST_INSTALL_VERSION       release tag to install instead of latest
   FST_RELEASE_BASE          full release download base URL override
   FST_INSTALL_ASSET         package asset name override
+  FST_CHECKSUM_ASSET        checksum asset name override; default checksums.txt
   FST_INSTALL_BIN_DIR       target command directory; default $HOME/.local/bin
   FST_INSTALL_DATA_DIR      target asset directory; default $XDG_DATA_HOME/fst or $HOME/.local/share/fst
   FST_INSTALL_UPDATE_SHELL  set to 0 to avoid adding the bin directory to a shell profile
+  FST_INSTALL_SKIP_SETUP    set to 1 to install without running fst setup
   FST_INSTALL_SKIP_CHECKSUM set to 1 to skip checksum verification
 EOF
 }

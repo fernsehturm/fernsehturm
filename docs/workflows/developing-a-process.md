@@ -112,6 +112,12 @@ Manual process development is direct but requires technical care.
 Manual development is useful when the team already understands FST profile
 shape, hook contracts, and scenario format.
 
+For a runnable file-level starter, use
+[Simple Custom Process](/docs/workflows/simple-custom-process). It contains a
+minimum process pack with `process.manifest.yaml`, `profile.yaml`,
+`core-profile.json`, scenarios, skill instructions, install commands,
+validation commands, and evidence review commands.
+
 ## Designing With The Process Builder Agent
 
 The process builder agent helps a domain expert create a process without

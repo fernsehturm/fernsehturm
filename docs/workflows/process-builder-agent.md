@@ -150,6 +150,11 @@ review-packet.md
 Use template-based generation first. Fill structured fields from the process
 model. Do not invent a new pack format.
 
+For the minimum runnable shape, use
+[Simple Custom Process](/docs/workflows/simple-custom-process) as the starter
+pack pattern. Adapt the ids, actions, artifacts, gates, scenarios, and skill
+text, but keep the same install, validation, scenario, and evidence checks.
+
 ## Validation Checklist
 
 Before packaging or review, verify:
