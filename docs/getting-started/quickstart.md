@@ -4,210 +4,286 @@ sidebar_position: 1
 
 # Quickstart
 
-In this quickstart, you ask an agent to prepare a purchase request and watch FST
-control what counts.
+This quickstart guides you through
 
-You will not run a scenario script. You will:
+1. the installation of FST with the default local setup, and
+2. running the bundled process example: the access-grant process with an agent.
+
+You will run the same process twice:
 
 ```text
-install FST
--> start the FST agent interface
--> ask your agent for a purchase
--> see the agent work through FST
--> inspect the evidence FST recorded
+viewer access -> FST checks the request and allows a mock grant
+admin access  -> FST checks the request and stops for trusted approval
 ```
 
-The point should be obvious after the first run: this is still easy for the
-user, but it is different from plain chat. The agent can prepare the work. FST
-decides whether the process is satisfied.
+No real access is granted. The process uses mock materialization so you can see
+the control loop without changing an IAM system.
+
+The point of the quickstart is simple: the agent can prepare access work, but
+FST controls what counts, when approval is required, and whether even a mock
+grant may proceed.
 
 ## What You Need
 
-- Linux
-- `curl` or `wget`
-- an agent that can use a local MCP server
-- a shell where you can add `$HOME/.local/bin` to `PATH`
+- Linux (macOS and Windows coming soon)
+- `curl`
+- a shell (`bash`/`sh`) where `$HOME/.local/bin` can be added to `PATH`
+- Codex (in future, FST will support other agents, too)
+
+The commands below use the default FST data directory, the default FST
+workspace, and the default Codex home.
 
 ## 1. Install FST
 
-:::note Coming soon
-The public installer is not available yet.
-:::
+Install FST:
 
 ```bash
 curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 export PATH="$HOME/.local/bin:$PATH"
+```
+
+Verify installation: 
+
+```bash
 fst version
 ```
 
-## 2. Set Up The Purchase Process
+It will show yout the current version and bundle:
+
+```
+fst_version: 0.1.0
+bundle_id: fst.full_toolset
+bundle_schema_version: 0.1.0
+source_mode: source_entrypoint
+```
+
+
+## 2. Create The Default Workspace
+
+Create the default local workspace (use force to override an existing config)
+
+```sh
+fst init --default --store local_file [--force]
+```
+
+This will output something like this:
+
+```
+workspace: /home/me/.fst-workspaces/default
+resolved_by: default_path
+workspace_id: workspace.6032824bc3d719a5
+store: local_file
+default_workspace: /home/me/.fst-workspaces/default
+default_workspace_config: /home/me/.fst/config.yaml
+```
+
+
+## 3. Install The Access-Grant-Mini Process
+
+Fernsehturm comes with an example `access-grant-mini` process that showcases how FST works.
+
+Install the bundled `access-grant-mini` process into the default workspace:
+
+```sh
+fst process install --bundled access-granting-mini
+```
+
+Then verify that the process exists:
+
+```sh
+fst process list
+```
+
+This process example controls a mock access grant. It checks the request, required context, policy, approval boundary, mock materialization, and final evidence. But it does not do anything in the *real* world, really.
+
+## 4. Enable Agent Use
+
+Next, we need to tell the Codex agent about the FST skill.  We do so by installing the skills like this:
+
+
+```sh
+fst install-skill --all-processes
+```
+
+Restart Codex after this step. Codex gets a generated skill for each fst process. In this case one named `$fst-access-granting-mini`.
+
+
+## 5. Run Viewer Access
+
+In a fresh Codex session, you can now ask for viewing access:
+
+```text
+$fst-access-granting-mini Grant Alice viewer access to billing-admin for incident response for one week.
+```
+
+You will see that the agent uses FST.
+
+During this run:
+
+- the agent records the access request through FST
+- FST checks that the target system, requested role, and expiry exist
+- FST checks policy for the requested role and system
+- viewer access is treated as a standard low-criticality role
+- FST returns a mock materialization route
+- the agent records the mock result through FST
+- FST completes the run with evidence
+
+This proves the simple path. The agent can complete useful process work. But it can only do that by submitting the right artifacts and following what the underlying process requires.
+
+
+The mock grant is allowed because the process has enough evidence and no admin approval is required.
+
+## 6. Run Admin Access
+
+Now ask for admin access:
+
+```text
+$fst-access-granting-mini Grant Alice admin access to billing-admin for incident response until tomorrow.
+```
+
+Here, something different happens:
+
+- the agent records the same kind of access request
+- FST sees that the requested role is `admin`
+- the policy check reaches a higher-authority boundary
+- FST creates a trusted approval request
+- FST returns `AwaitApproval`
+- the agent stops!
+
+At this point, no mock grant can happen yet. Admin access requires approval through the trusted console. A message in chat such as "I approve" is not enough, because the agent is not allowed to create its own approval authority. Try it!
+
+If the agent tries to continue directly to the mock grant before approval, FST routes it back to the approval boundary instead of returning `MaterializeMock`.
+
+## 7. Approve Through The Trusted Console
+
+In a shell, open the trusted local console and list pending requests:
+
+```sh
+fst console
+```
+
+This will show a menu like this:
 
 ```bash
-fst setup \
-  --workspace "$HOME/fst-workspace" \
-  --store sqlite \
-  --install-process purchase_request_preflight@0.1.0 \
-  --no-password
+FST Console
+
+workspace: /home/calliopa/.fst-workspaces/default  resolved_by: user_default
+
+Pending approvals
+
+No pending approvals.
+
+r refresh  q quit
 ```
 
-This creates a local FST workspace and installs the purchase process:
+Find the pending approval request, select it, and if it matches your request, you can approve it.
+
+
+What happens here:
+
+- the console uses the trusted local approval path
+- the approval is bound to the pending request
+- FST records an approval artifact from the trusted path
+
+The console approves authority. It does not perform the access grant. After approval, the agent must ask FST for the next route and continue only if FST allows it.
+
+## 8. Continue The Admin Run
+
+Return to Codex and continue the run. If you use a new Codex-session, give it the run id reported by the agent or shown in the console output:
 
 ```text
-purchase_request_preflight@0.1.0
+$fst-access-granting-mini Continue run <run-id> after trusted approval.
 ```
 
-You will use that process through the agent interface. You do not need to run a
-separate process command for the first interaction.
+If you use the same session as before a simple `continue` should be enough.
 
-## 3. Start FST And Your Agent
+During the continuation:
 
-In one terminal, start the local FST MCP server:
+- the agent asks FST for the next valid route
+- FST sees the trusted approval record
+- FST allows mock materialization for the exact approved request
+- the agent records the mock result
+- FST completes the run and records replayable evidence
 
-```bash
-fst mcp start --workspace "$HOME/fst-workspace"
+This is the important admin boundary. The same agent can prepare the request
+and continue after approval, but the approval itself came through the trusted
+console, not through the agent's own claim.
+
+## 9. Review Evidence And Replay
+
+You can now inspect and review this process execution.
+
+Inspect the latest run:
+
+```sh
+fst evidence show --latest
+fst replay show --latest
+fst trace show --latest
 ```
 
-Keep that terminal running. It is the local control interface your agent will
-use.
+For a specific run, use the run id:
 
-Then start your agent and connect it to that MCP server. The exact MCP settings
-depend on your agent:
+```sh
+fst evidence show --run <run-id>
+fst replay show --run <run-id>
+```
 
-- if the agent connects to a server you started yourself, point it at the
-  running FST MCP server
-- if the agent launches MCP servers from its config, use
-  `fst mcp start --workspace "$HOME/fst-workspace"` as the server command
-
-At the start of the chat, give the agent this rule:
+For the viewer run, evidence should show:
 
 ```text
-Use FST before controlled purchase actions. Follow the route FST returns.
+source request
+target system
+requested role
+expiry
+policy check
+mock materialization plan
+mock materialization result
+final route: Complete
 ```
 
-## 4. Ask For A Purchase
-
-In your agent chat, ask for something concrete:
+For the admin run before approval, evidence should show:
 
 ```text
-Buy me a 4K monitor, around $400, for design work.
-Use my purchase process.
+approval request
+pending approval
+final route: AwaitApproval
 ```
 
-The agent should not simply say "done." It should use FST to start or continue
-the controlled purchase process.
-
-## 5. What You Should See
-
-A healthy interaction looks like this:
+For the admin run after approval, evidence should show:
 
 ```text
-You:
-  Buy me a 4K monitor, around $400, for design work.
-  Use my purchase process.
-
-Agent:
-  I can prepare the purchase request.
-  I am checking the purchase process with FST.
-
-FST:
-  Missing approval for this purchase.
-  Next step: create an exact approval packet.
-
-Agent:
-  Approval packet ready:
-  item: 4K monitor
-  purpose: design work
-  budget: around $400
-  protected effect: purchase must not happen yet
-
-You:
-  Review the packet.
+trusted approval record
+mock materialization plan
+mock materialization result
+final route: Complete
 ```
 
-What matters is the boundary:
+Replay explains why FST returned each route. You should be able to see that
+viewer access completed after ordinary process evidence, while admin access
+waited until a trusted approval existed.
+
+## What This Demonstrates
+
+The access-grant process shows the basic FST idea:
 
 ```text
-The agent prepares.
-FST checks.
-The user approves through the trusted path.
-Only then may a protected effect proceed.
+The agent proposes.
+FST checks the process.
+FST asks for missing facts or approval when needed.
+Trusted approval happens outside the agent.
+FST preflights the protected effect.
+The result is recorded as evidence.
 ```
 
-If approval is missing, FST should return a waiting or blocked route. The agent
-should stop instead of working around it.
+The agent stays useful. It gathers facts, submits process actions, reports
+routes, and continues when allowed.
 
-## 6. Inspect The Evidence
-
-After the interaction, inspect what FST recorded:
-
-```bash
-fst replay show --latest --workspace "$HOME/fst-workspace"
-```
-
-Replay should help answer:
-
-- which purchase process version ran
-- what the agent asked FST to do
-- what route FST returned
-- what evidence or approval was missing
-- why no real purchase happened without approval
-
-This is the moment where FST should feel different. You are not only trusting a
-chat transcript. You have a process record.
-
-## What You Do
-
-You keep the workflow simple:
-
-```text
-install FST
-start FST for the agent
-ask the agent for a purchase
-review what FST says is missing or allowed
-inspect replay
-```
-
-## What The Agent Does
-
-The agent still does useful work:
-
-- understands the purchase request
-- drafts the purchase packet
-- submits intended controlled actions to FST
-- follows the route FST returns
-- asks you when FST needs a fact or approval
-- stops when FST says the process is blocked or waiting
-
-The agent can prepare work. It cannot make its own approval count.
-
-## What FST Changes
-
-Without FST:
-
-```text
-user asks for purchase
-agent prepares something
-agent says it is ready or done
-user has to trust the transcript
-```
-
-With FST:
-
-```text
-user asks for purchase
-agent prepares the request
-FST checks the purchase process
-FST records evidence
-FST waits or blocks when approval is missing
-replay explains the decision
-```
-
-That is why FST matters: you can give agents real work without giving them
-unchecked authority.
+FST stays authoritative. It decides what counts, what is missing, what is
+blocked, what needs approval, and when even a mock protected effect may proceed.
 
 ## Next
 
 - [Create Your First Custom Process](/docs/getting-started/first-custom-process)
+- [Use Cases](/docs/understanding/use-cases)
 - [How FST Works](/docs/understanding/how-it-works)
 - [FST Structure](/docs/understanding/structure)
-- [Process Pack API](/docs/api/overview)

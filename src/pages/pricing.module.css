@@ -182,12 +182,13 @@
   display: flex;
   align-items: baseline;
   gap: 0.2rem;
+  flex-wrap: wrap;
 }
 
 .price {
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.4;
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.15;
 }
 
 .priceLabel {
@@ -198,7 +199,7 @@
 .priceNote {
   font-size: 0.78rem;
   color: var(--ifm-color-emphasis-600);
-  margin: 0.15rem 0 0;
+  margin: 0.25rem 0 0;
 }
 
 /* ── Buying reason ──────────────────────────────────────── */

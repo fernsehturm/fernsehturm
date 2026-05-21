@@ -4,84 +4,176 @@ sidebar_position: 1
 
 # Introduction
 
-Fernsehturm (FST) helps agents do useful work without letting the agent decide
-what is approved, complete, or safe to change.
+Fernsehturm (FST) helps you use agents for real work without making the agent
+the authority over what is allowed, approved, complete, or safe to change.
 
-The short version:
+Agents are becoming useful workers. They can inspect code, draft messages,
+prepare tickets, summarize records, request access, suggest purchases, and
+operate tools. That is valuable, but it also creates a simple problem:
+
+```text
+Capability is not authority.
+```
+
+An agent may be capable of doing something. That does not mean it should decide
+that the thing is allowed, approved, ready, or safe to send into the outside
+world.
+
+FST is the process layer between the agent and the work that needs control.
 
 ```text
 Agents do the work. FST controls what counts.
 ```
 
-For example, an agent can prepare a purchase request. FST can check that the
-request follows the process, records the right evidence, and stops before a real
-purchase unless the required approval exists.
+## What FST Really Is
 
-## The First Thing To Try
+FST is a process-control system for agent work.
 
-Start with the purchase quickstart. You install FST, start the local agent
-interface, ask your agent for a purchase, and watch FST decide whether the
-process can continue.
+It is not another agent. It is not a replacement for your tools, your workflow
+system, your chat interface, or your business applications.
 
-:::note Coming soon
-The public installer is not available yet.
-:::
+Instead, FST gives an agent a controlled process to work inside. The agent can
+reason, draft, inspect, and prepare work. FST keeps track of the official
+process state, checks what is still missing, decides what may happen next, and
+records why a step was allowed or blocked.
 
-```bash
-curl -fsSL https://www.fernsehturm.dev/install.sh | bash
-export PATH="$HOME/.local/bin:$PATH"
+Think of it like this:
 
-fst setup \
-  --workspace "$HOME/fst-workspace" \
-  --store sqlite \
-  --install-process purchase_request_preflight@0.1.0 \
-  --no-password
+| Part | Job |
+| --- | --- |
+| Agent | Does useful work |
+| Your process | Defines what must be true |
+| FST | Checks the process and controls what counts |
+| External tools | Execute the real-world action when allowed |
 
-fst mcp start --workspace "$HOME/fst-workspace"
-```
+The important shift is that the agent is no longer responsible for remembering
+the whole process, approving its own work, deciding what evidence is good
+enough, or declaring the job complete by itself.
 
-Then start your agent and ask:
+## Why This Matters
 
-```text
-Buy me a 4K monitor, around $400, for design work.
-Use my purchase process.
-```
+Without FST, many agent setups depend on prompts, broad tool access, chat
+approvals, and logs after the fact.
 
-The first run should show the basic loop:
+That may work for low-risk drafting. It is weak for work where a mistake has
+consequences.
 
-```text
-user request
--> agent prepares the purchase packet
--> FST checks the purchase process
--> FST records the route and evidence
--> agent stops when approval is missing
-```
+Examples:
 
-It does not place a real order. It shows how FST keeps an agent inside a
-controlled purchase process while the agent still does useful work.
+- An agent can draft an email, but should it send it?
+- An agent can prepare a purchase request, but is the purchase approved?
+- An agent can inspect a support ticket, but may it view customer data?
+- An agent can propose an access change, but who authorized it and for how long?
+- An agent can update a pull request, but may it merge or deploy?
 
-## What FST Adds
+FST exists for the moment before work becomes official or changes something
+outside the conversation.
 
-Without FST, an agent can say:
+It asks:
 
 ```text
-I prepared the purchase request and it looks approved.
+What must be true before this work is trusted?
 ```
 
-With FST, the process can require:
+## The Underlying Idea
 
-- a specific process profile
-- a controlled run
-- typed request details
-- required evidence
-- an approval path when money or authority is involved
-- replay showing why the work was allowed or blocked
+Working with FST should feel like giving an agent a real operating process, not
+just a reminder in a prompt.
 
-The agent stays useful. It does not become the authority.
+You define the process in terms people already understand:
+
+- what the agent is trying to do
+- what facts are required
+- what evidence must exist
+- who can approve risky steps
+- what the agent may do next
+- what actions need a final check before they happen
+
+Then the agent works inside that process.
+
+A normal run looks like this:
+
+```text
+The user asks for work.
+The agent prepares the next step.
+FST checks the process.
+FST says what is allowed, missing, waiting, or blocked.
+The agent gathers the missing facts or evidence.
+The right person or system approves when authority is needed.
+FST checks again before any protected action happens.
+FST records the decision so the run can be reviewed later.
+```
+
+FST is not only a blocker. A good FST response tells the agent what is missing
+and what the next valid move is.
+
+For example, if an agent prepares a purchase request, FST can say:
+
+- the request has the required item, price, and reason
+- the amount requires approval
+- the approval is missing
+- the agent must stop before ordering
+
+After the trusted approval exists, FST can check that the approval matches the
+exact request before the order is allowed.
+
+## What FST Is Good For
+
+Use FST when the agent is doing work where process, authority, evidence, or
+review matters.
+
+Good fits include:
+
+- purchase requests and spending
+- access and permission changes
+- pull request review, merge, and release processes
+- deployment or production operations
+- support workflows involving customer data
+- approved outbound messages
+- vendor, finance, security, or compliance reviews
+- any workflow where an agent prepares work but should not approve itself
+
+FST is especially useful when you want agents to be more helpful without giving
+them broad standing permission.
+
+The goal is not to slow every task down. The goal is to make controlled work
+inspectable and safe enough that the agent can do more of it.
+
+## When You Probably Do Not Need FST
+
+FST is not necessary for every agent interaction.
+
+You probably do not need it for casual brainstorming, low-risk drafting,
+summaries, or research where nothing is approved, submitted, sent, merged,
+deployed, purchased, granted, or recorded as official process progress.
+
+Use FST when the work crosses a boundary.
+
+## The Working Relationship
+
+The clean relationship is:
+
+```text
+The agent proposes.
+FST checks.
+The user or trusted system approves when needed.
+External tools execute only after the process allows it.
+FST records what happened.
+```
+
+This makes the process reusable. One agent can start the work, another can
+resume it, and the process state does not live only in a chat transcript.
+
+It also makes approvals more precise. Instead of a vague "yes" in a message,
+approval can apply to a specific request, scope, person, system, amount, file,
+customer, or time window.
+
+That is the point of FST: keep agents useful, but make the process the
+authority.
 
 ## Start Here
 
-- [Quickstart](/docs/getting-started/quickstart): install FST and try the agent-driven purchase example
-- [Create Your First Custom Process](/docs/getting-started/first-custom-process): turn a plain-language process into a versioned control surface
-- [How FST Works](/docs/understanding/how-it-works): understand routes, gates, evidence, and preflight
-- [Component Developers](/docs/developers/overview): build FST components against contracts
+- [Quickstart](/docs/getting-started/quickstart): try a guided local example
+- [Use Cases](/docs/understanding/use-cases): see where FST fits
+- [How FST Works](/docs/understanding/how-it-works): learn the technical model
+- [Create Your First Custom Process](/docs/getting-started/first-custom-process): turn one process into something FST can check

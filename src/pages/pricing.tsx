@@ -16,6 +16,7 @@ type Tier = {
   headline: string;
   audience: string;
   buyReason: string;
+  reasonLabel?: string;
   price: string;
   priceLabel?: string;
   priceNote?: string;
@@ -32,7 +33,7 @@ type AuthorityStep = {
   description: string;
 };
 
-const COMING_SOON = 'Coming Soon';
+const COMING_SOON = 'Coming soon';
 const GITHUB_URL = 'https://github.com/fernsehturm/fernsehturm';
 
 const tiers: Tier[] = [
@@ -41,34 +42,37 @@ const tiers: Tier[] = [
     name: 'PERSONAL FREE',
     headline: 'Local controlled runs for one user',
     audience:
-      'Individual agent users who want process control around their own local agent work.',
+      'Individual agent users who want to learn and use controlled agent runs locally.',
     buyReason:
-      'you need the agent to follow a real process, ask for local approval, and leave replayable evidence before work counts.',
-    price: COMING_SOON,
-    priceNote: 'Core enforcement, evidence, preflight, and replay stay available here.',
+      'you want the agent to follow a real process, ask for local approval, and leave replayable evidence before work counts.',
+    reasonLabel: 'Use when',
+    price: '$0',
+    priceNote: 'One local user. Unlimited local controlled runs. No external event intake.',
     benefits: [
-      'Run FST locally inside one agent session',
-      'Start official work from the local user or local agent only',
-      'Make the agent request actions instead of receiving authority',
-      'Check gates, scope, artifacts, approvals, and protected effects',
-      'Approve through the local CLI and replay the run afterward',
-      'Build local process profiles without setting up infrastructure',
+      'Use the local FST runtime for one authority user',
+      'Run unlimited local controlled runs',
+      'Start official work from the local user or local agent',
+      'Keep local process profiles, evidence, and replay',
+      'Approve through the local CLI',
+      'Use mock or basic protected-effect preflight',
     ],
-    cta: COMING_SOON,
+    cta: 'Get started',
+    ctaTo: '/docs/getting-started/quickstart',
     details: [
       {
         title: 'Authority boundary',
         items: [
-          'One user, one local machine, one agent environment',
-          'Local profiles, local run state, local evidence, and local CLI authority',
+          'One user, one local machine, one agent environment, and local authority only',
           'Runs are started locally by the user or by an agent acting through the local FST interface',
+          'No external event intake, shared authority, or team roles',
         ],
       },
       {
         title: 'Included',
         items: [
           'Local FST runtime, process profiles, MCP tools, agent skill instructions, evidence store, and replay',
-          'Local CLI approvals, mock or shadow materialization, and basic protected-effect preflight',
+          'Local CLI approvals, scope checks, gate checks, profile validation basics, and evidence writing',
+          'Mock or shadow materialization and basic protected-effect preflight',
         ],
       },
       {
@@ -88,16 +92,16 @@ const tiers: Tier[] = [
       'Power users and solo operators who want local FST connected to email, webhooks, workflow tools, tickets, files, or chat gateways.',
     buyReason:
       'work should begin from the outside world, but approval and protected effects still need to stay under your local authority.',
-    price: COMING_SOON,
-    priceNote: 'For one local user adding receivers, adapters, and controlled event intake.',
+    price: '$39',
+    priceLabel: '/mo',
+    priceNote: 'or $29/mo billed annually. Includes up to 3 local installs.',
     badge: 'Personal automation',
     highlighted: true,
     benefits: [
+      'Run unlimited local controlled runs',
       'Receive webhooks, email, workflow triggers, tickets, and file events',
+      'Use a local receiver, adapter registry, signed webhooks, and source allowlists',
       'Normalize external events into controlled run inputs and artifacts',
-      'Map event sources explicitly to the right process profiles',
-      'Use adapters as controlled interfaces, not blanket permission',
-      'Deduplicate events and validate allowed or signed sources',
       'Keep event received separate from approval granted',
     ],
     cta: COMING_SOON,
@@ -116,6 +120,7 @@ const tiers: Tier[] = [
           'Everything in Personal Free',
           'Local receiver, webhook intake, email intake, workflow-tool trigger intake, and adapter registry',
           'Event normalization, event-to-artifact mapping, adapter evidence, idempotency, allowlists, signed webhook support, and local adapter config',
+          'Personal/local receiver and adapter scope',
         ],
       },
       {
@@ -135,15 +140,18 @@ const tiers: Tier[] = [
       'Engineering, operations, support, and compliance teams that need multiple people and agents working from the same controlled process.',
     buyReason:
       'requesters, operators, reviewers, approvers, profile authors, and admins must be distinct roles instead of one local user.',
-    price: COMING_SOON,
-    priceNote: 'For shared authority, shared evidence, and self-hosted team operation.',
+    price: '$599',
+    priceLabel: '/mo',
+    priceNote: 'or $499/mo billed annually. Includes 10 authority users.',
     benefits: [
+      'Use 10 included authority users',
+      'Add authority users for $29/user/mo',
+      'Run unlimited shared controlled runs',
       'Run shared controlled work in a self-hosted FST service',
       'Route approvals by role, scope, process, and environment',
       'Prevent people from approving their own protected effects',
       'Publish governed profile versions for team use',
-      'Share run state, adapters, evidence, and handoffs',
-      'Export audits from one team evidence trail',
+      'Share run state, adapters, evidence, handoffs, and audit export',
     ],
     cta: COMING_SOON,
     details: [
@@ -161,6 +169,7 @@ const tiers: Tier[] = [
           'Everything in Personal Pro',
           'Docker or self-hosted deployment, shared run store, team process profile catalog, profile versioning, publication gates, and admin UI or API',
           'Shared adapters, team evidence store, run handoff, audit export, and environment separation for dev, staging, and production',
+          'Standard evidence retention, with additional retention and environments priced separately',
         ],
       },
       {
@@ -180,17 +189,19 @@ const tiers: Tier[] = [
       'Organizations that need FST inside their identity, policy, audit, retention, deployment, and compliance controls.',
     buyReason:
       'FST must become part of the organization control plane across teams, identities, systems, and environments.',
-    price: COMING_SOON,
-    priceNote: 'For governed deployment, supported connectors, compliance, and SLA.',
+    price: 'Contact sales',
+    priceNote: 'Custom annual contract for governed deployment, compliance, support, and SLA.',
     benefits: [
-      'Bind FST authority to SSO, IAM, directory groups, and policy',
+      'Run unlimited controlled runs under contracted deployment terms',
+      'Bind FST authority to SSO, SCIM, IAM, directory groups, and policy',
       'Control who can define, publish, approve, and materialize work',
       'Separate controls by team, system, and environment',
       'Export audit data to SIEM and compliance workflows',
-      'Retain evidence with custom retention and legal hold',
-      'Run with private deployment, HA, backup, support, and SLA',
+      'Retain evidence with custom retention, legal hold, and signed bundles',
+      'Run with private deployment, HA, backup, KMS options, support, and SLA',
     ],
-    cta: COMING_SOON,
+    cta: 'Contact sales',
+    ctaTo: 'mailto:mail@frankzickert.de',
     details: [
       {
         title: 'Authority boundary',
@@ -206,6 +217,7 @@ const tiers: Tier[] = [
           'Everything in Team',
           'SAML or OIDC SSO, SCIM provisioning, IAM integration, directory-group mapping, org-level RBAC or ABAC, and centralized policy controls',
           'SIEM and log export, custom retention, legal hold, audit reports, signed evidence bundles, KMS options, private deployment, high availability, backup and restore, admin approval workflows, and enterprise support',
+          'Contract-defined authority users, protected systems, deployments, environments, support plan, and retention terms',
         ],
       },
     ],
@@ -215,19 +227,19 @@ const tiers: Tier[] = [
 const authoritySteps: AuthorityStep[] = [
   {
     name: 'Personal Free',
-    description: 'Local user or local agent starts official work.',
+    description: 'Local user or local agent can start official work.',
   },
   {
     name: 'Personal Pro',
-    description: 'Outside events can enter local FST as inputs.',
+    description: 'Outside events can enter local FST without becoming approval.',
   },
   {
     name: 'Team',
-    description: 'Shared FST controls many users, agents, roles, and approvals.',
+    description: 'Multiple users, agents, roles, and approvals share official state.',
   },
   {
     name: 'Enterprise',
-    description: 'Org identity, policy, audit, and retention govern FST authority.',
+    description: 'Org identity, policy, audit, retention, and deployment govern authority.',
   },
 ];
 
@@ -258,7 +270,7 @@ function TierCard({tier}: {tier: Tier}) {
       </div>
 
       <p className={styles.buyReason}>
-        <strong>Buy when</strong> {tier.buyReason}
+        <strong>{tier.reasonLabel ?? 'Buy when'}</strong> {tier.buyReason}
       </p>
 
       <ul className={styles.featureList}>
@@ -325,10 +337,10 @@ export default function Pricing(): ReactNode {
           <div className="container">
             <Heading as="h1">Pricing</Heading>
             <p className={styles.heroSub}>
-              Choose the tier by who or what can influence official process
-              state. Core enforcement is not the upsell: FST should keep gates,
-              approvals, evidence, materialization preflight, and replay in the
-              control loop at every serious tier.
+              Choose the tier by who or what can influence official process state.
+              Controlled runs are unlimited because the point is to put more work
+              inside the control loop, not to ration it. You pay for authority,
+              connections, shared roles, governance, and deployment needs.
             </p>
           </div>
         </section>
@@ -337,7 +349,7 @@ export default function Pricing(): ReactNode {
           <div className="container">
             <div className={styles.authorityBox}>
               <p className={styles.authorityIntro}>
-                The upgrade path is about authority, not feature volume.
+                The upgrade path is about authority and connections, not run volume.
               </p>
               <div className={styles.authorityGrid}>
                 {authoritySteps.map((step) => (
@@ -364,11 +376,11 @@ export default function Pricing(): ReactNode {
         <section className={styles.ctaSection}>
           <div className="container">
             <p className={styles.ctaText}>
-              <strong>Safety is never paywalled.</strong> Personal Free proves
-              the core model locally: the agent proposes, FST checks, the user
-              approves, and the run records evidence. Pro is for when outside
-              systems should start controlled work. Team and Enterprise are for when
-              authority must be shared, governed, audited, or tied to identity.
+              <strong>Safety is the baseline.</strong> Unsafe-route blocking,
+              scope checks, evidence writing, profile validation basics,
+              materialization preflight, replay basics, and local CLI approvals
+              stay in the core control loop. Scale, integrations, shared authority,
+              governance, deployment, retention, and support are the business.
             </p>
             <Link className={styles.ctaButton} to="/docs/getting-started/quickstart">
               Get started →
