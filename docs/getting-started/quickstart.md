@@ -63,7 +63,7 @@ source_mode: source_entrypoint
 Create the default local workspace (use force to override an existing config)
 
 ```sh
-fst init --default --store local_file [--force]
+fst init --default [--force]
 ```
 
 This will output something like this:
@@ -72,7 +72,7 @@ This will output something like this:
 workspace: /home/me/.fst-workspaces/default
 resolved_by: default_path
 workspace_id: workspace.6032824bc3d719a5
-store: local_file
+store: sqlite
 default_workspace: /home/me/.fst-workspaces/default
 default_workspace_config: /home/me/.fst/config.yaml
 ```
@@ -92,6 +92,13 @@ Then verify that the process exists:
 
 ```sh
 fst process list
+```
+
+The result shoul look like this: 
+
+```
+installed processes:
+  access-granting-mini@0.1.0 command=fst-access-granting-mini
 ```
 
 This process example controls a mock access grant. It checks the request, required context, policy, approval boundary, mock materialization, and final evidence. But it does not do anything in the *real* world, really.
@@ -171,13 +178,57 @@ workspace: /home/calliopa/.fst-workspaces/default  resolved_by: user_default
 
 Pending approvals
 
-No pending approvals.
+> approval_request_1779453304487355048034  access-granting-mini@0.1.0  access.ap
+  run_mcp_control_1779453285873292082023  AwaitApproval  target_system=billing-a
 
 r refresh  q quit
 ```
 
-Find the pending approval request, select it, and if it matches your request, you can approve it.
+Find the pending approval request, select it.
 
+```
+Approval Request
+
+request:      approval_request_1779453304487355048034
+run:          run_mcp_control_1779453285873292082023
+profile:      access-granting-mini@0.1.0
+route:        AwaitApproval
+approval:     access.approval.record
+target:       access.approval.request
+scope:        target_system=billing-admin,requested_role=admin,requester_id=user
+expiry:       2026-05-23T00:00:00Z
+reason:       Admin access requires authorized approval.
+evidence:     evidence_1779453304487216930033
+
+[ Approve ]    Reject      Back  
+```
+
+
+If it matches your request, you can approve it.
+
+```
+Approve Request
+
+request: approval_request_1779453304487355048034
+decision: approve
+
+reason:
+[  ]
+
+[ Submit ]  [ Back ]
+```
+
+
+```
+Decision submitted
+
+status: accepted
+approval: admitted
+route: AwaitApproval
+evidence: evidence_1779453917937655452001
+
+r refresh  q quit
+```
 
 What happens here:
 
