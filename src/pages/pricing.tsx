@@ -201,7 +201,7 @@ const tiers: Tier[] = [
       'Run with private deployment, HA, backup, KMS options, support, and SLA',
     ],
     cta: 'Contact sales',
-    ctaTo: 'mailto:mail@frankzickert.de',
+    ctaTo: 'mailto:mail@fernsehturm.dev',
     details: [
       {
         title: 'Authority boundary',
