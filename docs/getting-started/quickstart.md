@@ -4,34 +4,32 @@ sidebar_position: 1
 
 # Quickstart
 
-This quickstart guides you through
-
-1. the installation of FST with the default local setup, and
-2. running the bundled process example: the access-grant process with an agent.
-
-You will run the same process twice:
+This quickstart gets you to the first useful FST moment:
 
 ```text
-viewer access -> FST checks the request and allows a mock grant
-admin access  -> FST checks the request and stops for trusted approval
+agent requests a protected action
+-> FST stops for exact human approval
+-> you approve through the trusted local console
+-> the agent retries through FST
+-> FST allows only the approved action and records what happened
 ```
 
-No real access is granted. The process uses mock materialization so you can see
-the control loop without changing an IAM system.
-
-The point of the quickstart is simple: the agent can prepare access work, but
-FST controls what counts, when approval is required, and whether even a mock
-grant may proceed.
+The example uses the bundled email-send process. If you have not connected an
+email account yet, FST uses a redaction-safe local log-only fallback. That is the
+best first run: no external email is sent, but the approval gate, retry path,
+decision record, and audit trail are real.
 
 ## What You Need
 
-- Linux (macOS and Windows coming soon)
-- `curl`
-- a shell (`bash`/`sh`) where `$HOME/.local/bin` can be added to `PATH`
-- Codex (in future, FST will support other agents, too)
+- Linux
+- a shell where `$HOME/.local/bin` can be added to `PATH`
+- a local agent target supported by this FST build, such as Codex or Claude
 
-The commands below use the default FST data directory, the default FST
-workspace, and the default Codex home.
+You do not need to install a demo process for the first run. FST already ships
+with:
+
+- `builtin.email-send` for the first gated send example
+- `builtin.process-authoring` for creating or editing process packages later
 
 ## 1. Install FST
 
@@ -42,299 +40,181 @@ curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Verify installation: 
+## 2. Connect FST To Your Agent
+
+Tell FST which local agent should receive packaged skills:
 
 ```bash
-fst version
+fst agents configure
 ```
 
-It will show yout the current version and bundle:
+Choose the local agent target you want to use.
 
-```
-fst_version: 0.1.0
-bundle_id: fst.full_toolset
-bundle_schema_version: 0.1.0
-source_mode: source_entrypoint
-```
+Restart any already-running agent session after this step. The agent only sees
+newly installed or updated FST-managed skills after it reloads its local skill
+directory and MCP configuration.
 
+## 3. Set Your Authority Password
 
-## 2. Create The Default Workspace
-
-Create the default local workspace (use force to override an existing config)
-
-```sh
-fst init --default [--force]
-```
-
-This will output something like this:
-
-```
-workspace: /home/me/.fst-workspaces/default
-resolved_by: default_path
-workspace_id: workspace.6032824bc3d719a5
-store: sqlite
-default_workspace: /home/me/.fst-workspaces/default
-default_workspace_config: /home/me/.fst/config.yaml
-```
-
-
-## 3. Install The Access-Grant-Mini Process
-
-Fernsehturm comes with an example `access-grant-mini` process that showcases how FST works.
-
-Install the bundled `access-grant-mini` process into the default workspace:
-
-```sh
-fst process install --bundled access-granting-mini
-```
-
-Then verify that the process exists:
-
-```sh
-fst process list
-```
-
-The result shoul look like this: 
-
-```
-installed processes:
-  access-granting-mini@0.1.0 command=fst-access-granting-mini
-```
-
-This process example controls a mock access grant. It checks the request, required context, policy, approval boundary, mock materialization, and final evidence. But it does not do anything in the *real* world, really.
-
-## 4. Enable Agent Use
-
-Next, we need to tell the Codex agent about the FST skill.  We do so by installing the skills like this:
-
-
-```sh
-fst install-skill --all-processes
-```
-
-Restart Codex after this step. Codex gets a generated skill for each fst process. In this case one named `$fst-access-granting-mini`.
-
-
-## 5. Run Viewer Access
-
-In a fresh Codex session, you can now ask for viewing access:
-
-```text
-$fst-access-granting-mini Grant Alice viewer access to billing-admin for incident response for one week.
-```
-
-You will see that the agent uses FST.
-
-During this run:
-
-- the agent records the access request through FST
-- FST checks that the target system, requested role, and expiry exist
-- FST checks policy for the requested role and system
-- viewer access is treated as a standard low-criticality role
-- FST returns a mock materialization route
-- the agent records the mock result through FST
-- FST completes the run with evidence
-
-This proves the simple path. The agent can complete useful process work. But it can only do that by submitting the right artifacts and following what the underlying process requires.
-
-
-The mock grant is allowed because the process has enough evidence and no admin approval is required.
-
-## 6. Run Admin Access
-
-Now ask for admin access:
-
-```text
-$fst-access-granting-mini Grant Alice admin access to billing-admin for incident response until tomorrow.
-```
-
-Here, something different happens:
-
-- the agent records the same kind of access request
-- FST sees that the requested role is `admin`
-- the policy check reaches a higher-authority boundary
-- FST creates a trusted approval request
-- FST returns `AwaitApproval`
-- the agent stops!
-
-At this point, no mock grant can happen yet. Admin access requires approval through the trusted console. A message in chat such as "I approve" is not enough, because the agent is not allowed to create its own approval authority. Try it!
-
-If the agent tries to continue directly to the mock grant before approval, FST routes it back to the approval boundary instead of returning `MaterializeMock`.
-
-## 7. Approve Through The Trusted Console
-
-In a shell, open the trusted local console and list pending requests:
-
-```sh
-fst console
-```
-
-This will show a menu like this:
+Set the password for trusted local approval commands:
 
 ```bash
-FST Console
-
-workspace: /home/calliopa/.fst-workspaces/default  resolved_by: user_default
-
-Pending approvals
-
-> approval_request_1779453304487355048034  access-granting-mini@0.1.0  access.ap
-  run_mcp_control_1779453285873292082023  AwaitApproval  target_system=billing-a
-
-r refresh  q quit
+fst authority password set
 ```
 
-Find the pending approval request, select it.
+This is the important boundary. The agent can request a protected action, but it
+cannot approve its own request or turn a chat message into FST authority.
 
-```
-Approval Request
+When you later approve through `fst console decide`, FST prompts for this
+password and creates a short-lived unlock for that terminal session only.
 
-request:      approval_request_1779453304487355048034
-run:          run_mcp_control_1779453285873292082023
-profile:      access-granting-mini@0.1.0
-route:        AwaitApproval
-approval:     access.approval.record
-target:       access.approval.request
-scope:        target_system=billing-admin,requested_role=admin,requester_id=user
-expiry:       2026-05-23T00:00:00Z
-reason:       Admin access requires authorized approval.
-evidence:     evidence_1779453304487216930033
+## 4. Ask The Agent For A Send
 
-[ Approve ]    Reject      Back  
-```
-
-
-If it matches your request, you can approve it.
-
-```
-Approve Request
-
-request: approval_request_1779453304487355048034
-decision: approve
-
-reason:
-[  ]
-
-[ Submit ]  [ Back ]
-```
-
-
-```
-Decision submitted
-
-status: accepted
-approval: admitted
-route: AwaitApproval
-evidence: evidence_1779453917937655452001
-
-r refresh  q quit
-```
-
-What happens here:
-
-- the console uses the trusted local approval path
-- the approval is bound to the pending request
-- FST records an approval artifact from the trusted path
-
-The console approves authority. It does not perform the access grant. After approval, the agent must ask FST for the next route and continue only if FST allows it.
-
-## 8. Continue The Admin Run
-
-Return to Codex and continue the run. If you use a new Codex-session, give it the run id reported by the agent or shown in the console output:
+Start a fresh agent session and ask:
 
 ```text
-$fst-access-granting-mini Continue run <run-id> after trusted approval.
+Use the fst-email-send skill to send an email to alice@example.com with subject
+"Hello" and body "This is the first gated action."
 ```
 
-If you use the same session as before a simple `continue` should be enough.
+The first result should stop at approval:
 
-During the continuation:
+- `decision: approval_required`
+- `may_proceed: false`
+- an `approval_request_id`
+- no email send and no log-only effect yet
 
-- the agent asks FST for the next valid route
-- FST sees the trusted approval record
-- FST allows mock materialization for the exact approved request
-- the agent records the mock result
-- FST completes the run and records replayable evidence
+That is the aha moment. The agent has the capability to request the send, but it
+is not the authority to approve it.
 
-This is the important admin boundary. The same agent can prepare the request
-and continue after approval, but the approval itself came through the trusted
-console, not through the agent's own claim.
+If the request is incomplete, FST returns the missing requirements and the agent
+should ask for the missing field instead of guessing.
 
-## 9. Review Evidence And Replay
+## 5. Approve As The Human
 
-You can now inspect and review this process execution.
+Use your own terminal, not the requesting agent, to inspect and approve the
+pending request:
 
-Inspect the latest run:
-
-```sh
-fst evidence show --latest
-fst replay show --latest
-fst trace show --latest
+```bash
+fst console pending --json
+fst console show APPROVAL_REQUEST_ID --json
+fst console decide APPROVAL_REQUEST_ID \
+  --decision approve \
+  --reason "Approved for local email-send example" \
+  --json
 ```
 
-For a specific run, use the run id:
+An agent command approval prompt is not an FST approval. Core admits approval
+only when it matches the exact request, scope, package revision, policy revision,
+freshness, and requester rules.
 
-```sh
-fst evidence show --run <run-id>
-fst replay show --run <run-id>
-```
+## 6. Ask The Agent To Retry
 
-For the viewer run, evidence should show:
+After approval, return to the agent and ask:
 
 ```text
-source request
-target system
-requested role
-expiry
-policy check
-mock materialization plan
-mock materialization result
-final route: Complete
+Retry the approved fst-email-send request for alice@example.com with the same
+subject and body.
 ```
 
-For the admin run before approval, evidence should show:
+The retry should now be allowed:
 
-```text
-approval request
-pending approval
-final route: AwaitApproval
+- `decision: allowed`
+- `may_proceed: true`
+- `execution_result.status: succeeded`
+- `execution_result.action_id: send_email_action`
+- `execution_result.observed.delivery_mode: log_only` when no email account is
+  configured
+
+The same agent can continue after approval, but only by going back through FST.
+If the target, message, scope, or process context changes, the earlier approval
+must not silently cover the new request.
+
+## 7. Review What Happened
+
+Inspect the redaction-safe run log:
+
+```bash
+fst logs list --source email-send --json
+fst logs show RUN_LOG_ID --source email-send --pretty
 ```
 
-For the admin run after approval, evidence should show:
+Inspect Core-owned records using the ids returned from the run:
 
-```text
-trusted approval record
-mock materialization plan
-mock materialization result
-final route: Complete
+```bash
+fst decision show DECISION_ID --json
+fst requirements show --process-instance PROCESS_ID --json
+fst audit show AUDIT_REF --json
 ```
 
-Replay explains why FST returned each route. You should be able to see that
-viewer access completed after ordinary process evidence, while admin access
-waited until a trusted approval existed.
+The log and audit records use digests and metadata. They do not print the full
+recipient, subject, or body.
 
 ## What This Demonstrates
 
-The access-grant process shows the basic FST idea:
-
 ```text
-The agent proposes.
-FST checks the process.
-FST asks for missing facts or approval when needed.
-Trusted approval happens outside the agent.
-FST preflights the protected effect.
-The result is recorded as evidence.
+Capability is not authority.
 ```
 
-The agent stays useful. It gathers facts, submits process actions, reports
-routes, and continues when allowed.
+FST lets the agent stay useful: it prepares the request, submits it, reports the
+approval requirement, and retries after approval.
 
-FST stays authoritative. It decides what counts, what is missing, what is
-blocked, what needs approval, and when even a mock protected effect may proceed.
+FST keeps the authority boundary: it checks the gated action, requires trusted
+approval, admits only scoped approval records, decides whether the action may
+proceed, and records the decision.
+
+## Analysis And Troubleshooting
+
+Use this section when something does not behave as expected. You do not need to
+run every check before the first aha moment.
+
+### Check local readiness
+
+```bash
+fst info --json --strict
+fst skills status --agent codex-local --json
+fst skills status --agent claude-local --json
+```
+
+`fst info --json --strict` validates config, Core metadata, the local store, and
+configured agent targets.
+
+### Check the bundled process
+
+```bash
+fst process show builtin.email-send --json
+```
+
+If you have not configured SMTP or Gmail, look for `account_ref:
+local_email_log` and `delivery_mode: log_only`. That means the example will
+record a local log-only effect instead of sending real email.
+
+### If the agent does not know the skill
+
+Run the agent configuration again, then restart the agent:
+
+```bash
+fst agents configure
+```
+
+Do not edit, copy, or install agent skills by hand. FST process packages own
+their packaged skills, and FST installs managed skills into configured agent
+targets.
+
+### If approval does not unlock the retry
+
+Confirm that the approval request id is the one returned by the agent and that
+the retry uses the same recipient, subject, body, and process context. FST should
+block or ask for a new approval when the approved scope no longer matches.
+
+### If you want to use a real email account
+
+Keep the first run in log-only mode. After you understand the approval loop, see
+the examples for SMTP, Gmail, and local SMTP capture.
 
 ## Next
 
 - [Create Your First Custom Process](/docs/getting-started/first-custom-process)
+- [Real Effects](/docs/getting-started/real-effects)
 - [Use Cases](/docs/understanding/use-cases)
 - [How FST Works](/docs/understanding/how-it-works)
-- [FST Structure](/docs/understanding/structure)

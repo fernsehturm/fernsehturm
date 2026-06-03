@@ -64,15 +64,29 @@ verify_full_toolset() {
   local command
   local missing=()
   local required=(
-    init
+    info
+    config
+    agents
+    compatibility
+    store
+    action
     process
-    install-skill
-    mcp
-    agent-poc
+    decision
+    requirements
+    audit
+    authority
+    serve
+    reviewer
+    action-package
     console
-    evidence
-    replay
-    scenario
+    approvals
+    mcp
+    logs
+    credentials
+    email
+    scenarios
+    skills
+    account
   )
 
   [[ -x "$fst_bin" ]] || die "installed fst command not found at $fst_bin"

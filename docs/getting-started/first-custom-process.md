@@ -4,212 +4,133 @@ sidebar_position: 2
 
 # Create Your First Custom Process
 
-After the purchase quickstart, create one small process of your own.
+After the quickstart, use the bundled process-authoring support to turn one of
+your own repeated agent tasks into a small FST-controlled process.
 
-Do not start by writing YAML. Start with a process you already ask an agent to
-follow, then use Canvas to turn that process into gates, evidence, routes, and
-scenarios.
-
-The shape is:
+Do not start with a large workflow. Start with one claim the agent often makes
+and one protected action or decision boundary you care about.
 
 ```text
-describe the process
--> review the structured draft
--> add scenarios
--> publish a version
--> ask the agent to use it
--> inspect the run evidence
+you describe what should count
+-> the agent drafts a process package
+-> FST checks the package evidence
+-> you review and approve what becomes authoritative
+-> future agent work follows that process
 ```
 
-Canvas is not a workflow builder. You are not drawing every step the agent will
-take. You are defining what must be true before the agent's work counts.
+## 1. Pick One Process Boundary
 
-## 1. Open Canvas
+Choose something concrete and low-risk first. Good first examples are:
 
-Use the same workspace from the quickstart:
+- "this draft is ready for review"
+- "this customer reply may be sent"
+- "this support record may be updated"
+- "this repository change may be proposed"
 
-```bash
-fst ui --workspace "$HOME/fst-workspace"
-```
-
-Open the local URL that FST prints.
-
-On the first screen, choose **Describe a process**.
-
-## 2. Describe A Real Process
-
-Use a small, low-risk example first. This one creates a process for deciding
-whether a design spec is ready for review:
+The important question is not "what should the agent do?" It is:
 
 ```text
-Create a custom process called Spec Readiness.
+What must be true before the agent's work counts?
+```
 
-Before an agent says a spec is ready for review, FST should require:
+## 2. Describe The Process In Plain Language
+
+Ask the agent to use the process-authoring support:
+
+```text
+Use the fst-process-author skill to create an FST process package at
+./spec-readiness. The protected claim is that a spec is ready for review.
+
+Before that claim counts, FST should require:
 - a requirements summary
 - a draft spec
 - every critical requirement linked to a spec section
 - a risk or policy check result
-- a decision record from me
+- my decision record
 
 If a normal business fact is missing, ask me.
 If evidence is missing, instruct the agent to produce it.
 If the risk check fails, wait for approval or block.
-
 The agent may draft the spec and review packet.
 The agent must not approve the spec for review by itself.
 ```
 
 This is enough to start. The first version should be narrow and obvious.
 
-## 3. Review The Draft
+## 3. Review What The Agent Drafts
 
-Canvas should turn the description into a structured process draft:
+The agent should produce a process package, not just prose. Review the plain
+language first:
 
-```text
-Claim
-Spec is ready for review
-
-Gates
-- Requirements summary exists
-- Draft spec exists
-- Critical requirements are linked to spec sections
-- Risk or policy check passed
-- User decision record exists
-
-Routes
-- missing business fact -> AskUser
-- missing evidence -> InstructAgent
-- failed check -> AwaitApproval or Blocked
-- all gates satisfied -> Continue or Complete
-```
-
-Review the draft in plain language first. The important questions are:
-
-- Is the claim specific?
+- Is the protected claim specific?
 - Are the gates things FST can check from evidence?
-- Is approval required for authority, not just because the agent sounds confident?
+- Is approval required for authority, not because the agent sounds confident?
 - Does every unsafe or incomplete case have a route?
+- Are the scenarios small enough to understand?
 
-Keep the advanced profile details closed unless you need them.
+Keep the first process boring. A boring process that blocks the right thing is
+more useful than a broad process that nobody can verify.
 
-## 4. Define What Counts
+## 4. Check The Package
 
-For each gate, tell Canvas what evidence can satisfy it.
+Run the authoring check before you treat the process as usable:
 
-For the spec example:
-
-```text
-Requirements summary exists
-  counts when a RequirementsSummary artifact is recorded
-
-Draft spec exists
-  counts when a Specification artifact is recorded
-
-Critical requirements are linked to spec sections
-  counts when every critical requirement has a refined_by link to a spec section
-
-Risk or policy check passed
-  counts when a RiskCheckResult is recorded as passed
-
-User decision record exists
-  counts when the task user records the decision
+```bash
+fst process author check ./spec-readiness --json
 ```
 
-That third gate is the reason this is different from a checklist. FST should not
-only see that requirements and a spec exist. It should see that the important
-requirements are connected to the spec.
+Fix any missing schemas, scenarios, routes, or evidence definitions before you
+publish or install the process.
 
-## 5. Add Scenarios
+## 5. Prove It With Scenarios
 
-Scenarios prove that the process behaves before it controls real work.
-
-Add these first:
+A useful first process should have scenarios like these:
 
 ```text
-Complete packet
+complete packet
   all required evidence exists
-  expected route: Complete
+  expected result: allowed or complete
 
-Missing draft spec
+missing draft spec
   requirements exist but no spec exists
-  expected route: InstructAgent
+  expected result: instruct the agent to produce the draft
 
-Missing requirement link
-  a critical requirement has no spec section link
-  expected route: InstructAgent
+missing requirement link
+  a critical requirement has no linked spec section
+  expected result: instruct the agent to repair the evidence
 
-Failed risk check
+failed risk check
   risk check fails and no exception is approved
-  expected route: AwaitApproval or Blocked
+  expected result: await approval or block
 
-Agent tries to approve its own work
+agent tries to approve its own work
   decision record is agent-created
-  expected route: Blocked
+  expected result: blocked
 ```
 
-Run the scenarios from Canvas. Do not publish the process until the scenarios
-match what you expect.
+The goal is to see the process handle incomplete and unsafe cases before you use
+it on real work.
 
-## 6. Publish The First Version
+## 6. Publish Or Install Only After Review
 
-When the draft reads correctly and the scenarios pass, publish the first local
-version.
-
-Publishing is the point where the process becomes something agents can use. It
-should be treated as an authority decision:
+Publishing or installing a process changes what future agent work may rely on.
+Treat that as an authority decision:
 
 ```text
 plain-language draft
--> reviewed structured process
+-> checked process package
 -> passing scenarios
--> published version
+-> human-reviewed version
+-> installed process
 ```
 
-After publication, runs should show which version controlled them. That matters
-because later edits should not silently change the meaning of earlier runs.
+After installation, runs should show which process version controlled them. That
+matters because later edits should not silently change the meaning of earlier
+runs.
 
-## 7. Ask The Agent To Use It
+## What This Demonstrates
 
-Start FST for your agent if it is not already running:
-
-```bash
-fst mcp start --workspace "$HOME/fst-workspace"
-```
-
-Then ask your agent:
-
-```text
-Use FST with my Spec Readiness process.
-Prepare docs/search-redesign.md for review.
-Follow the route FST returns.
-```
-
-The interaction should feel familiar from the purchase quickstart:
-
-```text
-You ask for the work.
-The agent prepares candidate evidence.
-FST checks what counts.
-FST returns a route.
-The agent continues, asks, waits, or stops.
-Replay shows why.
-```
-
-## What You Do
-
-You describe the process, review the structured draft, decide what counts, add
-scenarios, and publish the version when it is ready.
-
-## What The Agent Does
-
-The agent can help draft the spec, produce missing artifacts, repair links, run
-checks, and explain what FST says is missing.
-
-It cannot approve its own work or decide that the process is satisfied.
-
-## What FST Changes
-
-Without FST, the custom process is usually just a prompt:
+Without FST, a custom process is usually a prompt:
 
 ```text
 Please make sure the spec is ready for review.
@@ -229,8 +150,27 @@ claim
 That is the step from "the agent followed my instruction" to "the work met the
 process I approved."
 
+## Analysis And Troubleshooting
+
+### If the package check fails
+
+Read the check output as a to-do list. Fix the smallest missing piece first:
+schema, route, scenario, or evidence definition.
+
+### If the agent wants to approve its own work
+
+Stop and revise the process. Approval must come from a trusted authority path,
+not from the same caller that requested the action.
+
+### If the process is getting large
+
+Split it. FST works best when a process package controls a concrete boundary.
+Start with one gated action or claim, then expand after the first version is
+understandable and testable.
+
 ## Next
 
+- [Real Effects](/docs/getting-started/real-effects)
 - [Developing A Process](/docs/workflows/developing-a-process)
 - [Process Builder Agent Guide](/docs/workflows/process-builder-agent)
 - [Process Pack API](/docs/api/overview)
