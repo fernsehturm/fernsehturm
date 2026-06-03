@@ -25,6 +25,7 @@ Environment:
   FST_CHECKSUM_ASSET        checksum asset name override; default checksums.txt
   FST_INSTALL_BIN_DIR       target command directory; default $HOME/.local/bin
   FST_INSTALL_DATA_DIR      target asset directory; default $XDG_DATA_HOME/fst or $HOME/.local/share/fst
+  FST_INSTALL_FORCE         set to 0 to refuse overwriting an existing install; default 1
   FST_INSTALL_UPDATE_SHELL  set to 0 to avoid adding the bin directory to a shell profile
   FST_INSTALL_SKIP_CHECKSUM set to 1 to skip checksum verification
 EOF
@@ -171,6 +172,11 @@ tar -xzf "$archive" -C "$extract_dir"
 
 [[ -x "$extract_dir/install.sh" ]] || die "downloaded package does not contain executable install.sh"
 
+install_args=()
+if [[ "${FST_INSTALL_FORCE:-1}" == "1" ]]; then
+  install_args+=(--force)
+fi
+
 info "running package installer"
-"$extract_dir/install.sh"
+"$extract_dir/install.sh" "${install_args[@]}"
 verify_full_toolset
