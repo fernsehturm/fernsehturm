@@ -1,0 +1,193 @@
+---
+title: Privacy Policy
+description: Privacy Policy for Fernsehturm and FST.
+---
+
+# Privacy Policy
+
+Last updated: June 3, 2026
+
+This Privacy Policy explains how Fernsehturm ("FST", "Fernsehturm", "we", "us",
+or "our") handles information when you use the Fernsehturm website, local FST
+runtime, command-line tools, SDKs, connectors, activation services, hosted
+services, support channels, and related documentation.
+
+FST is designed as a process-control runtime for agent work. A typical local
+installation keeps process state, approvals, evidence, audit records, process
+packages, configuration, and credentials on systems you control. Where you
+connect FST to hosted services, activation, payment, support, integrations, or
+team deployments, additional information may be processed as described below.
+
+## Information We Collect
+
+We may collect information you provide directly, including:
+
+- contact details, such as your name, email address, organization, and role
+- account and activation information, such as login email, device code status,
+  install binding identifiers, entitlement tier, release channel, and support
+  requests
+- billing and subscription information, which may be handled by payment
+  providers
+- communications you send to us, including sales, support, security, and
+  feedback messages
+
+FST may generate or store product data, including:
+
+- process profiles, packages, gates, schemas, and configuration metadata
+- controlled run state, action requests, route decisions, approvals, artifacts,
+  evidence references, audit records, replay data, and idempotency records
+- installation metadata, such as FST version, Core version, platform family,
+  architecture family, install channel, installation id, and entitlement status
+- usage summaries, such as command counts, feature counts, failure counts, batch
+  ids, and reporting windows
+- connector configuration metadata, such as provider type, account reference,
+  capability names, TLS mode, and credential reference names
+
+FST is intended to use references, digests, scoped records, and redaction-safe
+metadata where practical. However, the exact data stored in a run depends on the
+process packages, connectors, stores, logs, and deployment choices you configure.
+
+## Local Runtime Data
+
+For local FST use, your process state and credentials are generally stored on
+your machine or in infrastructure you configure. Local credential values are
+resolved from local credential stores, environment variables, password managers,
+or other configured sources. FST command output is intended to show credential
+references, metadata, and digests rather than raw secret values.
+
+We do not automatically receive your local process state, local credential
+values, local SQLite store contents, local Postgres store contents, agent
+transcripts, or local audit bundles just because you install or run FST locally.
+You may choose to share that information with us for support, debugging,
+hosted services, enterprise deployment, or integrations.
+
+## Hosted, Team, And Enterprise Services
+
+If you use hosted, team, enterprise, activation, account, license, payment,
+support, or managed services, we may process the information needed to provide
+those services. This may include account records, install bindings, entitlement
+snapshots, usage summaries, audit export metadata, organization configuration,
+identity-provider metadata, user roles, approval-provider metadata, support
+attachments, service logs, and billing status.
+
+Enterprise or separately contracted deployments may have different data
+processing, retention, support, security, and audit terms. If a signed agreement
+applies, that agreement controls where it conflicts with this Privacy Policy.
+
+## Connectors And Third-Party Services
+
+FST can connect to systems such as email providers, ticket systems, workflow
+tools, chat gateways, source control systems, cloud services, databases, and
+other APIs. When you configure a connector, information may be sent to or
+received from those services according to your configuration and their terms.
+
+External events can become inputs, artifacts, or run triggers in FST. They are
+not approvals by default. A configured process decides whether a message, event,
+or artifact can satisfy an approval or gate.
+
+We are not responsible for the privacy practices of third-party services you
+connect to FST.
+
+## Website And Diagnostics
+
+When you visit our website or documentation, standard hosting, security, and
+diagnostic systems may process information such as IP address, browser type,
+device information, referring pages, pages visited, timestamps, and error
+details.
+
+We may use cookies or similar technologies where needed for website operation,
+security, analytics, account login, payment, or preferences. You can usually
+control cookies through your browser settings, although some features may not
+work without them.
+
+## How We Use Information
+
+We use information to:
+
+- provide, operate, secure, and improve FST
+- authenticate accounts, bind installations, verify entitlements, and prevent
+  misuse
+- process payments, subscriptions, renewals, and account administration
+- provide support, troubleshoot issues, and respond to requests
+- generate diagnostics, compatibility checks, audit exports, and product
+  reliability information
+- communicate about updates, security issues, product changes, and service
+  notices
+- comply with legal obligations and enforce our terms
+
+We do not use your local credentials, local process store, or private customer
+data to train general-purpose AI models unless you explicitly provide that data
+to a service or support channel where separate terms say otherwise.
+
+## How We Share Information
+
+We may share information with:
+
+- service providers that help us operate hosting, support, analytics,
+  authentication, payment, email, security, and infrastructure services
+- third-party services you configure FST to use
+- professional advisers, auditors, insurers, or legal authorities where
+  reasonably necessary
+- business successors if we are involved in a merger, acquisition, financing,
+  reorganization, or sale of assets
+- other parties with your direction or consent
+
+We do not sell personal information in the ordinary sense of exchanging it for
+money. Some privacy laws define "sale" or "sharing" broadly; where those laws
+apply, you may have rights described below.
+
+## Retention
+
+We keep information for as long as needed to provide FST, maintain accounts,
+support customers, meet security and audit needs, comply with legal obligations,
+resolve disputes, and enforce agreements.
+
+Local runtime data remains under your control unless you send it to us or use a
+hosted service. Team and enterprise retention may be configured by deployment
+policy or contract.
+
+## Security
+
+We use technical and organizational measures intended to protect information.
+FST is designed to support scoped authority, approval boundaries, redaction-safe
+metadata, credential references, signed or verified entitlement snapshots, and
+audit records. No system is perfectly secure, and you are responsible for
+securing your own machines, stores, credentials, connectors, agents, approval
+paths, and deployment configuration.
+
+## Your Choices And Rights
+
+Depending on where you live, you may have rights to access, correct, delete,
+export, restrict, or object to certain processing of personal information. You
+may also have the right to opt out of certain sales, sharing, targeted
+advertising, or marketing communications.
+
+You can disconnect an FST account binding from the local CLI where supported.
+You can also control local stores, logs, credentials, process packages, and
+connectors through your own environment and FST configuration.
+
+To make a privacy request, contact us at
+[mail@fernsehturm.dev](mailto:mail@fernsehturm.dev).
+
+## Children
+
+FST is not directed to children under 13, and we do not knowingly collect
+personal information from children under 13.
+
+## International Processing
+
+We may process information in the United States and other countries where we or
+our service providers operate. Those countries may have privacy laws different
+from the laws where you live.
+
+## Changes
+
+We may update this Privacy Policy from time to time. If we make material
+changes, we will update the date above and provide additional notice where
+required.
+
+## Contact
+
+For privacy questions or requests, contact:
+
+[mail@fernsehturm.dev](mailto:mail@fernsehturm.dev)
