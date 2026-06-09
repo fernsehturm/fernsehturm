@@ -40,6 +40,12 @@ curl -fsSL https://www.fernsehturm.dev/install.sh | bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
+Or with pinned version:
+
+```
+curl -fsSL https://www.fernsehturm.dev/install.sh | FST_INSTALL_VERSION=v0.1.0 bash
+```
+
 ## 2. Connect FST To Your Agent
 
 Tell FST which local agent should receive packaged skills:
