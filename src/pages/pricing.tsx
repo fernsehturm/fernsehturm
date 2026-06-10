@@ -92,9 +92,9 @@ const tiers: Tier[] = [
       'Power users and solo operators who want local FST connected to email, webhooks, workflow tools, tickets, files, or chat gateways.',
     buyReason:
       'work should begin from the outside world, but approval and protected effects still need to stay under your local authority.',
-    price: '$39',
+    price: '$29',
     priceLabel: '/mo',
-    priceNote: 'or $29/mo billed annually. Includes up to 3 local installs.',
+    priceNote: 'or $24/mo billed annually.',
     badge: 'Personal automation',
     highlighted: true,
     benefits: [
@@ -140,9 +140,9 @@ const tiers: Tier[] = [
       'Engineering, operations, support, and compliance teams that need multiple people and agents working from the same controlled process.',
     buyReason:
       'requesters, operators, reviewers, approvers, profile authors, and admins must be distinct roles instead of one local user.',
-    price: '$599',
+    price: '$499',
     priceLabel: '/mo',
-    priceNote: 'or $499/mo billed annually. Includes 10 authority users.',
+    priceNote: 'or $429/mo billed annually. Includes 10 authority users.',
     benefits: [
       'Use 10 included authority users',
       'Add authority users for $29/user/mo',
